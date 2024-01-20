@@ -10,6 +10,8 @@ import SwiftData
 
 @Observable
 final class CompanyViewModel {
+    private var allCompanies: [Company]?
+    
     var modelContext: ModelContext
     var companies: [Company]?
     
@@ -22,31 +24,32 @@ final class CompanyViewModel {
     func fetchData() {
         do {
             
-            let descriptorCompany = FetchDescriptor<Company>(sortBy: [SortDescriptor(\.id)])
+            let descriptorCompany = FetchDescriptor<Company>(sortBy: [SortDescriptor(\.name)])
             companies = try modelContext.fetch(descriptorCompany)
+        
+            allCompanies = companies
+            var newCompanies = [Company]()
             
-            if companies == [] {
-                companies = [
-                    Company(name: "Şirket İsmi", desc: "Şirket Açıklaması", adress: "Şirket Adresi", phone: "5541701635", work: Work(name: "İş İsmi", desc: "İş Açıklaması", price: 1000, recMoney: 500, remMoney: 500, stTime: .now, fnTime: .now)),
-                    Company(name: "Şirket İsmi", desc: "Şirket Açıklaması", adress: "Şirket Adresi", phone: "5541701635", work: Work(name: "İş İsmi", desc: "İş Açıklaması", price: 1000, recMoney: 500, remMoney: 500, stTime: .now, fnTime: .now)),
-                    Company(name: "Şirket İsmi 2", desc: "Şirket Açıklaması 2", adress: "Şirket Adresi 2", phone: "5541701635", work: Work(name: "İş İsmi 2", desc: "İş Açıklaması 2", price: 1000, recMoney: 500, remMoney: 500, stTime: .now, fnTime: .now)),
-                    Company(name: "Şirket İsmi 3", desc: "Şirket Açıklaması 3", adress: "Şirket Adresi 3", phone: "5541701635", work: Work(name: "İş İsmi 3", desc: "İş Açıklaması 3", price: 1000, recMoney: 500, remMoney: 500, stTime: .now, fnTime: .now)),
-                    Company(name: "Şirket İsmi 4", desc: "Şirket Açıklaması 4", adress: "Şirket Adresi 4", phone: "5541701635", work: Work(name: "İş İsmi 4", desc: "İş Açıklaması 4", price: 1000, recMoney: 500, remMoney: 500, stTime: .now, fnTime: .now))]
-            }
+            companies?.forEach({ company in
+                guard !newCompanies.contains(where: { contains in contains.name == company.name }) else { return }
+                newCompanies.append(company)
+            })
+            
+            companies = newCompanies
             
         } catch {
             print("Fetch failed")
         }
     }
     
-    func fetchCompanyWorks(companyName: String) -> [Work]? {
+    func fetchCompanyWorks(name: String) -> [Work]? {
         var companyWorks = [Work]()
-         if let companies = companies {
-             for company in companies.filter({ $0.name == companyName }) {
+         if allCompanies != [] {
+             let newCompany = allCompanies!.filter({ $0.name == name })
+             for company in newCompany {
                  companyWorks.append(company.work)
              }
          }
-        
         return companyWorks
     }
     

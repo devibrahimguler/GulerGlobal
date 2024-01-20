@@ -10,10 +10,13 @@ import SwiftUI
 struct WorkInfo: View {
     var text: String
     var desc: String
+    var alignment: HorizontalAlignment
+    
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: alignment) {
             Text(text)
                 .foregroundStyle(.gray)
+                .font(.caption)
             
             Text(desc)
                 .padding(2)
@@ -27,7 +30,7 @@ struct WorkInfo: View {
 
 struct TestWorkInfo : View {
     var body: some View {
-        WorkInfo(text: "İŞ İSMİ", desc: "ÇATI")
+        WorkInfo(text: "İŞ İSMİ", desc: "ÇATI", alignment: .leading)
     }
 }
 #Preview {

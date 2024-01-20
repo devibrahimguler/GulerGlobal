@@ -19,6 +19,8 @@
 		88B687532B5A9E9800F49DA3 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687522B5A9E9800F49DA3 /* Home.swift */; };
 		88B687552B5A9EB200F49DA3 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* Note.swift */; };
 		88B687572B5B1E5700F49DA3 /* WorkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687562B5B1E5700F49DA3 /* WorkInfo.swift */; };
+		88B6875A2B5BA5D200F49DA3 /* WorkCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687592B5BA5D200F49DA3 /* WorkCard.swift */; };
+		88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6875B2B5BA62E00F49DA3 /* Card.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		88B687522B5A9E9800F49DA3 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		88B687542B5A9EB200F49DA3 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		88B687562B5B1E5700F49DA3 /* WorkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInfo.swift; sourceTree = "<group>"; };
+		88B687592B5BA5D200F49DA3 /* WorkCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkCard.swift; sourceTree = "<group>"; };
+		88B6875B2B5BA62E00F49DA3 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,8 +100,8 @@
 		88B687472B5A9DEB00F49DA3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				88B687482B5A9DFA00F49DA3 /* Work.swift */,
 				88B6874A2B5A9E1000F49DA3 /* Company.swift */,
+				88B687482B5A9DFA00F49DA3 /* Work.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -116,12 +120,22 @@
 		88B6874D2B5A9E3100F49DA3 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				88B687582B5BA5C400F49DA3 /* Cards */,
 				88B6874E2B5A9E4900F49DA3 /* Abilities.swift */,
 				88B687502B5A9E6100F49DA3 /* AbilitiesDatePicker.swift */,
 				88B687562B5B1E5700F49DA3 /* WorkInfo.swift */,
 			);
 			name = Helper;
 			path = "Helperü";
+			sourceTree = "<group>";
+		};
+		88B687582B5BA5C400F49DA3 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				88B687592B5BA5D200F49DA3 /* WorkCard.swift */,
+				88B6875B2B5BA62E00F49DA3 /* Card.swift */,
+			);
+			path = Cards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,7 +213,9 @@
 				88B6874F2B5A9E4900F49DA3 /* Abilities.swift in Sources */,
 				88B687572B5B1E5700F49DA3 /* WorkInfo.swift in Sources */,
 				88B687492B5A9DFA00F49DA3 /* Work.swift in Sources */,
+				88B6875A2B5BA5D200F49DA3 /* WorkCard.swift in Sources */,
 				88B687532B5A9E9800F49DA3 /* Home.swift in Sources */,
+				88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */,
 				88B687552B5A9EB200F49DA3 /* Note.swift in Sources */,
 				88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */,
 				88B687512B5A9E6100F49DA3 /* AbilitiesDatePicker.swift in Sources */,
