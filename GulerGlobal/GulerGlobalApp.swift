@@ -6,25 +6,12 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct GulerGlobalApp: App {
-    
-    let container: ModelContainer
-    
-    init() {
-        do {
-            container = try ModelContainer(for: Company.self)
-        } catch {
-            fatalError("Failed to create ModelContainer for Game.")
-        }
-    }
-
     var body: some Scene {
         WindowGroup {
-            ContentView(modelContext: container.mainContext)
+            ContentView()
         }
-        .modelContainer(container)
     }
 }

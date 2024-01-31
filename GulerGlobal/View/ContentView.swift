@@ -6,41 +6,69 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @State private var companyViewModel: CompanyViewModel
-    
-    init(modelContext: ModelContext) {
-        UITabBar.appearance().isHidden = true
-        let companyViewModel = CompanyViewModel(modelContext: modelContext)
-        _companyViewModel = State(initialValue: companyViewModel)
-        
-    }
+    @StateObject private var companyViewModel: CompanyViewModel = .init()
+    @State private var selectionTab: Tag = .Bid
+    @State private var isAccepts: Bool = false
+    @State private var selectedCompany: Company? = nil
     
     var body: some View {
-        Home(companyViewModel: $companyViewModel)
-    }
-}
-
-struct TestContentView: View {
-    
-    let container: ModelContainer
-    
-    init() {
-        do {
-            container = try ModelContainer(for: Company.self)
-        } catch {
-            fatalError("Failed to create ModelContainer for Game.")
+        TabView(selection: $selectionTab) {
+            HomeView()
+                .environmentObject(companyViewModel)
+                .tabItem {
+                    Image(systemName: "house")
+                }
+                .tag(Tag.Home)
+            
+            BidView(selectedCompany: $selectedCompany, selectionTab: $selectionTab)
+                .environmentObject(companyViewModel)
+                .tabItem {
+                    Image(systemName: "checklist.unchecked")
+                }
+                .tag(Tag.Bid)
+            
+           Spacer()
+                .tabItem {
+                    Image(systemName: "plus")
+                }
+                .tag(Tag.AddBid)
+                
+            
+            UnapprovedView()
+                .environmentObject(companyViewModel)
+                .tabItem {
+                    Image(systemName: "checklist.checked")
+                }
+                .tag(Tag.Unapproved)
+            
+            ProfileView()
+                .environmentObject(companyViewModel)
+                .tabItem {
+                    Image(systemName: "person.fill")
+                }
+                .tag(Tag.Profile)
         }
-    }
-    
-    var body: some View {
-        ContentView(modelContext: container.mainContext)
-            .modelContainer(container)
+        .offset(x: selectionTab == .AddBid ? -700 : 0)
+        .animation(.snappy, value: selectionTab)
+        .overlay {
+            AddBidView(selectionTab: $selectionTab, company: $selectedCompany)
+                .environmentObject(companyViewModel)
+                .offset(x: selectionTab == .AddBid ? 0 : 700)
+                .animation(.snappy, value: selectionTab)
+        }
     }
 }
 
 #Preview {
-    TestContentView()
+    ContentView()
+}
+
+enum Tag {
+    case Home
+    case Bid
+    case AddBid
+    case Unapproved
+    case Profile
 }

@@ -14,16 +14,20 @@
 		88B687462B5A9DD900F49DA3 /* CompanyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687452B5A9DD900F49DA3 /* CompanyViewModel.swift */; };
 		88B687492B5A9DFA00F49DA3 /* Work.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687482B5A9DFA00F49DA3 /* Work.swift */; };
 		88B6874B2B5A9E1000F49DA3 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6874A2B5A9E1000F49DA3 /* Company.swift */; };
-		88B6874F2B5A9E4900F49DA3 /* Abilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6874E2B5A9E4900F49DA3 /* Abilities.swift */; };
-		88B687512B5A9E6100F49DA3 /* AbilitiesDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687502B5A9E6100F49DA3 /* AbilitiesDatePicker.swift */; };
-		88B687532B5A9E9800F49DA3 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687522B5A9E9800F49DA3 /* Home.swift */; };
-		88B687552B5A9EB200F49DA3 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* Note.swift */; };
-		88B687572B5B1E5700F49DA3 /* WorkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687562B5B1E5700F49DA3 /* WorkInfo.swift */; };
-		88B6875A2B5BA5D200F49DA3 /* WorkCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687592B5BA5D200F49DA3 /* WorkCard.swift */; };
+		88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687522B5A9E9800F49DA3 /* BidView.swift */; };
+		88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* AddBidView.swift */; };
 		88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6875B2B5BA62E00F49DA3 /* Card.swift */; };
+		88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26122B68C5F400EA5E71 /* HomeView.swift */; };
+		88FD26152B68C60200EA5E71 /* UnapprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* UnapprovedView.swift */; };
+		88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26162B68C60C00EA5E71 /* ProfileView.swift */; };
+		88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */; };
+		88FD261C2B68C86500EA5E71 /* Accept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261B2B68C86500EA5E71 /* Accept.swift */; };
+		88FD261E2B68C8D200EA5E71 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261D2B68C8D200EA5E71 /* Property.swift */; };
+		88FD26202B68C95000EA5E71 /* WorkProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261F2B68C95000EA5E71 /* WorkProperty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		88B10A232B614AE9008D2BB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		88B687312B5A9DA900F49DA3 /* GulerGlobal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GulerGlobal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GulerGlobalApp.swift; sourceTree = "<group>"; };
 		88B687362B5A9DA900F49DA3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,13 +36,16 @@
 		88B687452B5A9DD900F49DA3 /* CompanyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModel.swift; sourceTree = "<group>"; };
 		88B687482B5A9DFA00F49DA3 /* Work.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Work.swift; sourceTree = "<group>"; };
 		88B6874A2B5A9E1000F49DA3 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
-		88B6874E2B5A9E4900F49DA3 /* Abilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Abilities.swift; sourceTree = "<group>"; };
-		88B687502B5A9E6100F49DA3 /* AbilitiesDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbilitiesDatePicker.swift; sourceTree = "<group>"; };
-		88B687522B5A9E9800F49DA3 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		88B687542B5A9EB200F49DA3 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
-		88B687562B5B1E5700F49DA3 /* WorkInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkInfo.swift; sourceTree = "<group>"; };
-		88B687592B5BA5D200F49DA3 /* WorkCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkCard.swift; sourceTree = "<group>"; };
+		88B687522B5A9E9800F49DA3 /* BidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BidView.swift; sourceTree = "<group>"; };
+		88B687542B5A9EB200F49DA3 /* AddBidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBidView.swift; sourceTree = "<group>"; };
 		88B6875B2B5BA62E00F49DA3 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		88FD26122B68C5F400EA5E71 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		88FD26142B68C60200EA5E71 /* UnapprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnapprovedView.swift; sourceTree = "<group>"; };
+		88FD26162B68C60C00EA5E71 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GulerGlobal.xcdatamodel; sourceTree = "<group>"; };
+		88FD261B2B68C86500EA5E71 /* Accept.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accept.swift; sourceTree = "<group>"; };
+		88FD261D2B68C8D200EA5E71 /* Property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		88FD261F2B68C95000EA5E71 /* WorkProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkProperty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,12 +78,14 @@
 		88B687332B5A9DA900F49DA3 /* GulerGlobal */ = {
 			isa = PBXGroup;
 			children = (
+				88B10A232B614AE9008D2BB5 /* Info.plist */,
 				88B687442B5A9DCE00F49DA3 /* ViewModel */,
 				88B687472B5A9DEB00F49DA3 /* Model */,
 				88B6874C2B5A9E2400F49DA3 /* View */,
 				88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */,
 				88B6873A2B5A9DAA00F49DA3 /* Assets.xcassets */,
 				88B6873C2B5A9DAA00F49DA3 /* Preview Content */,
+				88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */,
 			);
 			path = GulerGlobal;
 			sourceTree = "<group>";
@@ -102,6 +111,7 @@
 			children = (
 				88B6874A2B5A9E1000F49DA3 /* Company.swift */,
 				88B687482B5A9DFA00F49DA3 /* Work.swift */,
+				88FD261B2B68C86500EA5E71 /* Accept.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -110,9 +120,12 @@
 			isa = PBXGroup;
 			children = (
 				88B6874D2B5A9E3100F49DA3 /* Helper */,
+				88FD26122B68C5F400EA5E71 /* HomeView.swift */,
+				88B687522B5A9E9800F49DA3 /* BidView.swift */,
+				88B687542B5A9EB200F49DA3 /* AddBidView.swift */,
+				88FD26142B68C60200EA5E71 /* UnapprovedView.swift */,
+				88FD26162B68C60C00EA5E71 /* ProfileView.swift */,
 				88B687362B5A9DA900F49DA3 /* ContentView.swift */,
-				88B687522B5A9E9800F49DA3 /* Home.swift */,
-				88B687542B5A9EB200F49DA3 /* Note.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -121,9 +134,8 @@
 			isa = PBXGroup;
 			children = (
 				88B687582B5BA5C400F49DA3 /* Cards */,
-				88B6874E2B5A9E4900F49DA3 /* Abilities.swift */,
-				88B687502B5A9E6100F49DA3 /* AbilitiesDatePicker.swift */,
-				88B687562B5B1E5700F49DA3 /* WorkInfo.swift */,
+				88FD261D2B68C8D200EA5E71 /* Property.swift */,
+				88FD261F2B68C95000EA5E71 /* WorkProperty.swift */,
 			);
 			name = Helper;
 			path = "Helperü";
@@ -132,7 +144,6 @@
 		88B687582B5BA5C400F49DA3 /* Cards */ = {
 			isa = PBXGroup;
 			children = (
-				88B687592B5BA5D200F49DA3 /* WorkCard.swift */,
 				88B6875B2B5BA62E00F49DA3 /* Card.swift */,
 			);
 			path = Cards;
@@ -208,18 +219,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88FD261E2B68C8D200EA5E71 /* Property.swift in Sources */,
+				88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */,
 				88B687462B5A9DD900F49DA3 /* CompanyViewModel.swift in Sources */,
+				88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */,
 				88B687372B5A9DA900F49DA3 /* ContentView.swift in Sources */,
-				88B6874F2B5A9E4900F49DA3 /* Abilities.swift in Sources */,
-				88B687572B5B1E5700F49DA3 /* WorkInfo.swift in Sources */,
 				88B687492B5A9DFA00F49DA3 /* Work.swift in Sources */,
-				88B6875A2B5BA5D200F49DA3 /* WorkCard.swift in Sources */,
-				88B687532B5A9E9800F49DA3 /* Home.swift in Sources */,
+				88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */,
+				88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */,
 				88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */,
-				88B687552B5A9EB200F49DA3 /* Note.swift in Sources */,
+				88FD26152B68C60200EA5E71 /* UnapprovedView.swift in Sources */,
+				88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */,
 				88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */,
-				88B687512B5A9E6100F49DA3 /* AbilitiesDatePicker.swift in Sources */,
+				88FD261C2B68C86500EA5E71 /* Accept.swift in Sources */,
 				88B6874B2B5A9E1000F49DA3 /* Company.swift in Sources */,
+				88FD26202B68C95000EA5E71 /* WorkProperty.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,11 +370,16 @@
 				DEVELOPMENT_TEAM = 73LHC27R23;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GulerGlobal/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guler Global";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use location!";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -385,11 +404,16 @@
 				DEVELOPMENT_TEAM = 73LHC27R23;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GulerGlobal/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guler Global";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use location!";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -425,6 +449,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */,
+			);
+			currentVersion = 88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */;
+			path = GulerGlobal.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 88B687292B5A9DA900F49DA3 /* Project object */;
 }

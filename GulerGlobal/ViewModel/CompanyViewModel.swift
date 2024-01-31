@@ -5,79 +5,101 @@
 //  Created by ibrahim Güler on 19.01.2024.
 //
 
-import Foundation
-import SwiftData
+import CoreData
 
-@Observable
-final class CompanyViewModel {
-    private var allCompanies: [Company]?
+class CompanyViewModel : ObservableObject {
     
-    var modelContext: ModelContext
-    var companies: [Company]?
+    @Published var companies: [Companies] = []
+    @Published  var works: [String: [Work]] = [:]
     
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
+    private let container: NSPersistentContainer
+    
+    init() {
+        container = NSPersistentContainer(name: "GulerGlobal")
+        
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
         
         fetchData()
     }
+
+    func fetchCompany(value: String) -> Companies? {
+        return companies.first(where: { $0.name == value })
+    }
     
+    // Pulls data from Core Data.
     func fetchData() {
-        do {
-            
-            let descriptorCompany = FetchDescriptor<Company>(sortBy: [SortDescriptor(\.name)])
-            companies = try modelContext.fetch(descriptorCompany)
+        let request = NSFetchRequest<Companies>(entityName: "Companies")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Companies.id, ascending: false)]
         
-            allCompanies = companies
-            var newCompanies = [Company]()
-            
-            companies?.forEach({ company in
-                guard !newCompanies.contains(where: { contains in contains.name == company.name }) else { return }
-                newCompanies.append(company)
-            })
-            
-            companies = newCompanies
+        do {
+            let companies = try container.viewContext.fetch(request)
+            DispatchQueue.main.async {
+                self.companies = companies
+            }
             
         } catch {
-            print("Fetch failed")
-        }
-    }
-    
-    func fetchCompanyWorks(name: String) -> [Work]? {
-        var companyWorks = [Work]()
-         if allCompanies != [] {
-             let newCompany = allCompanies!.filter({ $0.name == name })
-             for company in newCompany {
-                 companyWorks.append(company.work)
-             }
-         }
-        return companyWorks
-    }
-    
-    func createNewGame(workName: String, workDesc: String, workPrice: String, workRecMoney: String, workRemMoney: String, workStTime: Date, workFnTime: Date?, companyName: String, companyDesc: String, companyAdress: String, companyPhone: String) {
-        if companyName != "" {
-            if companyDesc != "" {
-                if companyAdress != "" {
-                    if companyPhone != "" {
-                        if workName != "" {
-                            if workDesc != "" {
-                                if workPrice != "" {
-                                    if workRecMoney != "" {
-                                        if workRemMoney != "" {
-                                            
-                                            let company = Company(name: companyName, desc: companyDesc, adress: companyAdress, phone: companyPhone, work: Work(name: workName, desc: workDesc, price: Double(workPrice) ?? 0.0, recMoney: Double(workRecMoney) ?? 0.0, remMoney: Double(workRemMoney) ?? 0.0, stTime: workStTime, fnTime: workFnTime))
-                                            
-                                            modelContext.insert(company)
-                                            fetchData()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            print("Veriler alınamadı: \(error.localizedDescription)")
         }
         
     }
-}
+    
+    // Adds Data to Core Data.
+    func create(company: Company) {
+        
+        addingModel(company: company)
+        save()
+        fetchData()
+    }
+    
+    // Update Data to Core Data.
+    func update(company: Company) {
+        
+        addingModel(company: company)
+        save()
+        fetchData()
+    }
+    
+    
+    // Saves data to Core Data.
+    private func save() {
+        do {
+            try container.viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    // Model.
+    private func addingModel(company: Company) {
+        let newCompany = Companies(context: container.viewContext)
+        let newWork = Works(context: container.viewContext)
+        let newAccept = Accepts(context: container.viewContext)
+        
+        newCompany.id = company.id
+        newCompany.name = company.name
+        newCompany.adress = company.adress
+        newCompany.phone = company.phone
 
+        newWork.id = company.work.id
+        newWork.pNum = company.work.pNum
+        newWork.name = company.work.name
+        newWork.desc = company.work.desc
+        newWork.price = company.work.price
+        
+        newAccept.recMoney = company.work.accept?.recMoney ?? 0
+        newAccept.remMoney = company.work.accept?.remMoney ?? 0
+        newAccept.stTime = company.work.accept?.stTime
+        newAccept.fnTime = company.work.accept?.fnTime
+        
+        newWork.accept = newAccept
+        newCompany.work = newWork
+    }
+    
+}
