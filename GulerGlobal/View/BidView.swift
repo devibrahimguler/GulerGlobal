@@ -10,7 +10,7 @@ import SwiftUI
 struct BidView: View {
     @EnvironmentObject var companyViewModel : CompanyViewModel
     @Binding var selectedCompany: Company?
-    @Binding var selectionTab: SelectionTab
+    @Binding var tab: Tabs
     @Binding var edit: EditSection
     
     @State private var offsetY: CGFloat = 0
@@ -26,7 +26,7 @@ struct BidView: View {
                     .offset(y: -offsetY)
                     .padding(.bottom,10)
                 
-                CardsView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, companies: companyViewModel.waitCompanies)
+                CardsView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, companies: companyViewModel.waitCompanies)
                     .environmentObject(companyViewModel)
                 
             }
@@ -42,17 +42,10 @@ struct BidView: View {
     ContentView()
 }
 
-enum KeyboardStyle {
-    case numaric
-    case text
-    case phone
-    case time
-}
-
-enum PickerSelector {
+enum DateSection {
     case none
-    case getCash
+    case rec
     case expiry
-    case stPicker
-    case fnPicker
+    case start
+    case finish
 }

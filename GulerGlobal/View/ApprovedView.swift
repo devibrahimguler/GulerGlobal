@@ -10,7 +10,7 @@ import SwiftUI
 struct ApprovedView: View {
     @EnvironmentObject var companyViewModel : CompanyViewModel
     @Binding var selectedCompany: Company?
-    @Binding var selectionTab: SelectionTab
+    @Binding var tab: Tabs
     @Binding var edit: EditSection
     
     @State private var offsetY: CGFloat = 0
@@ -26,7 +26,7 @@ struct ApprovedView: View {
                     .offset(y: -offsetY)
                     .padding(.bottom,10)
                 
-                CardsView(isApprove: true, selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, companies: companyViewModel.approveCompanies)
+                CardsView(isApprove: true, selectedCompany: $selectedCompany, tab: $tab, edit: $edit, companies: companyViewModel.approveCompanies)
                     .environmentObject(companyViewModel)
                 
             }

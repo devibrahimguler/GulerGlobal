@@ -13,7 +13,7 @@ struct CardsView: View {
     var isApprove: Bool = false
     
     @Binding var selectedCompany: Company?
-    @Binding var selectionTab: SelectionTab
+    @Binding var tab: Tabs
     @Binding var edit: EditSection
     
     var companies: [Company]
@@ -21,18 +21,18 @@ struct CardsView: View {
     var body: some View {
         ForEach(companies, id:\.self) { company in
             PeelEffect(isApprove: isApprove) {
-                Card(selectedCompany: $selectedCompany, selectionTab: $selectionTab, company: company)
+                Card(selectedCompany: $selectedCompany, tab: $tab, company: company)
             } onDelete: {
                 companyViewModel.delete(company)
             } onEdit: {
-                let isBidView = selectionTab == .Bid
+                let isBidView = tab == .Bid
                 selectedCompany = company
-                selectionTab = .AddBid
+                tab = .AddBid
                 
                 edit = isApprove ? .ApproveBid : isBidView ? .AddBid : .EditBid
             } onSave: {
                 selectedCompany = company
-                selectionTab = .AddBid
+                tab = .AddBid
                 
                 edit = .Bid
             }

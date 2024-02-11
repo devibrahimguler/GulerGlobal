@@ -11,7 +11,7 @@ struct Card: View {
     @Environment(\.colorScheme) var scheme
     
     @Binding var selectedCompany: Company?
-    @Binding var selectionTab: SelectionTab
+    @Binding var tab: Tabs
     var company: Company
     
     var body: some View {

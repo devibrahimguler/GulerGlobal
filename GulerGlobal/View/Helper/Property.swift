@@ -13,7 +13,6 @@ struct Property: View {
     @Binding var text: String
     
     var desc: String
-    var keyStyle: KeyboardStyle = .text
     
     var isWorkRem: Bool = false
     
@@ -37,7 +36,6 @@ struct Property: View {
             
             TextField(text != "" ? text: "",text: $text)
                 .padding(6)
-                .keyboardType(keyStyle == .text ? .default : keyStyle == .phone ? .phonePad : .numberPad)
                 .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 5))
                 .overlay {
@@ -53,8 +51,6 @@ struct Property: View {
             
                 .padding(.top, 15)
                 .foregroundStyle(foregroundStyle)
-                .multilineTextAlignment(keyStyle == .time ? .center : .leading)
-                .disabled(keyStyle == .time ? true : false)
                 .shadow(color: scheme == .light ? .black : .white ,radius: 5)
             
         }

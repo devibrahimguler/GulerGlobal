@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var companyViewModel: CompanyViewModel = .init()
-    @State private var selectionTab: SelectionTab = .Bid
+    @State private var tab: Tabs = .Bid
     @State private var edit: EditSection = .AddBid
     
     @State private var isAccepts: Bool = false
@@ -19,20 +19,20 @@ struct ContentView: View {
         GeometryReader { proxy in
             let topEdge = proxy.safeAreaInsets.top
             
-            TabView(selection: $selectionTab) {
+            TabView(selection: $tab) {
                 HomeView()
                     .environmentObject(companyViewModel)
                     .tabItem {
                         Image(systemName: "house")
                     }
-                    .tag(SelectionTab.Home)
+                    .tag(Tabs.Home)
                 
-                BidView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, topEdge: topEdge)
+                BidView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, topEdge: topEdge)
                     .environmentObject(companyViewModel)
                     .tabItem {
                         Image(systemName: "rectangle.stack")
                     }
-                    .tag(SelectionTab.Bid)
+                    .tag(Tabs.Bid)
                     .ignoresSafeArea(.all, edges: .top)
                 
                Spacer()
@@ -47,14 +47,14 @@ struct ContentView: View {
 
              
                     }
-                    .tag(SelectionTab.AddBid)
+                    .tag(Tabs.AddBid)
                 
-                ApprovedView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, topEdge: topEdge)
+                ApprovedView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, topEdge: topEdge)
                     .environmentObject(companyViewModel)
                     .tabItem {
                         Image(systemName: "checkmark.rectangle.stack")
                     }
-                    .tag(SelectionTab.Approved)
+                    .tag(Tabs.Approved)
                     .ignoresSafeArea(.all, edges: .top)
                 
                 ProfileView()
@@ -62,15 +62,15 @@ struct ContentView: View {
                     .tabItem {
                         Image(systemName: "person.fill")
                     }
-                    .tag(SelectionTab.Profile)
+                    .tag(Tabs.Profile)
             }
-            .offset(x: selectionTab == .AddBid  ? -700 : 0)
-            .animation(.snappy, value: selectionTab)
+            .offset(x: tab == .AddBid  ? -700 : 0)
+            .animation(.snappy, value: tab)
             .overlay {
-                AddBidView(selectionTab: $selectionTab, edit: $edit, company: $selectedCompany, topEdge: topEdge)
+                AddBidView(tab: $tab, edit: $edit, company: $selectedCompany, topEdge: topEdge)
                     .environmentObject(companyViewModel)
-                    .offset(x: selectionTab == .AddBid ? 0 : 700)
-                    .animation(.snappy, value: selectionTab)
+                    .offset(x: tab == .AddBid ? 0 : 700)
+                    .animation(.snappy, value: tab)
                     .ignoresSafeArea(.all, edges: .top)
             }
         }
@@ -82,7 +82,7 @@ struct ContentView: View {
     ContentView()
 }
 
-enum SelectionTab {
+enum Tabs {
     case Home
     case Bid
     case AddBid

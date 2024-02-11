@@ -8,35 +8,28 @@
 import SwiftUI
 
 struct ListAddedCard: View {
-    var now: Date
-    var isExpiry: Bool
-    
     @Binding var text: String
-    @Binding var day: String
+    @Binding var date: Date
+    
     @Binding var list: [String]
     @Binding var isPickerShower: Bool
-    @Binding var pickerSelector: PickerSelector
+    @Binding var dateSection: DateSection
+    
+    var section: DateSection
+    var textDesc: String
+    var dateDesc: String
     
     var body: some View {
         VStack(spacing: 5) {
             VStack(spacing: 5) {
                 HStack {
-                    
-                    Property(text: $text, desc: isExpiry ? "ALINACAK PARA" : "ALINAN PARA", keyStyle: .numaric)
+                    TextProperty(text: $text, desc: textDesc, keyboardType: .numberPad)
                 }
                
                 HStack {
                    
                     
-                    Property(text: $day, desc: isExpiry ? "PARA ALINACAK TARİH" : "PARA ALMA TARİHİ", keyStyle: .time)
-                        .scaleEffect(pickerSelector == (isExpiry ? .expiry : .getCash) ? CGSize(width: 0.9, height: 0.9) : CGSize(width: 1.0, height: 1.0))
-                        .onTapGesture {
-                            withAnimation(.snappy) {
-                                pickerSelector = isExpiry ? .expiry : .getCash
-                                isPickerShower = true
-                                hideKeyboard()
-                            }
-                        }
+                    DateProperty(date: $date, dateSection: $dateSection, isPickerShower: $isPickerShower, section: section, desc: dateDesc)
                 }
                 
                 
@@ -45,8 +38,7 @@ struct ListAddedCard: View {
             
             Button {
                 withAnimation(.snappy) {
-                    list.append("\(day) - \(text)")
-                    day = now.formatted(date: .long, time: .omitted)
+                    list.append("\(date.formatted(date: .long, time: .omitted)) - \(text)")
                     text = ""
                     
                 }
@@ -68,7 +60,7 @@ struct ListAddedCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 5))
     
             }
-            .disabled(day == "" || text == "" )
+            .disabled(text == "" )
             
             VStack(spacing: 5) {
                 ForEach(list, id: \.self) { value in
