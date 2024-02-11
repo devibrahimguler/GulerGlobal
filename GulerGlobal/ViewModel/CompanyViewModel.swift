@@ -9,10 +9,12 @@ import CoreData
 
 class CompanyViewModel : ObservableObject {
     
-    @Published var companies: [Companies] = []
-    @Published  var works: [String: [Work]] = [:]
+    @Published var companies: [Company] = []
+    @Published var waitCompanies: [Company] = []
+    @Published var approveCompanies: [Company] = []
+    @Published var notApproveCompanies: [Company] = []
     
-    private let container: NSPersistentContainer
+    let container: NSPersistentContainer
     
     init() {
         container = NSPersistentContainer(name: "GulerGlobal")
@@ -28,20 +30,40 @@ class CompanyViewModel : ObservableObject {
         fetchData()
     }
 
-    func fetchCompany(value: String) -> Companies? {
+    func fetchCompany(value: String) -> Company? {
         return companies.first(where: { $0.name == value })
     }
     
     // Pulls data from Core Data.
     func fetchData() {
-        let request = NSFetchRequest<Companies>(entityName: "Companies")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Companies.id, ascending: false)]
+        let request = NSFetchRequest<Company>(entityName: "Company")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Company.id, ascending: false)]
         
         do {
             let companies = try container.viewContext.fetch(request)
+            waitCompanies = []
+            approveCompanies = []
+            notApproveCompanies = []
+            
             DispatchQueue.main.async {
+                for company in companies {                    
+                    if let work = company.work {
+                        switch work.approve {
+                        case "Wait":
+                            self.waitCompanies.append(company)
+                        case "Approve":
+                            self.approveCompanies.append(company)
+                        case "NotApprove":
+                            self.notApproveCompanies.append(company)
+                        default:
+                            print("Not found any information!")
+                        }
+                    }
+                }
+                
                 self.companies = companies
             }
+            
             
         } catch {
             print("Veriler alınamadı: \(error.localizedDescription)")
@@ -50,19 +72,22 @@ class CompanyViewModel : ObservableObject {
     }
     
     // Adds Data to Core Data.
-    func create(company: Company) {
-        
-        addingModel(company: company)
+    func create() {
         save()
         fetchData()
     }
     
     // Update Data to Core Data.
-    func update(company: Company) {
-        
-        addingModel(company: company)
+    func update() {
         save()
         fetchData()
+    }
+    
+    // Delete Data to Core Data.
+    func delete(_ company: Company) {
+        container.viewContext.delete(company)
+        fetchData()
+        save()
     }
     
     
@@ -74,32 +99,6 @@ class CompanyViewModel : ObservableObject {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
-    }
-    
-    // Model.
-    private func addingModel(company: Company) {
-        let newCompany = Companies(context: container.viewContext)
-        let newWork = Works(context: container.viewContext)
-        let newAccept = Accepts(context: container.viewContext)
-        
-        newCompany.id = company.id
-        newCompany.name = company.name
-        newCompany.adress = company.adress
-        newCompany.phone = company.phone
-
-        newWork.id = company.work.id
-        newWork.pNum = company.work.pNum
-        newWork.name = company.work.name
-        newWork.desc = company.work.desc
-        newWork.price = company.work.price
-        
-        newAccept.recMoney = company.work.accept?.recMoney ?? 0
-        newAccept.remMoney = company.work.accept?.remMoney ?? 0
-        newAccept.stTime = company.work.accept?.stTime
-        newAccept.fnTime = company.work.accept?.fnTime
-        
-        newWork.accept = newAccept
-        newCompany.work = newWork
     }
     
 }

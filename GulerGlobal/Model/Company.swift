@@ -7,11 +7,13 @@
 
 import Foundation
 
-struct Company {
-    var id: UUID = UUID()
-    
-    var name: String
-    var adress: String
-    var phone: String
-    var work: Work
-}
+/*
+ struct Company {
+     var id: UUID = UUID()
+     
+     var name: String
+     var adress: String
+     var phone: String
+     var work: Work
+ }
+ */

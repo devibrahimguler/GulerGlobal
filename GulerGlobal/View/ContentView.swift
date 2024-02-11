@@ -9,55 +9,72 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var companyViewModel: CompanyViewModel = .init()
-    @State private var selectionTab: Tag = .Bid
+    @State private var selectionTab: SelectionTab = .Bid
+    @State private var edit: EditSection = .AddBid
+    
     @State private var isAccepts: Bool = false
     @State private var selectedCompany: Company? = nil
     
     var body: some View {
-        TabView(selection: $selectionTab) {
-            HomeView()
-                .environmentObject(companyViewModel)
-                .tabItem {
-                    Image(systemName: "house")
-                }
-                .tag(Tag.Home)
+        GeometryReader { proxy in
+            let topEdge = proxy.safeAreaInsets.top
             
-            BidView(selectedCompany: $selectedCompany, selectionTab: $selectionTab)
-                .environmentObject(companyViewModel)
-                .tabItem {
-                    Image(systemName: "checklist.unchecked")
-                }
-                .tag(Tag.Bid)
-            
-           Spacer()
-                .tabItem {
-                    Image(systemName: "plus")
-                }
-                .tag(Tag.AddBid)
+            TabView(selection: $selectionTab) {
+                HomeView()
+                    .environmentObject(companyViewModel)
+                    .tabItem {
+                        Image(systemName: "house")
+                    }
+                    .tag(SelectionTab.Home)
                 
-            
-            UnapprovedView()
-                .environmentObject(companyViewModel)
-                .tabItem {
-                    Image(systemName: "checklist.checked")
-                }
-                .tag(Tag.Unapproved)
-            
-            ProfileView()
-                .environmentObject(companyViewModel)
-                .tabItem {
-                    Image(systemName: "person.fill")
-                }
-                .tag(Tag.Profile)
+                BidView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, topEdge: topEdge)
+                    .environmentObject(companyViewModel)
+                    .tabItem {
+                        Image(systemName: "rectangle.stack")
+                    }
+                    .tag(SelectionTab.Bid)
+                    .ignoresSafeArea(.all, edges: .top)
+                
+               Spacer()
+                    .tabItem {
+                        Button {
+                            withAnimation(.snappy) {
+                                edit = .AddBid
+                            }
+                        } label: {
+                            Image(systemName: "plus.app.fill")
+                        }
+
+             
+                    }
+                    .tag(SelectionTab.AddBid)
+                
+                ApprovedView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, topEdge: topEdge)
+                    .environmentObject(companyViewModel)
+                    .tabItem {
+                        Image(systemName: "checkmark.rectangle.stack")
+                    }
+                    .tag(SelectionTab.Approved)
+                    .ignoresSafeArea(.all, edges: .top)
+                
+                ProfileView()
+                    .environmentObject(companyViewModel)
+                    .tabItem {
+                        Image(systemName: "person.fill")
+                    }
+                    .tag(SelectionTab.Profile)
+            }
+            .offset(x: selectionTab == .AddBid  ? -700 : 0)
+            .animation(.snappy, value: selectionTab)
+            .overlay {
+                AddBidView(selectionTab: $selectionTab, edit: $edit, company: $selectedCompany, topEdge: topEdge)
+                    .environmentObject(companyViewModel)
+                    .offset(x: selectionTab == .AddBid ? 0 : 700)
+                    .animation(.snappy, value: selectionTab)
+                    .ignoresSafeArea(.all, edges: .top)
+            }
         }
-        .offset(x: selectionTab == .AddBid ? -700 : 0)
-        .animation(.snappy, value: selectionTab)
-        .overlay {
-            AddBidView(selectionTab: $selectionTab, company: $selectedCompany)
-                .environmentObject(companyViewModel)
-                .offset(x: selectionTab == .AddBid ? 0 : 700)
-                .animation(.snappy, value: selectionTab)
-        }
+        
     }
 }
 
@@ -65,10 +82,17 @@ struct ContentView: View {
     ContentView()
 }
 
-enum Tag {
+enum SelectionTab {
     case Home
     case Bid
     case AddBid
-    case Unapproved
+    case Approved
     case Profile
+}
+
+enum EditSection {
+    case Bid
+    case AddBid
+    case EditBid
+    case ApproveBid
 }

@@ -2,7 +2,7 @@
 //  WorkProperty.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 30.01.2024.
+//  Created by ibrahim Güler on 6.02.2024.
 //
 
 import SwiftUI
@@ -16,15 +16,19 @@ struct WorkProperty: View {
     var foregroundStyle: Color = .black
     
     var body: some View {
-        VStack(alignment: alignment) {
+        VStack(alignment: alignment, spacing: 3) {
             Text(text)
+                .font(.subheadline.bold())
                 .foregroundStyle(.gray)
-                .font(.caption)
             
             Text(desc)
-                .padding(2)
+                .padding(7)
+                .font(.headline.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(background)
                 .clipShape(RoundedRectangle(cornerRadius: 5))
+                .padding(.leading)
+                .shadow(radius: 1)
         }
         .foregroundStyle(foregroundStyle)
     }
@@ -33,3 +37,4 @@ struct WorkProperty: View {
 #Preview {
     ContentView()
 }
+

@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8811055A2B76A4B800EF4720 /* CashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881105592B76A4B800EF4720 /* CashCard.swift */; };
+		8811055E2B76C52900EF4720 /* ListAddedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8811055D2B76C52900EF4720 /* ListAddedCard.swift */; };
+		8819D53A2B720093007414C2 /* PeelEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8819D5392B720093007414C2 /* PeelEffect.swift */; };
+		88734E482B72B28700A1DB7F /* OffsetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E472B72B28700A1DB7F /* OffsetModifier.swift */; };
+		88734E4E2B72B31D00A1DB7F /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E4D2B72B31D00A1DB7F /* Card.swift */; };
+		88734E502B72B33A00A1DB7F /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E4F2B72B33A00A1DB7F /* Property.swift */; };
+		88734E522B72B34E00A1DB7F /* SwipeActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */; };
+		88734E542B72B36200A1DB7F /* WorkProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E532B72B36200A1DB7F /* WorkProperty.swift */; };
+		88734E562B73FAC700A1DB7F /* CardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E552B73FAC700A1DB7F /* CardsView.swift */; };
+		88734E582B73FBDB00A1DB7F /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E572B73FBDB00A1DB7F /* HeaderView.swift */; };
 		88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */; };
 		88B687372B5A9DA900F49DA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687362B5A9DA900F49DA3 /* ContentView.swift */; };
 		88B6873B2B5A9DAA00F49DA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88B6873A2B5A9DAA00F49DA3 /* Assets.xcassets */; };
@@ -16,17 +26,24 @@
 		88B6874B2B5A9E1000F49DA3 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6874A2B5A9E1000F49DA3 /* Company.swift */; };
 		88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687522B5A9E9800F49DA3 /* BidView.swift */; };
 		88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* AddBidView.swift */; };
-		88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B6875B2B5BA62E00F49DA3 /* Card.swift */; };
 		88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26122B68C5F400EA5E71 /* HomeView.swift */; };
-		88FD26152B68C60200EA5E71 /* UnapprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* UnapprovedView.swift */; };
+		88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* ApprovedView.swift */; };
 		88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26162B68C60C00EA5E71 /* ProfileView.swift */; };
 		88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */; };
 		88FD261C2B68C86500EA5E71 /* Accept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261B2B68C86500EA5E71 /* Accept.swift */; };
-		88FD261E2B68C8D200EA5E71 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261D2B68C8D200EA5E71 /* Property.swift */; };
-		88FD26202B68C95000EA5E71 /* WorkProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD261F2B68C95000EA5E71 /* WorkProperty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		881105592B76A4B800EF4720 /* CashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashCard.swift; sourceTree = "<group>"; };
+		8811055D2B76C52900EF4720 /* ListAddedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAddedCard.swift; sourceTree = "<group>"; };
+		8819D5392B720093007414C2 /* PeelEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeelEffect.swift; sourceTree = "<group>"; };
+		88734E472B72B28700A1DB7F /* OffsetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetModifier.swift; sourceTree = "<group>"; };
+		88734E4D2B72B31D00A1DB7F /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		88734E4F2B72B33A00A1DB7F /* Property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionButton.swift; sourceTree = "<group>"; };
+		88734E532B72B36200A1DB7F /* WorkProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkProperty.swift; sourceTree = "<group>"; };
+		88734E552B73FAC700A1DB7F /* CardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsView.swift; sourceTree = "<group>"; };
+		88734E572B73FBDB00A1DB7F /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		88B10A232B614AE9008D2BB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		88B687312B5A9DA900F49DA3 /* GulerGlobal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GulerGlobal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GulerGlobalApp.swift; sourceTree = "<group>"; };
@@ -38,14 +55,11 @@
 		88B6874A2B5A9E1000F49DA3 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		88B687522B5A9E9800F49DA3 /* BidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BidView.swift; sourceTree = "<group>"; };
 		88B687542B5A9EB200F49DA3 /* AddBidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBidView.swift; sourceTree = "<group>"; };
-		88B6875B2B5BA62E00F49DA3 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		88FD26122B68C5F400EA5E71 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		88FD26142B68C60200EA5E71 /* UnapprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnapprovedView.swift; sourceTree = "<group>"; };
+		88FD26142B68C60200EA5E71 /* ApprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApprovedView.swift; sourceTree = "<group>"; };
 		88FD26162B68C60C00EA5E71 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GulerGlobal.xcdatamodel; sourceTree = "<group>"; };
 		88FD261B2B68C86500EA5E71 /* Accept.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accept.swift; sourceTree = "<group>"; };
-		88FD261D2B68C8D200EA5E71 /* Property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
-		88FD261F2B68C95000EA5E71 /* WorkProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkProperty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +73,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		88734E462B72B27D00A1DB7F /* Modifier */ = {
+			isa = PBXGroup;
+			children = (
+				88734E472B72B28700A1DB7F /* OffsetModifier.swift */,
+			);
+			path = Modifier;
+			sourceTree = "<group>";
+		};
+		88734E4B2B72B30100A1DB7F /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				88734E4C2B72B30B00A1DB7F /* Cards */,
+				88734E4F2B72B33A00A1DB7F /* Property.swift */,
+				88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */,
+				88734E532B72B36200A1DB7F /* WorkProperty.swift */,
+				88734E572B73FBDB00A1DB7F /* HeaderView.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		88734E4C2B72B30B00A1DB7F /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				88734E4D2B72B31D00A1DB7F /* Card.swift */,
+				88734E552B73FAC700A1DB7F /* CardsView.swift */,
+				881105592B76A4B800EF4720 /* CashCard.swift */,
+				8811055D2B76C52900EF4720 /* ListAddedCard.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
 		88B687282B5A9DA900F49DA3 = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +123,7 @@
 		88B687332B5A9DA900F49DA3 /* GulerGlobal */ = {
 			isa = PBXGroup;
 			children = (
+				88D60DCD2B6C1C4400C44E02 /* Helpers */,
 				88B10A232B614AE9008D2BB5 /* Info.plist */,
 				88B687442B5A9DCE00F49DA3 /* ViewModel */,
 				88B687472B5A9DEB00F49DA3 /* Model */,
@@ -119,34 +165,24 @@
 		88B6874C2B5A9E2400F49DA3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				88B6874D2B5A9E3100F49DA3 /* Helper */,
+				88734E4B2B72B30100A1DB7F /* Helper */,
 				88FD26122B68C5F400EA5E71 /* HomeView.swift */,
 				88B687522B5A9E9800F49DA3 /* BidView.swift */,
 				88B687542B5A9EB200F49DA3 /* AddBidView.swift */,
-				88FD26142B68C60200EA5E71 /* UnapprovedView.swift */,
+				88FD26142B68C60200EA5E71 /* ApprovedView.swift */,
 				88FD26162B68C60C00EA5E71 /* ProfileView.swift */,
 				88B687362B5A9DA900F49DA3 /* ContentView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		88B6874D2B5A9E3100F49DA3 /* Helper */ = {
+		88D60DCD2B6C1C4400C44E02 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				88B687582B5BA5C400F49DA3 /* Cards */,
-				88FD261D2B68C8D200EA5E71 /* Property.swift */,
-				88FD261F2B68C95000EA5E71 /* WorkProperty.swift */,
+				88734E462B72B27D00A1DB7F /* Modifier */,
+				8819D5392B720093007414C2 /* PeelEffect.swift */,
 			);
-			name = Helper;
-			path = "Helperü";
-			sourceTree = "<group>";
-		};
-		88B687582B5BA5C400F49DA3 /* Cards */ = {
-			isa = PBXGroup;
-			children = (
-				88B6875B2B5BA62E00F49DA3 /* Card.swift */,
-			);
-			path = Cards;
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,21 +255,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88FD261E2B68C8D200EA5E71 /* Property.swift in Sources */,
 				88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */,
+				8819D53A2B720093007414C2 /* PeelEffect.swift in Sources */,
+				8811055E2B76C52900EF4720 /* ListAddedCard.swift in Sources */,
+				88734E522B72B34E00A1DB7F /* SwipeActionButton.swift in Sources */,
+				88734E482B72B28700A1DB7F /* OffsetModifier.swift in Sources */,
+				88734E502B72B33A00A1DB7F /* Property.swift in Sources */,
 				88B687462B5A9DD900F49DA3 /* CompanyViewModel.swift in Sources */,
 				88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */,
 				88B687372B5A9DA900F49DA3 /* ContentView.swift in Sources */,
 				88B687492B5A9DFA00F49DA3 /* Work.swift in Sources */,
+				88734E562B73FAC700A1DB7F /* CardsView.swift in Sources */,
+				8811055A2B76A4B800EF4720 /* CashCard.swift in Sources */,
 				88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */,
 				88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */,
-				88B6875C2B5BA62E00F49DA3 /* Card.swift in Sources */,
-				88FD26152B68C60200EA5E71 /* UnapprovedView.swift in Sources */,
+				88734E542B72B36200A1DB7F /* WorkProperty.swift in Sources */,
+				88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */,
 				88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */,
+				88734E582B73FBDB00A1DB7F /* HeaderView.swift in Sources */,
 				88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */,
 				88FD261C2B68C86500EA5E71 /* Accept.swift in Sources */,
 				88B6874B2B5A9E1000F49DA3 /* Company.swift in Sources */,
-				88FD26202B68C95000EA5E71 /* WorkProperty.swift in Sources */,
+				88734E4E2B72B31D00A1DB7F /* Card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

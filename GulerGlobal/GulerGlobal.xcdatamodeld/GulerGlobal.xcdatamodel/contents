@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D56" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Accepts" representedClassName="Accepts" syncable="YES" codeGenerationType="class">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Accept" representedClassName="Accept" syncable="YES" codeGenerationType="class">
+        <attribute name="expiryDay" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="fnTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isExpiry" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isFinished" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="recMoney" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="recDate" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="remMoney" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="stTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Works" inverseName="accept" inverseEntity="Works"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Work" inverseName="accept" inverseEntity="Work"/>
     </entity>
-    <entity name="Companies" representedClassName="Companies" syncable="YES" codeGenerationType="class">
+    <entity name="Company" representedClassName="Company" syncable="YES" codeGenerationType="class">
         <attribute name="adress" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
-        <relationship name="work" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Works" inverseName="parent" inverseEntity="Works"/>
+        <relationship name="work" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Work" inverseName="parent" inverseEntity="Work"/>
     </entity>
-    <entity name="Works" representedClassName="Works" syncable="YES" codeGenerationType="class">
+    <entity name="Work" representedClassName="Work" syncable="YES" codeGenerationType="class">
+        <attribute name="approve" optional="YES" attributeType="String"/>
         <attribute name="desc" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="pNum" optional="YES" attributeType="String"/>
         <attribute name="price" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="accept" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Accepts" inverseName="parent" inverseEntity="Accepts"/>
-        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Companies" inverseName="work" inverseEntity="Companies"/>
+        <relationship name="accept" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Accept" inverseName="parent" inverseEntity="Accept"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Company" inverseName="work" inverseEntity="Company"/>
     </entity>
 </model>

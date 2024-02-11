@@ -7,10 +7,14 @@
 
 import Foundation
 
-struct Accept {
-    var recMoney: Double
-    var remMoney: Double
-    var stTime: Date
-    var fnTime: Date
-    var isFinished: Bool
-}
+/*
+ struct Accept {
+     var remMoney: Double
+     var isExpiry: Bool
+     var recDate: [String]
+     var expiryDay: [String]
+     var stTime: Date
+     var fnTime: Date
+     var isFinished: Bool
+ }
+ */

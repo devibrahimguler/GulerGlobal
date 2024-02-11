@@ -1,13 +1,13 @@
 //
-//  BidView.swift
+//  ApprovedView.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 19.01.2024.
+//  Created by ibrahim Güler on 30.01.2024.
 //
 
 import SwiftUI
 
-struct BidView: View {
+struct ApprovedView: View {
     @EnvironmentObject var companyViewModel : CompanyViewModel
     @Binding var selectedCompany: Company?
     @Binding var selectionTab: SelectionTab
@@ -20,13 +20,13 @@ struct BidView: View {
         ScrollView(.vertical, showsIndicators: false) {
             
             VStack(spacing: 0) {
-                HeaderView(header: "Proje Teklifleri")
+                HeaderView(header: "Onaylanan Teklifler")
                     .zIndex(1000)
                     .frame(height: 40 + topEdge)
                     .offset(y: -offsetY)
                     .padding(.bottom,10)
                 
-                CardsView(selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, companies: companyViewModel.waitCompanies)
+                CardsView(isApprove: true, selectedCompany: $selectedCompany, selectionTab: $selectionTab, edit: $edit, companies: companyViewModel.approveCompanies)
                     .environmentObject(companyViewModel)
                 
             }
@@ -34,25 +34,9 @@ struct BidView: View {
             
         }
         .coordinateSpace(name: "SCROLL")
-        
     }
 }
 
 #Preview {
     ContentView()
-}
-
-enum KeyboardStyle {
-    case numaric
-    case text
-    case phone
-    case time
-}
-
-enum PickerSelector {
-    case none
-    case getCash
-    case expiry
-    case stPicker
-    case fnPicker
 }

@@ -7,12 +7,15 @@
 
 import Foundation
 
-struct Work {
-    var id: UUID = UUID()
-    
-    var pNum: String
-    var name: String
-    var desc: String
-    var price: Double
-    var accept: Accept?
-}
+/*
+ struct Work {
+     var id: UUID = UUID()
+     
+     var pNum: String
+     var name: String
+     var desc: String
+     var price: Double
+     var approve: String
+     var accept: Accept?
+ }
+ */
