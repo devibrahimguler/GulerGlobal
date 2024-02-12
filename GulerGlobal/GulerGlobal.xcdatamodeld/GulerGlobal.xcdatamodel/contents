@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Accept" representedClassName="Accept" syncable="YES" codeGenerationType="class">
-        <attribute name="expiryDay" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="expiryDay" optional="YES" attributeType="Transformable" customClassName="Statements"/>
         <attribute name="fnTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isExpiry" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isFinished" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="recDate" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="recDate" optional="YES" attributeType="Transformable" customClassName="Statements"/>
         <attribute name="remMoney" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="stTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Work" inverseName="accept" inverseEntity="Work"/>

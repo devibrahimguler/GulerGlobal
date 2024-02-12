@@ -28,6 +28,7 @@
 		88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* AddBidView.swift */; };
 		88C5D5172B787DFE0053A660 /* TextProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5D5162B787DFE0053A660 /* TextProperty.swift */; };
 		88C5D5192B78865E0053A660 /* DateProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5D5182B78865E0053A660 /* DateProperty.swift */; };
+		88C5D51F2B7927840053A660 /* Statements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5D51E2B7927840053A660 /* Statements.swift */; };
 		88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26122B68C5F400EA5E71 /* HomeView.swift */; };
 		88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* ApprovedView.swift */; };
 		88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26162B68C60C00EA5E71 /* ProfileView.swift */; };
@@ -59,6 +60,7 @@
 		88B687542B5A9EB200F49DA3 /* AddBidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBidView.swift; sourceTree = "<group>"; };
 		88C5D5162B787DFE0053A660 /* TextProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProperty.swift; sourceTree = "<group>"; };
 		88C5D5182B78865E0053A660 /* DateProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateProperty.swift; sourceTree = "<group>"; };
+		88C5D51E2B7927840053A660 /* Statements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statements.swift; sourceTree = "<group>"; };
 		88FD26122B68C5F400EA5E71 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		88FD26142B68C60200EA5E71 /* ApprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApprovedView.swift; sourceTree = "<group>"; };
 		88FD26162B68C60C00EA5E71 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				88B6874A2B5A9E1000F49DA3 /* Company.swift */,
 				88B687482B5A9DFA00F49DA3 /* Work.swift */,
 				88FD261B2B68C86500EA5E71 /* Accept.swift */,
+				88C5D51E2B7927840053A660 /* Statements.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 				88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */,
 				88FD261C2B68C86500EA5E71 /* Accept.swift in Sources */,
 				88C5D5172B787DFE0053A660 /* TextProperty.swift in Sources */,
+				88C5D51F2B7927840053A660 /* Statements.swift in Sources */,
 				88B6874B2B5A9E1000F49DA3 /* Company.swift in Sources */,
 				88734E4E2B72B31D00A1DB7F /* Card.swift in Sources */,
 			);

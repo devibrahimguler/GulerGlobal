@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ListAddedCard: View {
+    @EnvironmentObject var companyViewModel: CompanyViewModel
+    
     @Binding var text: String
     @Binding var date: Date
     
-    @Binding var list: [String]
+    @Binding var list: [Statement]
     @Binding var isPickerShower: Bool
     @Binding var dateSection: DateSection
     
@@ -38,9 +40,8 @@ struct ListAddedCard: View {
             
             Button {
                 withAnimation(.snappy) {
-                    list.append("\(date.formatted(date: .long, time: .omitted)) - \(text)")
+                    list.append(Statement(date: date, price: text))
                     text = ""
-                    
                 }
             } label: {
                 Image(systemName: "plus.diamond.fill")
@@ -63,13 +64,9 @@ struct ListAddedCard: View {
             .disabled(text == "" )
             
             VStack(spacing: 5) {
-                ForEach(list, id: \.self) { value in
-                    let dicValue = value.components(separatedBy: "-")
-                    let day = dicValue[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                    let price = dicValue[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                    
-                    CashCard(day: day, price: price) {
-                        if let index = list.firstIndex(of: value) {
+                ForEach(list, id: \.self) { statement in
+                    CashCard(statement: statement) {
+                        if let index = list.firstIndex(of: statement) {
                             list.remove(at: index)
                         }
                     }

@@ -26,10 +26,10 @@ struct AddBidView: View {
     @State private var workFinishDate: Date = .now
     
     @State private var workRecDay: Date = .now
-    @State private var recDateList: [String] = []
+    @State private var recDateList: [Statement] = []
     
     @State private var workExpiryDay: Date = .now
-    @State private var expDateList: [String] = []
+    @State private var expDateList: [Statement] = []
     @State private var timePicker: Date = .now
     
     @State private var isPickerShower: Bool = false
@@ -150,6 +150,7 @@ struct AddBidView: View {
                         Divider()
                         
                         ListAddedCard(text: $workRec, date: $workRecDay, list: $recDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .rec, textDesc: "ALINAN PARA", dateDesc: "PARA ALINMA TARİHİ")
+                            .environmentObject(companyViewModel)
                         
                         Divider()
                         
@@ -157,6 +158,7 @@ struct AddBidView: View {
                         if isExpiry {
                             
                             ListAddedCard(text: $workExp, date: $workExpiryDay, list: $expDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .expiry, textDesc: "ALINACAK PARA", dateDesc: "PARA ALINACAK TARİHİ")
+                                .environmentObject(companyViewModel)
 
                             Divider()
                         }
@@ -166,9 +168,7 @@ struct AddBidView: View {
                                 workRem = "\((Double(workPrice) ?? 0) - (Double(value) ?? 0))"
                                 
                                 for rec in recDateList {
-                                    let price = rec.components(separatedBy: "-")[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                                    workRem = "\((Double(workRem) ?? 0) - (Double(price) ?? 0))"
-                                    
+                                    workRem = "\((Double(workRem) ?? 0) - (Double(rec.price) ?? 0))"
                                 }
                             }
                             .disabled(true)
@@ -215,11 +215,11 @@ struct AddBidView: View {
                 }
 
                 if let recList =  company.work?.accept?.recDate {
-                    recDateList = recList
+                    recDateList = recList.statements
                 }
                 
                 if let expList = company.work?.accept?.expiryDay {
-                    expDateList = expList
+                    expDateList = expList.statements
                 }
    
                 
@@ -283,8 +283,8 @@ struct AddBidView: View {
                                 
                                 newAccept.remMoney = Double(workRem) ?? 0
                                 newAccept.isExpiry = isExpiry
-                                newAccept.recDate = recDateList
-                                newAccept.expiryDay = expDateList
+                                newAccept.recDate = Statements(statements: recDateList)
+                                newAccept.expiryDay = Statements(statements: expDateList)
                                 newAccept.stTime = workStartDate
                                 newAccept.fnTime = workFinishDate
                                 newAccept.isFinished = false

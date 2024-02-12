@@ -10,13 +10,12 @@ import SwiftUI
 struct CashCard: View {
     @Environment(\.colorScheme) var scheme
     
-    var day: String
-    var price: String
+    var statement: Statement
     var action: () -> ()
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Text("\(day)")
+            Text("\(statement.date.formatted(date: .long, time: .omitted))")
                 .foregroundStyle(.gray)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
@@ -34,7 +33,8 @@ struct CashCard: View {
                 HStack {
                     Spacer()
                     
-                    Text("\(price) ₺")
+                    Text("\(statement.price) ₺")
+                        .foregroundStyle(.black)
                         
 
                 }
@@ -80,8 +80,11 @@ struct CashCard: View {
 }
 
 #Preview {
-    CashCard(day: "27 april 2024", price: "3000") {
-        
-    }
-    .preferredColorScheme(.dark)
+    ContentView()
+    /*
+     CashCard(statement: Statement(date: .now, price: "2000")) {
+         
+     }
+     .preferredColorScheme(.dark)
+     */
 }
