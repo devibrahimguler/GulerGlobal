@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct CashCard: View {
-    @Environment(\.colorScheme) var scheme
-    
-    var statement: Statement
-    var action: () -> ()
+    var date: Date
+    var price: Double
+    var isExp: Bool = false
+    var action: (_ isDelete: Bool) -> ()
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Text("\(statement.date.formatted(date: .long, time: .omitted))")
-                .foregroundStyle(.gray)
+            Text("\(date.formatted(date: .long, time: .omitted))")
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
                 .background(.white)
@@ -26,65 +25,83 @@ struct CashCard: View {
                         .fill(.black.opacity(0.5))
                         .shadow(color: .black, radius: 10, y: 5)
                 }
-                .padding(.leading, 10)
+                .padding(.leading, 25)
                 .zIndex(1)
             
-            HStack(spacing: 30) {
-                HStack {
-                    Spacer()
-                    
-                    Text("\(statement.price) ₺")
-                        .foregroundStyle(.black)
+            HStack(spacing: 10) {
+                
+                Text("\(price.removeZerosFromEnd()) ₺")
+                    .frame(maxWidth: .infinity)
+                    .padding(6)
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(style: .init(lineWidth: 1))
+                            .fill(.black.opacity(0.5))
+              
+                    }
+                    .padding(20)
+                    .background(.BG)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .shadow(color: .black, radius: 1)
+                    .padding(.top, 15)
+                
+                if isExp {
+                    Button {
+                        withAnimation(.snappy) {
+                            action(false)
+                        }
+                    } label: {
+                        Image(systemName: "plus.app")
+                            .font(.title)
+                            .foregroundStyle(.green)
+                            .padding(5)
+                            .background(.BG)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .shadow(color: .black, radius: 1)
+                            .padding(.top, 20)
                         
-
-                }
-                .padding(6)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 5))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(style: .init(lineWidth: 1))
-                        .fill(.black.opacity(0.5))
-                        .shadow(color: .black, radius: 10, y: 5)
-                    
+                        
+                    }
                 }
                 
                 Button {
                     withAnimation(.snappy) {
-                        action()
+                        action(true)
                     }
                 } label: {
-                    Image(systemName: "minus.diamond")
-                        .font(.title2)
+                    Image(systemName: "minus.square")
+                        .font(.title)
                         .foregroundStyle(.red)
-                        .background(.white)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(style: .init(lineWidth: 1))
-                                .fill(.red.opacity(0.5))
-                                .shadow(color: .black, radius: 10, y: 5)
-                            
-                        }
+                        .padding(5)
+                        .background(.BG)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .shadow(color: .black, radius: 1)
+                        .padding(.top, 20)
                 }
-
             }
-            .padding(20)
-            .background(.BG)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-            .padding(.top, 15)
+            
             
         }
         .font(.headline.bold().monospaced())
-        .foregroundStyle(scheme == .light ? .white : .black)
+        .foregroundStyle(.black)
     }
 }
 
 #Preview {
-    ContentView()
-    /*
-     CashCard(statement: Statement(date: .now, price: "2000")) {
-         
-     }
-     .preferredColorScheme(.dark)
-     */
+    CashCard(date: .now, price: 200, isExp: true) { isDelete in
+        
+    }
+    .preferredColorScheme(.light)
+}
+
+extension Double {
+    func removeZerosFromEnd() -> String {
+        let formatter = NumberFormatter()
+        let number = NSNumber(value: self)
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 16 //maximum digits in Double after dot (maximum precision)
+        return String(formatter.string(from: number) ?? "")
+    }
 }

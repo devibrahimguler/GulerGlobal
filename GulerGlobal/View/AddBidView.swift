@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddBidView: View {
-    let now = Date.now
+    private let now = Date.now
     
     @State private var workPNum: String = ""
     @State private var workName: String = ""
@@ -26,15 +26,17 @@ struct AddBidView: View {
     @State private var workFinishDate: Date = .now
     
     @State private var workRecDay: Date = .now
-    @State private var recDateList: [Statement] = []
+    @State private var recDateList: Set<Statement> = []
     
     @State private var workExpiryDay: Date = .now
-    @State private var expDateList: [Statement] = []
+    @State private var expDateList: Set<Statement> = []
     @State private var timePicker: Date = .now
     
     @State private var isPickerShower: Bool = false
     @State private var dateSection: DateSection = .none
+    
     @State private var isNewCompany: Bool = true
+    @State private var isPNum: Bool = true
     
     @State private var isExpiry: Bool = false
     @EnvironmentObject var companyViewModel: CompanyViewModel
@@ -43,30 +45,76 @@ struct AddBidView: View {
     @Binding var edit: EditSection
     @Binding  var company: Company?
     
-    var topEdge: CGFloat
-    
-    @State private var offsetY: CGFloat = 0
-    
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        VStack(spacing: 0) {
             let isEdit: Bool = edit == .Bid
-
-            VStack(spacing: 0) {
-                HeaderView()
-                    .zIndex(1000)
-                    .frame(height: 40 + topEdge)
-                    .offset(y: -offsetY)
-                
-
+            let color: Color = isEdit ? .gray : .black
+            
+            CustomHeaderView(text: company != nil ? "ONAYLA" : "KAYDET") {
+                backAction()
+            } saveAction: {
+                if let company = company {
+                    if let work =  company.work {
+                        let newAccept = Accept(context: companyViewModel.container.viewContext)
+                        let newWork = Work(context: companyViewModel.container.viewContext)
+                        
+                        company.name = companyName
+                        company.adress = companyAdress
+                        company.phone = companyPhone
+                        
+                        newWork.id = work.id
+                        newWork.pNum = workPNum
+                        newWork.name = workName
+                        newWork.desc = workDesc
+                        newWork.price = Double(workPrice) ?? 0
+                        newWork.approve = edit == .AddBid ? "Wait" : "Approve"
+                        
+                        newAccept.remMoney = Double(workRem) ?? 0
+                        newAccept.isExpiry = isExpiry
+                        newAccept.recDate = recDateList as NSSet
+                        newAccept.expiryDay = expDateList as NSSet
+                        newAccept.stTime = workStartDate
+                        newAccept.fnTime = workFinishDate
+                        newAccept.isFinished = false
+                        
+                        newWork.accept = newAccept
+                        company.work = newWork
+                        companyViewModel.update()
+                    }
+                } else {
+                    let newCompany = Company(context: companyViewModel.container.viewContext)
+                    let newWork = Work(context: companyViewModel.container.viewContext)
+                    newCompany.id = UUID()
+                    newCompany.name = companyName
+                    newCompany.adress = companyAdress
+                    newCompany.phone = companyPhone
+                    
+                    newWork.id = UUID()
+                    newWork.pNum = workPNum
+                    newWork.name = workName
+                    newWork.desc = workDesc
+                    newWork.price = Double(workPrice) ?? 0
+                    newWork.approve = "Wait"
+                    
+                    newCompany.work = newWork
+                    companyViewModel.create()
+                    
+                }
+                backAction()
+            }
+            
+            Divider()
+            
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 10) {
-                    TextProperty(text: $companyName, desc: "FİRMA İSMİ", color: isEdit ? .gray : isNewCompany ? .black : .gray)
+                    TextProperty(text: $companyName, desc: "FİRMA İSMİ", color: isNewCompany ? color : .gray)
                         .disabled(!isNewCompany || isEdit)
                         .onTapGesture {
                             if !isNewCompany {
                                 isNewCompany = true
                             }
                         }
-                      
+                    
                     
                     if isNewCompany {
                         if let company = companyViewModel.fetchCompany(value: companyName) {
@@ -108,87 +156,86 @@ struct AddBidView: View {
                     }
                     
                     if isNewCompany {
-                        TextProperty(text: $companyAdress, desc: "FİRMA ADRESİ", color: isEdit ? .gray : .black)
+                        TextProperty(text: $companyAdress, desc: "FİRMA ADRESİ", color: color)
                             .disabled(isEdit)
                         
-                        TextProperty(text: $companyPhone, desc: "FİRMA TELEFONU", keyboardType: .phonePad, color: isEdit ? .gray : .black)
+                        TextProperty(text: $companyPhone, desc: "FİRMA TELEFONU", keyboardType: .phonePad, color: color)
                             .disabled(isEdit)
                     }
                     
-                    TextProperty(text: $workPNum, desc: "PROJE NUMARASI", keyboardType: .numberPad, color: isEdit ? .gray : .black)
-                        .disabled(isEdit)
-                
-                    TextProperty(text: $workName, desc: "İŞ İSMİ", color: isEdit ? .gray : .black)
+                    TextProperty(text: $workPNum, desc: "PROJE NUMARASI", keyboardType: .numberPad, color: isPNum ? .gray : color)
+                        .disabled(isEdit || isPNum)
+                        .onTapGesture {
+                            withAnimation(.snappy) {
+                                if isPNum {
+                                    isPNum = false
+                                }
+                            }
+                        }
+                    
+                    TextProperty(text: $workName, desc: "İŞ İSMİ", color: color)
                         .disabled(isEdit)
                     
-                    TextProperty(text: $workDesc, desc: "İŞ AÇIKLAMA", color: isEdit ? .gray : .black)
+                    TextProperty(text: $workDesc, desc: "İŞ AÇIKLAMA", color: color)
                         .disabled(isEdit)
-
-                    TextProperty(text: $workPrice, desc: "İŞ FİYATI", keyboardType: .numberPad, color: isEdit ? .gray : .black)
+                    
+                    TextProperty(text: $workPrice, desc: "İŞ FİYATI", keyboardType: .numberPad, color: color)
                         .disabled(isEdit)
                     
                     if isEdit || edit == .ApproveBid {
                         
-                        ZStack(alignment: .top) {
-                            Text("VADE")
-                                .propartyTextdBack()
-                            
-                            Button {
-                                withAnimation(.snappy) {
-                                    isExpiry.toggle()
-                                }
-                            } label: {
-                                Image(systemName: isExpiry ? "checkmark.square" : "square")
-                                    .font(.largeTitle)
-                                    .propartyTextFieldBack()
-                            }
-                            .disabled(!expDateList.isEmpty)
-   
-                        }
-                        .font(.headline.bold().monospaced())
-                        
-                        Divider()
-                        
-                        ListAddedCard(text: $workRec, date: $workRecDay, list: $recDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .rec, textDesc: "ALINAN PARA", dateDesc: "PARA ALINMA TARİHİ")
+                        ListAddedCard(timePicker: $timePicker, workRem: $workRem, text: $workRec, date: $workRecDay, list: $recDateList, recList: $recDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .rec, textDesc: "ALINAN PARA", dateDesc: "PARA ALINMA TARİHİ")
                             .environmentObject(companyViewModel)
                         
-                        Divider()
-                        
+                        HStack(spacing: 10) {
+                            TextProperty(text: $workRem, desc: "KALAN", keyboardType: .numberPad, color: color)
+                                .disabled(true)
+                            
+                            ZStack(alignment: .top) {
+                                Text("VADE")
+                                    .propartyTextdBack()
+                                
+                                Button {
+                                    withAnimation(.snappy) {
+                                        isExpiry.toggle()
+                                    }
+                                } label: {
+                                    Image(systemName: isExpiry ? "checkmark.square" : "square")
+                                }
+                                .font(.largeTitle)
+                                .foregroundStyle(!expDateList.isEmpty ? .gray : .blue)
+                                .padding(15)
+                                .background(.BG)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(color: .black, radius: 1)
+                                .padding(.top, 20)
+                                .disabled(!expDateList.isEmpty)
+                                
+                            }
+                            .font(.headline.bold().monospaced())
+                            .foregroundStyle(.black)
+                        }
                         
                         if isExpiry {
                             
-                            ListAddedCard(text: $workExp, date: $workExpiryDay, list: $expDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .expiry, textDesc: "ALINACAK PARA", dateDesc: "PARA ALINACAK TARİHİ")
+                            ListAddedCard(timePicker: $timePicker, workRem: $workRem, text: $workExp, date: $workExpiryDay, list: $expDateList, recList: $recDateList, isPickerShower: $isPickerShower, dateSection: $dateSection, section: .expiry, textDesc: "ALINACAK PARA", dateDesc: "PARA ALINACAK TARİHİ", isExp: true)
                                 .environmentObject(companyViewModel)
-
-                            Divider()
                         }
                         
-                        TextProperty(text: $workRem, desc: "KALAN", keyboardType: .numberPad, color: isEdit ? .gray : .black)
-                            .onChange(of: workRec) { value in
-                                workRem = "\((Double(workPrice) ?? 0) - (Double(value) ?? 0))"
-                                
-                                for rec in recDateList {
-                                    workRem = "\((Double(workRem) ?? 0) - (Double(rec.price) ?? 0))"
-                                }
-                            }
-                            .disabled(true)
+                        DateProperty(timePicker: $timePicker, date: $workStartDate, dateSection: $dateSection, isPickerShower: $isPickerShower, section: .start, desc: "BAŞLAMA TARİHİ")
                         
-                        DateProperty(date: $workStartDate, dateSection: $dateSection, isPickerShower: $isPickerShower, section: .start, desc: "BAŞLAMA TARİHİ")
-                    
-                        DateProperty(date: $workFinishDate, dateSection: $dateSection, isPickerShower: $isPickerShower, section: .finish, desc: "TAHMİNİ BİTİŞ TARİHİ")
+                        DateProperty(timePicker: $timePicker, date: $workFinishDate, dateSection: $dateSection, isPickerShower: $isPickerShower, section: .finish, desc: "TAHMİNİ BİTİŞ TARİHİ")
                         
                     }
                     
+                    
                 }
-                .padding(20)
-                
+                .padding(.vertical, 5)
+                .padding(.horizontal)
             }
-            .modifier(OffsetModifier(offset: $offsetY))
-           
-            
         }
+
         .offset(y: dateSection == .finish ? -300 :  dateSection == .start ? -300 : 0)
-        .coordinateSpace(name: "SCROLL")
         // .scrollDismissesKeyboard(.immediately)
         .overlay(alignment: .bottom) {
             CustomDatePicker(date: $timePicker)
@@ -196,8 +243,10 @@ struct AddBidView: View {
         }
         .onChange(of: tab) { _ in
             
+            workPNum = companyViewModel.getLastPNum() ?? ""
+            
             if let company = company {
-
+                
                 workStartDate = company.work?.accept?.stTime ?? now
                 workFinishDate = company.work?.accept?.fnTime ?? now
                 
@@ -209,19 +258,20 @@ struct AddBidView: View {
                 workName = company.work?.name ?? ""
                 workDesc = company.work?.desc ?? ""
                 workPrice = String(company.work?.price ?? 0)
+                workRem = company.work?.accept?.remMoney != nil ? String(company.work?.accept?.remMoney ?? 0) : workPrice
                 
                 if let exp =  company.work?.accept?.isExpiry {
                     isExpiry = exp
                 }
-
-                if let recList =  company.work?.accept?.recDate {
-                    recDateList = recList.statements
+                
+                if let recList =  company.work?.accept?.recDate as? Set<Statement> {
+                    recDateList = recList
                 }
                 
-                if let expList = company.work?.accept?.expiryDay {
-                    expDateList = expList.statements
+                if let expList = company.work?.accept?.expiryDay as? Set<Statement> {
+                    expDateList = expList
                 }
-   
+                
                 
             }
         }
@@ -239,104 +289,12 @@ struct AddBidView: View {
                 print("None")
             }
         }
-        
-    }
-    
-    @ViewBuilder
-    func HeaderView() -> some View {
-        ZStack(alignment: .bottomLeading) {
-            Rectangle()
-                .fill(.regularMaterial)
+        .onChange(of: workRec) { value in
+            workRem = "\((Double(workPrice) ?? 0) - (Double(value) ?? 0))"
             
-            HStack {
-                Button {
-                    withAnimation(.snappy) {
-                        backAction()
-                    }
-                } label: {
-                    Image(systemName: "arrow.left.square.fill")
-                        .font(.largeTitle.bold())
-                        .foregroundStyle(.red)
-                }
-                
-                
-                Spacer()
-                
-                Button {
-                    withAnimation(.snappy) {
-                        
-                        if let company = company {
-                            if let work =  company.work {
-                                let newAccept = Accept(context: companyViewModel.container.viewContext)
-                                let newWork = Work(context: companyViewModel.container.viewContext)
-
-                                company.name = companyName
-                                company.adress = companyAdress
-                                company.phone = companyPhone
-                                
-                                newWork.id = work.id
-                                newWork.pNum = workPNum
-                                newWork.name = workName
-                                newWork.desc = workDesc
-                                newWork.price = Double(workPrice) ?? 0
-                                newWork.approve = edit == .AddBid ? "Wait" : "Approve"
-                                
-                                newAccept.remMoney = Double(workRem) ?? 0
-                                newAccept.isExpiry = isExpiry
-                                newAccept.recDate = Statements(statements: recDateList)
-                                newAccept.expiryDay = Statements(statements: expDateList)
-                                newAccept.stTime = workStartDate
-                                newAccept.fnTime = workFinishDate
-                                newAccept.isFinished = false
-                                
-                                newWork.accept = newAccept
-                                company.work = newWork
-                                companyViewModel.update()
-                            }
-                        } else {
-                            let newCompany = Company(context: companyViewModel.container.viewContext)
-                            let newWork = Work(context: companyViewModel.container.viewContext)
-                            newCompany.id = UUID()
-                            newCompany.name = companyName
-                            newCompany.adress = companyAdress
-                            newCompany.phone = companyPhone
-                            
-                            newWork.id = UUID()
-                            newWork.pNum = workPNum
-                            newWork.name = workName
-                            newWork.desc = workDesc
-                            newWork.price = Double(workPrice) ?? 0
-                            newWork.approve = "Wait"
-                         
-                            newCompany.work = newWork
-                            companyViewModel.create()
-                        
-                        }
-                        
-                        backAction()
-                        
-                    }
-                } label: {
-                    
-                    Text(company != nil ? "ONAYLA" : "KAYDET")
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 15)
-                        .background(.BG)
-                        .clipShape( RoundedRectangle(cornerRadius: 5, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 5, style: .continuous)
-                                .stroke(style: StrokeStyle(lineWidth: 1))
-                                .foregroundStyle(.black)
-                        }
-                        .font(.title2.bold())
-                        .foregroundStyle(.green)
-                }
+            for rec in recDateList {
+                workRem = "\((Double(workRem) ?? 0) - (Double(rec.price)))"
             }
-            .padding(.bottom,10)
-            .padding(.horizontal)
-            
-            
-            
         }
     }
     
@@ -345,6 +303,7 @@ struct AddBidView: View {
         VStack {
             DatePicker("", selection: date, displayedComponents: .date)
                 .colorScheme(.light)
+                .environment(\.locale, Locale.init(identifier: "tr"))
                 .datePickerStyle(WheelDatePickerStyle())
                 .overlay {
                     RoundedRectangle(cornerRadius: 10).stroke(style: .init(lineWidth: 1))
@@ -388,6 +347,7 @@ struct AddBidView: View {
             edit = .AddBid
         }
         company = nil
+        isPNum = true
         
         isNewCompany = true
         
@@ -426,13 +386,8 @@ struct TestAddBidView: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            let topEdge = proxy.safeAreaInsets.top
-            
-            AddBidView(tab: $tab, edit: $edit, company: $selectedCompany, topEdge: topEdge)
-                .environmentObject(companyViewModel)
-                .ignoresSafeArea(.all, edges: .top)
-        }
+        AddBidView(tab: $tab, edit: $edit, company: $selectedCompany)
+            .environmentObject(companyViewModel)
     }
 }
 

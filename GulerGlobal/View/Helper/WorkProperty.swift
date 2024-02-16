@@ -16,7 +16,7 @@ struct WorkProperty: View {
     var foregroundStyle: Color = .black
     
     var body: some View {
-        VStack(alignment: alignment, spacing: 3) {
+        VStack(alignment: alignment, spacing: 5) {
             Text(text)
                 .font(.subheadline.bold())
                 .foregroundStyle(.gray)
@@ -26,7 +26,7 @@ struct WorkProperty: View {
                 .font(.headline.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(background)
-                .clipShape(RoundedRectangle(cornerRadius: 5))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.leading)
                 .shadow(radius: 1)
         }
@@ -35,6 +35,6 @@ struct WorkProperty: View {
 }
 
 #Preview {
-    ContentView()
+    WorkProperty(text: "İş ismi", desc: "iş açıklama", alignment: .leading)
 }
 

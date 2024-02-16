@@ -14,14 +14,15 @@ struct PeelEffect<Content: View>: View {
     var onDelete: () -> ()
     var onEdit: () -> ()
     var onSave: () -> ()?
-
+    var onClick: () -> ()
     
-    init(isApprove: Bool = false, @ViewBuilder content: @escaping () -> Content, onDelete: @escaping () -> (), onEdit: @escaping () -> (), onSave: @escaping () -> ()) {
+    init(isApprove: Bool = false, @ViewBuilder content: @escaping () -> Content, onDelete: @escaping () -> (), onEdit: @escaping () -> (), onSave: @escaping () -> (), onClick: @escaping () -> ()) {
         self.isApprove = isApprove
         self.content = content()
         self.onDelete = onDelete
         self.onEdit = onEdit
         self.onSave = onSave
+        self.onClick = onClick
     }
     
     @State private var dragProgress: CGFloat = 0
@@ -83,10 +84,15 @@ struct PeelEffect<Content: View>: View {
                                 })
                         )
                         .onTapGesture {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)) {
-                                dragProgress = .zero
-                                isExpanded = false
+                            if dragProgress == 0.6 || dragProgress == 0.3 {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)) {
+                                    dragProgress = .zero
+                                    isExpanded = false
+                                }
+                            } else {
+                                onClick()
                             }
+                            
                         }
                     
                         

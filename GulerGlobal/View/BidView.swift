@@ -12,28 +12,20 @@ struct BidView: View {
     @Binding var selectedCompany: Company?
     @Binding var tab: Tabs
     @Binding var edit: EditSection
-    
-    @State private var offsetY: CGFloat = 0
-    var topEdge: CGFloat
+    @Binding var detailCompany: Company?
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        VStack(spacing: 0) {
+            HeaderView(header: "Proje Teklifleri")
             
-            VStack(spacing: 0) {
-                HeaderView(header: "Proje Teklifleri")
-                    .zIndex(1000)
-                    .frame(height: 40 + topEdge)
-                    .offset(y: -offsetY)
-                    .padding(.bottom,10)
-                
-                CardsView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, companies: companyViewModel.waitCompanies)
+            Divider()
+            
+            ScrollView(.vertical, showsIndicators: false) {
+                CardsView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, detailCompany: $detailCompany, companies: companyViewModel.waitCompanies)
                     .environmentObject(companyViewModel)
-                
+                    .padding(.vertical, 5)
             }
-            .modifier(OffsetModifier(offset: $offsetY))
-            
         }
-        .coordinateSpace(name: "SCROLL")
         
     }
 }

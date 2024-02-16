@@ -27,14 +27,16 @@ struct TextProperty: View {
         ZStack(alignment: .topLeading) {
             
             Text(desc)
+                .frame(maxWidth: .infinity)
                 .propartyTextdBack()
-                .padding(.leading, 10)
+                .padding(.horizontal)
             
             TextField("",text: $text)
+                .padding(.leading, 10)
                 .keyboardType(keyboardType)
                 .propartyTextFieldBack()
                 .multilineTextAlignment(.leading)
-                .shadow(color: scheme == .light ? .black : .white ,radius: 5)
+                .shadow(color: scheme == .light ? .black : .white ,radius: 2)
             
         }
         .font(.headline.bold().monospaced())
@@ -43,7 +45,7 @@ struct TextProperty: View {
 }
 
 struct TestTextProperty: View {
-    @State private var text: String = ""
+    @State private var text: String = "asdsada"
     var body: some View {
         TextProperty(text: $text, desc: "Text")
     }
@@ -58,17 +60,16 @@ extension View {
         self
             .padding(6)
             .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay {
-                RoundedRectangle(cornerRadius: 5)
+                RoundedRectangle(cornerRadius: 10)
                     .stroke(style: .init(lineWidth: 1))
-                    .fill(.black.opacity(0.5))
-                    .shadow(color: .black, radius: 10, y: 5)
+                    .fill(.black)
             }
-            .padding(20)
+            .padding(15)
             .background(.BG)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-            .padding(.top, 15)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .padding(.top, 20)
     }
     
     func propartyTextdBack() -> some View {
@@ -76,11 +77,10 @@ extension View {
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
             .background(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay {
-                RoundedRectangle(cornerRadius: 5).stroke(style: .init(lineWidth: 1))
-                    .fill(.black.opacity(0.5))
-                    .shadow(color: .black, radius: 10, y: 5)
+                RoundedRectangle(cornerRadius: 10).stroke(style: .init(lineWidth: 1))
+                    .fill(.gray)
             }
             .zIndex(1)
     }

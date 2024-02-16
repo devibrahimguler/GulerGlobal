@@ -29,6 +29,16 @@ class CompanyViewModel : ObservableObject {
         
         fetchData()
     }
+    
+    func getLastPNum() -> String? {
+        var intPnum = Int(companies.first?.work?.pNum ?? "0")
+        intPnum = (intPnum ?? 0) + 1
+        var stringPnum = "\(intPnum ?? 0)"
+        for _ in 0...(3 - stringPnum.count){
+            stringPnum = "0" + stringPnum
+        }
+        return stringPnum
+    }
 
     func fetchCompany(value: String) -> Company? {
         return companies.first(where: { $0.name == value })
@@ -41,6 +51,7 @@ class CompanyViewModel : ObservableObject {
         
         do {
             let companies = try container.viewContext.fetch(request)
+            
             waitCompanies = []
             approveCompanies = []
             notApproveCompanies = []
@@ -62,6 +73,7 @@ class CompanyViewModel : ObservableObject {
                 }
                 
                 self.companies = companies
+                self.companies.sort(by: { Int($0.work?.pNum ?? "0") ?? 0 > Int($1.work?.pNum ?? "0") ?? 0 })
             }
             
             

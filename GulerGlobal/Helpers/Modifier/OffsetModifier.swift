@@ -21,7 +21,6 @@ struct OffsetModifier: ViewModifier {
                         self.offset = minY
                     }
                     return Color.clear
-                }, alignment: .top
-            )
+                }, alignment: .top)
     }
 }

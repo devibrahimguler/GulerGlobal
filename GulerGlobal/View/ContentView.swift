@@ -14,28 +14,30 @@ struct ContentView: View {
     
     @State private var isAccepts: Bool = false
     @State private var selectedCompany: Company? = nil
+    @State private var detailCompany: Company? = nil
     
     var body: some View {
         GeometryReader { proxy in
             let topEdge = proxy.safeAreaInsets.top
             
             TabView(selection: $tab) {
-                HomeView()
-                    .environmentObject(companyViewModel)
-                    .tabItem {
-                        Image(systemName: "house")
-                    }
-                    .tag(Tabs.Home)
+                /*
+                 HomeView()
+                 .environmentObject(companyViewModel)
+                 .tabItem {
+                 Image(systemName: "house")
+                 }
+                 .tag(Tabs.Home)
+                 */
                 
-                BidView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, topEdge: topEdge)
+                BidView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, detailCompany: $detailCompany)
                     .environmentObject(companyViewModel)
                     .tabItem {
                         Image(systemName: "rectangle.stack")
                     }
                     .tag(Tabs.Bid)
-                    .ignoresSafeArea(.all, edges: .top)
                 
-               Spacer()
+                Spacer()
                     .tabItem {
                         Button {
                             withAnimation(.snappy) {
@@ -44,34 +46,42 @@ struct ContentView: View {
                         } label: {
                             Image(systemName: "plus.app.fill")
                         }
-
-             
+                        
+                        
                     }
                     .tag(Tabs.AddBid)
                 
-                ApprovedView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, topEdge: topEdge)
+                ApprovedView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit, detailCompany: $detailCompany, topEdge: topEdge)
                     .environmentObject(companyViewModel)
                     .tabItem {
-                        Image(systemName: "checkmark.rectangle.stack")
+                        if #available(iOS 17.0, *) {
+                            Image(systemName: "checkmark.rectangle.stack.fill")
+                        } else {
+                            Image(systemName: "checkmark.rectangle.fill")
+                        }
+                        
                     }
                     .tag(Tabs.Approved)
-                    .ignoresSafeArea(.all, edges: .top)
                 
-                ProfileView()
-                    .environmentObject(companyViewModel)
-                    .tabItem {
-                        Image(systemName: "person.fill")
-                    }
-                    .tag(Tabs.Profile)
+                /*
+                 ProfileView()
+                 .environmentObject(companyViewModel)
+                 .tabItem {
+                 Image(systemName: "person.fill")
+                 }
+                 .tag(Tabs.Profile)
+                 */
             }
-            .offset(x: tab == .AddBid  ? -700 : 0)
+            .offset(x: tab == .AddBid  ? -1000 : 0)
             .animation(.snappy, value: tab)
             .overlay {
-                AddBidView(tab: $tab, edit: $edit, company: $selectedCompany, topEdge: topEdge)
+                AddBidView(tab: $tab, edit: $edit, company: $selectedCompany)
                     .environmentObject(companyViewModel)
-                    .offset(x: tab == .AddBid ? 0 : 700)
+                    .offset(x: tab == .AddBid ? 0 : 1000)
                     .animation(.snappy, value: tab)
-                    .ignoresSafeArea(.all, edges: .top)
+            }
+            .sheet(item: $detailCompany) { company in
+                DetailView(company: company)
             }
         }
         

@@ -10,18 +10,14 @@ import SwiftUI
 struct HeaderView: View {
     var header: String
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Rectangle()
-                .fill(.regularMaterial)
-            
-            VStack(spacing: 15 ) {
-                Text(header)
-                    .font(.title2.bold().lowercaseSmallCaps())
-                    .padding(.horizontal)
-                    .padding(.bottom,10)
-                
-            }
+        VStack(spacing: 15 ) {
+            Text(header)
+                .font(.title2.bold().lowercaseSmallCaps())
+                .padding(.horizontal)
         }
+        .padding(.vertical, 5)
+        .padding(.horizontal)
+        .frame(maxWidth: .infinity)
     }
 }
 

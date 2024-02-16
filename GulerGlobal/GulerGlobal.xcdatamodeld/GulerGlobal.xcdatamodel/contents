@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Accept" representedClassName="Accept" syncable="YES" codeGenerationType="class">
-        <attribute name="expiryDay" optional="YES" attributeType="Transformable" customClassName="Statements"/>
         <attribute name="fnTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isExpiry" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isFinished" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="recDate" optional="YES" attributeType="Transformable" customClassName="Statements"/>
         <attribute name="remMoney" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="stTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="expiryDay" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Statement" inverseName="expParent" inverseEntity="Statement"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Work" inverseName="accept" inverseEntity="Work"/>
+        <relationship name="recDate" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Statement" inverseName="recParent" inverseEntity="Statement"/>
     </entity>
     <entity name="Company" representedClassName="Company" syncable="YES" codeGenerationType="class">
         <attribute name="adress" optional="YES" attributeType="String"/>
@@ -16,6 +16,12 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
         <relationship name="work" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Work" inverseName="parent" inverseEntity="Work"/>
+    </entity>
+    <entity name="Statement" representedClassName="Statement" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="price" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="expParent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Accept" inverseName="expiryDay" inverseEntity="Accept"/>
+        <relationship name="recParent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Accept" inverseName="recDate" inverseEntity="Accept"/>
     </entity>
     <entity name="Work" representedClassName="Work" syncable="YES" codeGenerationType="class">
         <attribute name="approve" optional="YES" attributeType="String"/>
