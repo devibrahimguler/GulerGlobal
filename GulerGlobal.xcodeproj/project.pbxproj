@@ -7,22 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F2760072C52D1FB00C87159 /* CustomPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2760062C52D1FB00C87159 /* CustomPlaceHolder.swift */; };
+		0F2760092C52E4F600C87159 /* BasicEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2760082C52E4F600C87159 /* BasicEntry.swift */; };
+		0F423A8D2C58027000B78DC3 /* PhonePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F423A8C2C58027000B78DC3 /* PhonePickerView.swift */; };
+		0F6872DD2C4D4F0900E3D06B /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6872DC2C4D4F0900E3D06B /* Product.swift */; };
+		0F9FE5792C583B0B00E3A423 /* DetailCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9FE5782C583B0B00E3A423 /* DetailCard.swift */; };
+		0FAABE192C66BCBC008CCC51 /* Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FAABE182C66BCBC008CCC51 /* Extentions.swift */; };
+		0FE51EDD2C4A172600239081 /* PieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE51EDC2C4A172600239081 /* PieChart.swift */; };
+		0FE51EE72C4AEC7100239081 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE51EE62C4AEC7000239081 /* EntryView.swift */; };
+		0FE51EEA2C4AECCA00239081 /* UserConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE51EE92C4AECCA00239081 /* UserConnection.swift */; };
+		0FE51EEC2C4AED6A00239081 /* EntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE51EEB2C4AED6A00239081 /* EntryViewModel.swift */; };
+		0FE51EEE2C4AEE3D00239081 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE51EED2C4AEE3D00239081 /* MainView.swift */; };
 		8811055A2B76A4B800EF4720 /* CashCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881105592B76A4B800EF4720 /* CashCard.swift */; };
-		8811055E2B76C52900EF4720 /* ListAddedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8811055D2B76C52900EF4720 /* ListAddedCard.swift */; };
-		8819D53A2B720093007414C2 /* PeelEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8819D5392B720093007414C2 /* PeelEffect.swift */; };
-		88734E482B72B28700A1DB7F /* OffsetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E472B72B28700A1DB7F /* OffsetModifier.swift */; };
+		8834CC222B7F885800EB416A /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8834CC212B7F885800EB416A /* Property.swift */; };
+		884C02A32B98386C00D695D7 /* UnapprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884C02A22B98386C00D695D7 /* UnapprovedView.swift */; };
+		884C02A52B98398B00D695D7 /* FinishedBidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 884C02A42B98398B00D695D7 /* FinishedBidView.swift */; };
 		88734E4E2B72B31D00A1DB7F /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E4D2B72B31D00A1DB7F /* Card.swift */; };
-		88734E522B72B34E00A1DB7F /* SwipeActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */; };
-		88734E542B72B36200A1DB7F /* WorkProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E532B72B36200A1DB7F /* WorkProperty.swift */; };
-		88734E562B73FAC700A1DB7F /* CardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E552B73FAC700A1DB7F /* CardsView.swift */; };
-		88734E582B73FBDB00A1DB7F /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88734E572B73FBDB00A1DB7F /* HeaderView.swift */; };
+		8886C25C2B91303F0029A3AB /* FirebaseDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8886C25B2B91303F0029A3AB /* FirebaseDataModel.swift */; };
+		8886C2692B91AA9A0029A3AB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8886C2682B91AA9A0029A3AB /* GoogleService-Info.plist */; };
+		8886C2C82B91CA2C0029A3AB /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8886C2C72B91CA2C0029A3AB /* Company.swift */; };
+		8886C2CA2B91CAD30029A3AB /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8886C2C92B91CAD30029A3AB /* Statement.swift */; };
+		8886C2CC2B91CB480029A3AB /* Work.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8886C2CB2B91CB480029A3AB /* Work.swift */; };
+		8886C2CE2B91CBBE0029A3AB /* Accept.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8886C2CD2B91CBBE0029A3AB /* Accept.swift */; };
 		88B5A9892B7C814000B1B46D /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B5A9882B7C814000B1B46D /* DetailView.swift */; };
-		88B5A98B2B7C846700B1B46D /* CustomHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B5A98A2B7C846700B1B46D /* CustomHeaderView.swift */; };
 		88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */; };
 		88B687372B5A9DA900F49DA3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687362B5A9DA900F49DA3 /* ContentView.swift */; };
 		88B6873B2B5A9DAA00F49DA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88B6873A2B5A9DAA00F49DA3 /* Assets.xcassets */; };
 		88B6873E2B5A9DAA00F49DA3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88B6873D2B5A9DAA00F49DA3 /* Preview Assets.xcassets */; };
-		88B687462B5A9DD900F49DA3 /* CompanyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687452B5A9DD900F49DA3 /* CompanyViewModel.swift */; };
 		88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687522B5A9E9800F49DA3 /* BidView.swift */; };
 		88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B687542B5A9EB200F49DA3 /* AddBidView.swift */; };
 		88C5D5172B787DFE0053A660 /* TextProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C5D5162B787DFE0053A660 /* TextProperty.swift */; };
@@ -30,28 +41,40 @@
 		88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26122B68C5F400EA5E71 /* HomeView.swift */; };
 		88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* ApprovedView.swift */; };
 		88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26162B68C60C00EA5E71 /* ProfileView.swift */; };
-		88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */; };
+		BC24F187778EFC5ACCD85172 /* Pods_GulerGlobal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 855EFDA10BD0BC79DFAD829B /* Pods_GulerGlobal.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F2760062C52D1FB00C87159 /* CustomPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlaceHolder.swift; sourceTree = "<group>"; };
+		0F2760082C52E4F600C87159 /* BasicEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicEntry.swift; sourceTree = "<group>"; };
+		0F423A8C2C58027000B78DC3 /* PhonePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonePickerView.swift; sourceTree = "<group>"; };
+		0F6872DC2C4D4F0900E3D06B /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		0F9FE5782C583B0B00E3A423 /* DetailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCard.swift; sourceTree = "<group>"; };
+		0FAABE182C66BCBC008CCC51 /* Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extentions.swift; sourceTree = "<group>"; };
+		0FBE522C2C5D563000D5C557 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		0FE51EDC2C4A172600239081 /* PieChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChart.swift; sourceTree = "<group>"; };
+		0FE51EE62C4AEC7000239081 /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
+		0FE51EE92C4AECCA00239081 /* UserConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConnection.swift; sourceTree = "<group>"; };
+		0FE51EEB2C4AED6A00239081 /* EntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewModel.swift; sourceTree = "<group>"; };
+		0FE51EED2C4AEE3D00239081 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		855EFDA10BD0BC79DFAD829B /* Pods_GulerGlobal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GulerGlobal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		881105592B76A4B800EF4720 /* CashCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashCard.swift; sourceTree = "<group>"; };
-		8811055D2B76C52900EF4720 /* ListAddedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAddedCard.swift; sourceTree = "<group>"; };
-		8819D5392B720093007414C2 /* PeelEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeelEffect.swift; sourceTree = "<group>"; };
-		88734E472B72B28700A1DB7F /* OffsetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffsetModifier.swift; sourceTree = "<group>"; };
+		8834CC212B7F885800EB416A /* Property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		884C02A22B98386C00D695D7 /* UnapprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnapprovedView.swift; sourceTree = "<group>"; };
+		884C02A42B98398B00D695D7 /* FinishedBidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedBidView.swift; sourceTree = "<group>"; };
 		88734E4D2B72B31D00A1DB7F /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionButton.swift; sourceTree = "<group>"; };
-		88734E532B72B36200A1DB7F /* WorkProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkProperty.swift; sourceTree = "<group>"; };
-		88734E552B73FAC700A1DB7F /* CardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsView.swift; sourceTree = "<group>"; };
-		88734E572B73FBDB00A1DB7F /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
-		88B10A232B614AE9008D2BB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8886C25B2B91303F0029A3AB /* FirebaseDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDataModel.swift; sourceTree = "<group>"; };
+		8886C2682B91AA9A0029A3AB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8886C2C72B91CA2C0029A3AB /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
+		8886C2C92B91CAD30029A3AB /* Statement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
+		8886C2CB2B91CB480029A3AB /* Work.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Work.swift; sourceTree = "<group>"; };
+		8886C2CD2B91CBBE0029A3AB /* Accept.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accept.swift; sourceTree = "<group>"; };
 		88B5A9882B7C814000B1B46D /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
-		88B5A98A2B7C846700B1B46D /* CustomHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderView.swift; sourceTree = "<group>"; };
 		88B687312B5A9DA900F49DA3 /* GulerGlobal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GulerGlobal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GulerGlobalApp.swift; sourceTree = "<group>"; };
 		88B687362B5A9DA900F49DA3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		88B6873A2B5A9DAA00F49DA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		88B6873D2B5A9DAA00F49DA3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		88B687452B5A9DD900F49DA3 /* CompanyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModel.swift; sourceTree = "<group>"; };
 		88B687522B5A9E9800F49DA3 /* BidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BidView.swift; sourceTree = "<group>"; };
 		88B687542B5A9EB200F49DA3 /* AddBidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBidView.swift; sourceTree = "<group>"; };
 		88C5D5162B787DFE0053A660 /* TextProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProperty.swift; sourceTree = "<group>"; };
@@ -59,7 +82,8 @@
 		88FD26122B68C5F400EA5E71 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		88FD26142B68C60200EA5E71 /* ApprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApprovedView.swift; sourceTree = "<group>"; };
 		88FD26162B68C60C00EA5E71 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GulerGlobal.xcdatamodel; sourceTree = "<group>"; };
+		BD55CC6BB40AFA2F43B23CD3 /* Pods-GulerGlobal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GulerGlobal.release.xcconfig"; path = "Target Support Files/Pods-GulerGlobal/Pods-GulerGlobal.release.xcconfig"; sourceTree = "<group>"; };
+		FC8AED0C2109B034D9E8B812 /* Pods-GulerGlobal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GulerGlobal.debug.xcconfig"; path = "Target Support Files/Pods-GulerGlobal/Pods-GulerGlobal.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,30 +91,132 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC24F187778EFC5ACCD85172 /* Pods_GulerGlobal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		88734E462B72B27D00A1DB7F /* Modifier */ = {
+		0F27600A2C52F07500C87159 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				88734E472B72B28700A1DB7F /* OffsetModifier.swift */,
+				0F9FE5762C5839DB00E3A423 /* Helper */,
+				88B5A9882B7C814000B1B46D /* DetailView.swift */,
 			);
-			path = Modifier;
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		0F27600B2C52F08D00C87159 /* AddBid */ = {
+			isa = PBXGroup;
+			children = (
+				0F27600C2C52F0A200C87159 /* Helper */,
+				88B687542B5A9EB200F49DA3 /* AddBidView.swift */,
+			);
+			path = AddBid;
+			sourceTree = "<group>";
+		};
+		0F27600C2C52F0A200C87159 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				88C5D5182B78865E0053A660 /* DateProperty.swift */,
+				88C5D5162B787DFE0053A660 /* TextProperty.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		0F27600D2C52F0BF00C87159 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				8834CC212B7F885800EB416A /* Property.swift */,
+				0FE51EDC2C4A172600239081 /* PieChart.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		0F27600E2C52F0F100C87159 /* Bid */ = {
+			isa = PBXGroup;
+			children = (
+				88B687522B5A9E9800F49DA3 /* BidView.swift */,
+			);
+			path = Bid;
+			sourceTree = "<group>";
+		};
+		0F27600F2C52F0F900C87159 /* Approved */ = {
+			isa = PBXGroup;
+			children = (
+				88FD26142B68C60200EA5E71 /* ApprovedView.swift */,
+			);
+			path = Approved;
+			sourceTree = "<group>";
+		};
+		0F9FE5762C5839DB00E3A423 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				0F9FE5772C5839F600E3A423 /* Cards */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		0F9FE5772C5839F600E3A423 /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				0F9FE5782C583B0B00E3A423 /* DetailCard.swift */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
+		};
+		0FE51EDE2C4A888E00239081 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				0F27600D2C52F0BF00C87159 /* Helper */,
+				88FD26122B68C5F400EA5E71 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		0FE51EDF2C4A88A600239081 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				88FD26162B68C60C00EA5E71 /* ProfileView.swift */,
+				884C02A22B98386C00D695D7 /* UnapprovedView.swift */,
+				884C02A42B98398B00D695D7 /* FinishedBidView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		0FE51EE02C4A88C300239081 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				0F2760082C52E4F600C87159 /* BasicEntry.swift */,
+				0FE51EE62C4AEC7000239081 /* EntryView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		0FE51EE82C4AECB600239081 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0FE51EE92C4AECCA00239081 /* UserConnection.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		244515580CADF4BB54F0EDA5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				855EFDA10BD0BC79DFAD829B /* Pods_GulerGlobal.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		88734E4B2B72B30100A1DB7F /* Helper */ = {
 			isa = PBXGroup;
 			children = (
 				88734E4C2B72B30B00A1DB7F /* Cards */,
-				88734E512B72B34E00A1DB7F /* SwipeActionButton.swift */,
-				88734E532B72B36200A1DB7F /* WorkProperty.swift */,
-				88734E572B73FBDB00A1DB7F /* HeaderView.swift */,
-				88C5D5162B787DFE0053A660 /* TextProperty.swift */,
-				88C5D5182B78865E0053A660 /* DateProperty.swift */,
-				88B5A98A2B7C846700B1B46D /* CustomHeaderView.swift */,
+				0F2760062C52D1FB00C87159 /* CustomPlaceHolder.swift */,
+				0F423A8C2C58027000B78DC3 /* PhonePickerView.swift */,
+				0FAABE182C66BCBC008CCC51 /* Extentions.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -99,11 +225,21 @@
 			isa = PBXGroup;
 			children = (
 				88734E4D2B72B31D00A1DB7F /* Card.swift */,
-				88734E552B73FAC700A1DB7F /* CardsView.swift */,
 				881105592B76A4B800EF4720 /* CashCard.swift */,
-				8811055D2B76C52900EF4720 /* ListAddedCard.swift */,
 			);
 			path = Cards;
+			sourceTree = "<group>";
+		};
+		8886C2C62B91CA1A0029A3AB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8886C2C72B91CA2C0029A3AB /* Company.swift */,
+				8886C2C92B91CAD30029A3AB /* Statement.swift */,
+				8886C2CB2B91CB480029A3AB /* Work.swift */,
+				8886C2CD2B91CBBE0029A3AB /* Accept.swift */,
+				0F6872DC2C4D4F0900E3D06B /* Product.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		88B687282B5A9DA900F49DA3 = {
@@ -111,6 +247,8 @@
 			children = (
 				88B687332B5A9DA900F49DA3 /* GulerGlobal */,
 				88B687322B5A9DA900F49DA3 /* Products */,
+				A0A34E0175138619972777DE /* Pods */,
+				244515580CADF4BB54F0EDA5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,14 +263,15 @@
 		88B687332B5A9DA900F49DA3 /* GulerGlobal */ = {
 			isa = PBXGroup;
 			children = (
-				88D60DCD2B6C1C4400C44E02 /* Helpers */,
-				88B10A232B614AE9008D2BB5 /* Info.plist */,
+				0FE51EE82C4AECB600239081 /* Services */,
 				88B687442B5A9DCE00F49DA3 /* ViewModel */,
+				8886C2C62B91CA1A0029A3AB /* Model */,
 				88B6874C2B5A9E2400F49DA3 /* View */,
 				88B687342B5A9DA900F49DA3 /* GulerGlobalApp.swift */,
+				8886C2682B91AA9A0029A3AB /* GoogleService-Info.plist */,
+				0FBE522C2C5D563000D5C557 /* Info.plist */,
 				88B6873A2B5A9DAA00F49DA3 /* Assets.xcassets */,
 				88B6873C2B5A9DAA00F49DA3 /* Preview Content */,
-				88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */,
 			);
 			path = GulerGlobal;
 			sourceTree = "<group>";
@@ -148,7 +287,8 @@
 		88B687442B5A9DCE00F49DA3 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				88B687452B5A9DD900F49DA3 /* CompanyViewModel.swift */,
+				8886C25B2B91303F0029A3AB /* FirebaseDataModel.swift */,
+				0FE51EEB2C4AED6A00239081 /* EntryViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -156,25 +296,27 @@
 		88B6874C2B5A9E2400F49DA3 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0F27600F2C52F0F900C87159 /* Approved */,
+				0F27600E2C52F0F100C87159 /* Bid */,
+				0F27600B2C52F08D00C87159 /* AddBid */,
+				0F27600A2C52F07500C87159 /* Detail */,
+				0FE51EE02C4A88C300239081 /* Login */,
+				0FE51EDF2C4A88A600239081 /* Profile */,
+				0FE51EDE2C4A888E00239081 /* Home */,
 				88734E4B2B72B30100A1DB7F /* Helper */,
-				88FD26122B68C5F400EA5E71 /* HomeView.swift */,
-				88B687522B5A9E9800F49DA3 /* BidView.swift */,
-				88B687542B5A9EB200F49DA3 /* AddBidView.swift */,
-				88FD26142B68C60200EA5E71 /* ApprovedView.swift */,
-				88FD26162B68C60C00EA5E71 /* ProfileView.swift */,
 				88B687362B5A9DA900F49DA3 /* ContentView.swift */,
-				88B5A9882B7C814000B1B46D /* DetailView.swift */,
+				0FE51EED2C4AEE3D00239081 /* MainView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		88D60DCD2B6C1C4400C44E02 /* Helpers */ = {
+		A0A34E0175138619972777DE /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				88734E462B72B27D00A1DB7F /* Modifier */,
-				8819D5392B720093007414C2 /* PeelEffect.swift */,
+				FC8AED0C2109B034D9E8B812 /* Pods-GulerGlobal.debug.xcconfig */,
+				BD55CC6BB40AFA2F43B23CD3 /* Pods-GulerGlobal.release.xcconfig */,
 			);
-			path = Helpers;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,9 +326,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 88B687412B5A9DAA00F49DA3 /* Build configuration list for PBXNativeTarget "GulerGlobal" */;
 			buildPhases = (
+				9E20279455D217E5FAD62020 /* [CP] Check Pods Manifest.lock */,
 				88B6872D2B5A9DA900F49DA3 /* Sources */,
 				88B6872E2B5A9DA900F49DA3 /* Frameworks */,
 				88B6872F2B5A9DA900F49DA3 /* Resources */,
+				EEC9AD75B349A5822CFCA5B1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -237,38 +381,90 @@
 			files = (
 				88B6873E2B5A9DAA00F49DA3 /* Preview Assets.xcassets in Resources */,
 				88B6873B2B5A9DAA00F49DA3 /* Assets.xcassets in Resources */,
+				8886C2692B91AA9A0029A3AB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9E20279455D217E5FAD62020 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GulerGlobal-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EEC9AD75B349A5822CFCA5B1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GulerGlobal/Pods-GulerGlobal-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GulerGlobal/Pods-GulerGlobal-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GulerGlobal/Pods-GulerGlobal-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		88B6872D2B5A9DA900F49DA3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88FD261A2B68C70600EA5E71 /* GulerGlobal.xcdatamodeld in Sources */,
-				8819D53A2B720093007414C2 /* PeelEffect.swift in Sources */,
-				8811055E2B76C52900EF4720 /* ListAddedCard.swift in Sources */,
-				88734E522B72B34E00A1DB7F /* SwipeActionButton.swift in Sources */,
-				88734E482B72B28700A1DB7F /* OffsetModifier.swift in Sources */,
-				88B687462B5A9DD900F49DA3 /* CompanyViewModel.swift in Sources */,
+				8886C2CC2B91CB480029A3AB /* Work.swift in Sources */,
 				88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */,
 				88B687372B5A9DA900F49DA3 /* ContentView.swift in Sources */,
-				88B5A98B2B7C846700B1B46D /* CustomHeaderView.swift in Sources */,
-				88734E562B73FAC700A1DB7F /* CardsView.swift in Sources */,
+				0F2760092C52E4F600C87159 /* BasicEntry.swift in Sources */,
 				8811055A2B76A4B800EF4720 /* CashCard.swift in Sources */,
 				88B5A9892B7C814000B1B46D /* DetailView.swift in Sources */,
 				88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */,
 				88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */,
-				88734E542B72B36200A1DB7F /* WorkProperty.swift in Sources */,
+				8834CC222B7F885800EB416A /* Property.swift in Sources */,
+				0FE51EDD2C4A172600239081 /* PieChart.swift in Sources */,
+				884C02A52B98398B00D695D7 /* FinishedBidView.swift in Sources */,
+				8886C2CA2B91CAD30029A3AB /* Statement.swift in Sources */,
+				0FE51EEE2C4AEE3D00239081 /* MainView.swift in Sources */,
+				8886C2CE2B91CBBE0029A3AB /* Accept.swift in Sources */,
+				0FE51EEA2C4AECCA00239081 /* UserConnection.swift in Sources */,
+				0F2760072C52D1FB00C87159 /* CustomPlaceHolder.swift in Sources */,
+				8886C25C2B91303F0029A3AB /* FirebaseDataModel.swift in Sources */,
 				88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */,
 				88C5D5192B78865E0053A660 /* DateProperty.swift in Sources */,
 				88B687552B5A9EB200F49DA3 /* AddBidView.swift in Sources */,
-				88734E582B73FBDB00A1DB7F /* HeaderView.swift in Sources */,
+				884C02A32B98386C00D695D7 /* UnapprovedView.swift in Sources */,
 				88B687352B5A9DA900F49DA3 /* GulerGlobalApp.swift in Sources */,
 				88C5D5172B787DFE0053A660 /* TextProperty.swift in Sources */,
+				0F9FE5792C583B0B00E3A423 /* DetailCard.swift in Sources */,
+				0F6872DD2C4D4F0900E3D06B /* Product.swift in Sources */,
+				0FAABE192C66BCBC008CCC51 /* Extentions.swift in Sources */,
 				88734E4E2B72B31D00A1DB7F /* Card.swift in Sources */,
+				8886C2C82B91CA2C0029A3AB /* Company.swift in Sources */,
+				0F423A8D2C58027000B78DC3 /* PhonePickerView.swift in Sources */,
+				0FE51EE72C4AEC7100239081 /* EntryView.swift in Sources */,
+				0FE51EEC2C4AED6A00239081 /* EntryViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,30 +592,101 @@
 		};
 		88B687422B5A9DAA00F49DA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC8AED0C2109B034D9E8B812 /* Pods-GulerGlobal.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_OTHER_FLAGS = "$(inherited)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GulerGlobal/Preview Content\"";
 				DEVELOPMENT_TEAM = 73LHC27R23;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GulerGlobal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Guler Global";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use location!";
+				INFOPLIST_KEY_NSContactsUsageDescription = "app use contacts";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseAppCheckInterop\"",
+					"-framework",
+					"\"FirebaseAuth\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreExtension\"",
+					"-framework",
+					"\"FirebaseCoreInternal\"",
+					"-framework",
+					"\"FirebaseFirestore\"",
+					"-framework",
+					"\"FirebaseFirestoreInternal\"",
+					"-framework",
+					"\"FirebaseInstallations\"",
+					"-framework",
+					"\"FirebaseSharedSwift\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleAppMeasurementIdentitySupport\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"RecaptchaInterop\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"absl\"",
+					"-framework",
+					"\"grpc\"",
+					"-framework",
+					"\"grpcpp\"",
+					"-framework",
+					"\"leveldb\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"openssl_grpc\"",
+					"-weak_framework",
+					"\"FirebaseFirestoreInternal\"",
+					"$(inherited)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = devibrahimglr.GulerGlobal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -430,30 +697,101 @@
 		};
 		88B687432B5A9DAA00F49DA3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BD55CC6BB40AFA2F43B23CD3 /* Pods-GulerGlobal.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_OTHER_FLAGS = "$(inherited)";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GulerGlobal/Preview Content\"";
 				DEVELOPMENT_TEAM = 73LHC27R23;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GulerGlobal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Guler Global";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use location!";
+				INFOPLIST_KEY_NSContactsUsageDescription = "app use contacts";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseAppCheckInterop\"",
+					"-framework",
+					"\"FirebaseAuth\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreExtension\"",
+					"-framework",
+					"\"FirebaseCoreInternal\"",
+					"-framework",
+					"\"FirebaseFirestore\"",
+					"-framework",
+					"\"FirebaseFirestoreInternal\"",
+					"-framework",
+					"\"FirebaseInstallations\"",
+					"-framework",
+					"\"FirebaseSharedSwift\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GTMSessionFetcher\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleAppMeasurementIdentitySupport\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"RecaptchaInterop\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"absl\"",
+					"-framework",
+					"\"grpc\"",
+					"-framework",
+					"\"grpcpp\"",
+					"-framework",
+					"\"leveldb\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"openssl_grpc\"",
+					"-weak_framework",
+					"\"FirebaseFirestoreInternal\"",
+					"$(inherited)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = devibrahimglr.GulerGlobal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -484,19 +822,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		88FD26182B68C70600EA5E71 /* GulerGlobal.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */,
-			);
-			currentVersion = 88FD26192B68C70600EA5E71 /* GulerGlobal.xcdatamodel */;
-			path = GulerGlobal.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 88B687292B5A9DA900F49DA3 /* Project object */;
 }

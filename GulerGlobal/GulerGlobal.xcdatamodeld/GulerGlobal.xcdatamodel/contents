@@ -11,7 +11,7 @@
         <relationship name="recDate" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Statement" inverseName="recParent" inverseEntity="Statement"/>
     </entity>
     <entity name="Company" representedClassName="Company" syncable="YES" codeGenerationType="class">
-        <attribute name="adress" optional="YES" attributeType="String"/>
+        <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>

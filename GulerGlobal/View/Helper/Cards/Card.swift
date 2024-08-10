@@ -8,61 +8,65 @@
 import SwiftUI
 
 struct Card: View {
-    @Environment(\.colorScheme) var scheme
+    @Environment(\.colorScheme) var colorScheme
     
-    @Binding var selectedCompany: Company?
     var company: Company
     var isApprove: Bool
     
     var body: some View {
-        ZStack(alignment: .top) {
-            HStack(spacing: 5) {
-                Text(company.name ?? "")
-                    .font(.title3.bold())
+        VStack(alignment: .leading, spacing: 5) {
+            
+            HStack {
+                Text(company.name)
+                    .lineLimit(1)
+                    .font(.system(size: 17, weight: .black, design: .default))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .propartyTextdBack()
-           
+                    .foregroundStyle(.black)
                 
                 Spacer()
                 
-                Text("P-\(company.work?.pNum ?? "")")
-                    .font(.caption.bold())
-                    .propartyTextdBack()
-            }
-            .foregroundStyle(.black)
-            .padding(.horizontal, 30)
-            .zIndex(1)
-            
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    WorkProperty(text: "Proje İsmi:", desc: "\(company.work?.name ?? "" )", alignment: .leading)
-                    
-                    Divider()
-                    
-                    WorkProperty(text: isApprove ? "Kalan:" : "Proje Fiyatı:", desc: "\(isApprove ? company.work?.accept?.remMoney ?? 0 : company.work?.price ?? 0 ) ₺", alignment: .leading)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(5)
-                .padding(.top, 15)
-         
+                Text("P-\(company.work.id)")
+                    .lineLimit(1)
+                    .font(.system(size: 11, weight: .black, design: .default))
+                    .foregroundStyle(.blue)
+                
                 
             }
-            .background(.BG)
-            .clipShape(RoundedRectangle(cornerRadius: 15))
-            .shadow(color: scheme == .light ? .black : .white ,radius: 1)
-            .padding(15)
             
+            HStack {
+                Text("\(company.work.name)")
+                    .lineLimit(1)
+                    .font(.system(size: 12, weight: .medium, design: .default))
+                    .foregroundStyle(.gray)
+                
+                Spacer()
+                
+                Text("\(isApprove ? company.work.accept.remMoney.customDouble() : company.work.price.customDouble()) ₺")
+                    .lineLimit(1)
+                    .font(.system(size: 20, weight: .black, design: .default))
+                    .foregroundStyle(isApprove ? .red : .green)
+            }
         }
-        .frame(height: 120)
-        .contentShape(Rectangle())
+        .padding(10)
+        .background(.hWhite)
+        .clipShape(RoundedCorner(radius: 10))
+        .overlay {
+            RoundedCorner(radius: 10)
+                .stroke(style: .init(lineWidth: 1))
+                .fill(.lGray)
+        }
+        .shadow(color: colorScheme == .dark ? .white : .black ,radius: 2)
+    }
+}
 
-   
+struct TestCard: View {
+    var body: some View {
+        Card(company: Company(name: "Sıcak Pres Mustafa", address: "Adress", phone: "(554) 170 16 35", work: Work(id: "0001", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], startDate: .now, finishDate: .now), product: [Product(name: "name", quantity: 10, suggestion: "deneme", purchased: .now)])), isApprove: true)
     }
 }
 
 #Preview {
-    ContentView()
+    TestCard()
         .preferredColorScheme(.light)
 }
 
