@@ -256,8 +256,41 @@ struct DetailView: View {
     @ViewBuilder
     func ProductDetail() -> some View {
         VStack(spacing: 0) {
-          
+            ForEach(company.work.product, id: \.self) { pro in
+                ProductCard(isDetail: true, pro: pro) {
+                    
+                    dataModel.companyName = company.name
+                    dataModel.companyAddress = company.address
+                    dataModel.companyPhone = company.phone
+                    
+                    dataModel.workPNum = company.work.id
+                    dataModel.workName = company.work.name
+                    dataModel.workDesc = company.work.desc
+                    dataModel.workPrice = "\(company.work.price)"
+                    dataModel.workApprove = company.work.approve
+                    
+                    dataModel.workRem = "\(company.work.accept.remMoney)"
+                    dataModel.isExpiry = company.work.accept.isExpiry
+                    dataModel.recDateList = company.work.accept.recList
+                    dataModel.expDateList = company.work.accept.expList
+                    dataModel.workStartDate = company.work.accept.startDate
+                    dataModel.workFinishDate = company.work.accept.finishDate
+                    
+                    dataModel.productList = []
+                    for p in company.work.product {
+                        if p == pro {
+                            let newPro = Product(name: pro.name, quantity: pro.quantity, price: pro.price, suggestion: pro.suggestion, purchased: pro.purchased, isBought: true)
+                            dataModel.productList.append(newPro)
+                        } else {
+                            dataModel.productList.append(p)
+                        }
+                    }
+                    
+                    dataModel.update()
+                }
+            }
         }
+        .padding([.vertical], 10)
         .frame(maxWidth: .infinity)
         .background(colorScheme == .dark ? .black : .white)
         .clipShape(RoundedCorner(radius: 5))
@@ -269,7 +302,7 @@ struct TestDetailView: View {
     @StateObject private var coreDataModel: FirebaseDataModel = .init()
     
     var body: some View {
-        if let company = coreDataModel.companies.first {
+        if let company = coreDataModel.companies.last {
             DetailView(company: company)
         }
     }

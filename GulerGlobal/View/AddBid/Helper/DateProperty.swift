@@ -81,13 +81,3 @@ struct TestDateProperty: View {
     TestDateProperty()
         .preferredColorScheme(.dark)
 }
-
-extension Date {
-    func getStringDate() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "tr")
-        formatter.dateStyle = .long
-        
-        return formatter.string(from: self)
-    }
-}

@@ -30,7 +30,7 @@ struct UnapprovedView: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle("Reddedilmiş Projeler")
+        .navigationTitle("İptal Projeler")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

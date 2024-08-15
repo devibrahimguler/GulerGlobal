@@ -294,6 +294,12 @@ struct AddBidView: View {
                         
                         DateProperty(timePicker: $timePicker, date: $dataModel.workFinishDate, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .finishDate)
                         
+                        Divider()
+                        
+                        AddProduct(timePicker: $timePicker)
+                            .environmentObject(dataModel)
+                        
+                        
                     }
                     
                     
@@ -327,6 +333,8 @@ struct AddBidView: View {
                 dataModel.workRecDay = value
             case .expDate:
                 dataModel.workExpiryDay = value
+            case .productPurchased:
+                dataModel.proPurchasedDate = value
             default:
                 print("None")
             }
@@ -347,6 +355,8 @@ struct AddBidView: View {
                 dataModel.workName = company.work.name
                 dataModel.workDesc = company.work.desc
                 dataModel.workPrice = String(company.work.price)
+                
+                dataModel.productList = company.work.product
                 
                 dataModel.isExpiry = company.work.accept.isExpiry
                 dataModel.recDateList = company.work.accept.recList

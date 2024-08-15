@@ -20,9 +20,16 @@ final class FirebaseDataModel: ObservableObject {
     @Published var unapproveCompanies: [Company] = []
     @Published var finishedCompanies: [Company] = []
     
+    @Published var takenProducts: [Company] = []
+    
     @Published var totalPrice: Double = 0
     @Published var totalRemPrice: Double = 0
     @Published var isPlaceHolder: Bool = false
+    
+    @Published var proName: String = ""
+    @Published var proQuantity: String = ""
+    @Published var proPrice: String = ""
+    @Published var proSuggestion: String = ""
     
     @Published var workPNum: String = ""
     @Published var workName: String = ""
@@ -41,12 +48,15 @@ final class FirebaseDataModel: ObservableObject {
     @Published var workStartDate: Date = .now
     @Published var workFinishDate: Date = .now
     
+    @Published var productList: [Product] = []
+    @Published var proPurchasedDate: Date = .now
+    
     @Published var workRecDay: Date = .now
     @Published var recDateList: [Statement] = []
     
     @Published var workExpiryDay: Date = .now
     @Published var expDateList: [Statement] = []
-
+    
     
     @Published var isPickerShower: Bool = false
     
@@ -62,7 +72,7 @@ final class FirebaseDataModel: ObservableObject {
         if self.userConnection.getUid != nil {
             self.isConnected = true
         }
-
+        
     }
     
     func getLastPNum() -> String? {
@@ -100,11 +110,13 @@ final class FirebaseDataModel: ObservableObject {
         approveCompanies = []
         unapproveCompanies = []
         finishedCompanies = []
+        takenProducts = []
+        
         totalPrice = 0
         totalRemPrice = 0
         
         isPlaceHolder = true
-
+        
         Task {
             do {
                 let companies = try await docRef.getDocuments()
@@ -132,9 +144,11 @@ final class FirebaseDataModel: ObservableObject {
                             for pro in work["product"] as? [[String: Any]] ?? [] {
                                 let name = pro["name"] as? String ?? ""
                                 let quantity = pro["quantity"] as? Int ?? 0
+                                let price = pro["price"] as? Double ?? 0
                                 let suggestion = pro["suggestion"] as? String ?? ""
                                 let purchased = pro["purchased"] as? Timestamp ?? .init(date: .now)
-                                proList.append(Product(name: name, quantity: quantity, suggestion: suggestion, purchased: purchased.dateValue()))
+                                let isBought = pro["isBought"] as? Bool ?? false
+                                proList.append(Product(name: name, quantity: quantity, price: price, suggestion: suggestion, purchased: purchased.dateValue(), isBought: isBought))
                             }
                             
                             let newWork = Work(
@@ -150,7 +164,7 @@ final class FirebaseDataModel: ObservableObject {
                                     expList: expList,
                                     startDate: accept["startDate"] as? Date ?? .now,
                                     finishDate: accept["finishDate"] as? Date ?? .now),
-                            product: proList)
+                                product: proList)
                             
                             let newCompany = Company(
                                 name: company.data()["name"] as? String ?? "",
@@ -173,6 +187,13 @@ final class FirebaseDataModel: ObservableObject {
                                 print("Not found any information!")
                             }
                             
+                            for p in newCompany.work.product {
+                                if !p.isBought {
+                                    if !self.takenProducts.contains(where: { c in c == newCompany}) {
+                                        self.takenProducts.append(newCompany)
+                                    }
+                                }
+                            }
                             self.companies.append(newCompany)
                             
                         }
@@ -184,14 +205,42 @@ final class FirebaseDataModel: ObservableObject {
                 self.unapproveCompanies = self.unapproveCompanies.sorted(by: { $0.work.id > $1.work.id })
                 self.finishedCompanies = self.finishedCompanies.sorted(by: { $0.work.id > $1.work.id })
                 self.companies = self.companies.sorted(by: { $0.work.id > $1.work.id })
-
+                
                 isPlaceHolder = false
-
+                
+                
+                
             } catch {
                 print("Veriler alınamadı: \(error.localizedDescription)")
                 isPlaceHolder = false
             }
             
+            companyName = ""
+            companyAddress = ""
+            companyPhone = ""
+            
+            workPNum = ""
+            workName = ""
+            workDesc = ""
+            workPrice = ""
+            workApprove = ""
+            
+            workRem = ""
+            isExpiry = false
+            recDateList = [Statement]()
+            expDateList = [Statement]()
+            workStartDate = .now
+            workFinishDate = .now
+            
+            productList = [Product]()
+            proPurchasedDate = .now
+            
+            proName = ""
+            proQuantity = ""
+            proPrice = ""
+            proSuggestion = ""
+            workPNum = ""
+            workName = ""
         }
         
         
@@ -206,7 +255,7 @@ final class FirebaseDataModel: ObservableObject {
     func create() {
         
         isPlaceHolder = true
-
+        
         var recList: [[String: Any]] = []
         for rec in [Statement]() {
             recList.append([
@@ -220,6 +269,18 @@ final class FirebaseDataModel: ObservableObject {
             expList.append([
                 "date": rec.date,
                 "price": rec.price
+            ])
+        }
+        
+        var proList: [[String: Any]] = []
+        for pro in [Product]() {
+            proList.append([
+                "name": pro.name,
+                "quantity": pro.quantity,
+                "price": pro.price,
+                "suggestion": pro.suggestion,
+                "purchased": pro.purchased,
+                "isBought": pro.isBought,
             ])
         }
         
@@ -242,7 +303,8 @@ final class FirebaseDataModel: ObservableObject {
                     "expList": expList,
                     "startDate": Date.now,
                     "finishDate": Date.now
-                ]
+                ],
+                "product": proList
             ]
         ])
         
@@ -253,7 +315,7 @@ final class FirebaseDataModel: ObservableObject {
     func update() {
         
         isPlaceHolder = true
-
+        
         var recList: [[String: Any]] = []
         for rec in recDateList {
             recList.append([
@@ -265,14 +327,26 @@ final class FirebaseDataModel: ObservableObject {
         var expList: [[String: Any]] = []
         for rec in expDateList {
             expList.append([
-                "date": rec.date,
+                "name": rec.date,
                 "price": rec.price
+            ])
+        }
+        
+        var proList: [[String: Any]] = []
+        for pro in productList {
+            proList.append([
+                "name": pro.name,
+                "quantity": pro.quantity,
+                "price": pro.price,
+                "suggestion": pro.suggestion,
+                "purchased": pro.purchased,
+                "isBought": pro.isBought,
             ])
         }
         
         let price = workPrice.toDouble()
         let rem = workRem.toDouble()
-
+        
         db.collection("Company").document(workPNum).updateData([
             "name": companyName,
             "address": companyAddress,
@@ -290,7 +364,8 @@ final class FirebaseDataModel: ObservableObject {
                     "expList":  expList,
                     "startDate": workStartDate,
                     "finishDate": workFinishDate
-                ]
+                ],
+                "product": proList
             ]
         ])
         

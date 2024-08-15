@@ -61,7 +61,7 @@ struct Card: View {
 
 struct TestCard: View {
     var body: some View {
-        Card(company: Company(name: "Sıcak Pres Mustafa", address: "Adress", phone: "(554) 170 16 35", work: Work(id: "0001", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], startDate: .now, finishDate: .now), product: [Product(name: "name", quantity: 10, suggestion: "deneme", purchased: .now)])), isApprove: true)
+        Card(company: Company(name: "Sıcak Pres Mustafa", address: "Adress", phone: "(554) 170 16 35", work: Work(id: "0001", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], startDate: .now, finishDate: .now), product: [Product(name: "name", quantity: 10, price: 1000, suggestion: "deneme", purchased: .now, isBought: false)])), isApprove: true)
     }
 }
 

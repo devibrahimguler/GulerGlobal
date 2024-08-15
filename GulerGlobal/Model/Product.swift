@@ -10,14 +10,18 @@ import Foundation
 struct Product: Codable, Hashable {
     var name: String
     var quantity: Int
+    var price: Double
     var suggestion: String
     var purchased: Date
+    var isBought: Bool
     
     enum CodingKeys: String, CodingKey {
         case name = "name"
         case quantity = "quantity"
+        case price = "price"
         case suggestion = "suggestion"
         case purchased = "purchased"
+        case isBought = "isBought"
     }
     
 }

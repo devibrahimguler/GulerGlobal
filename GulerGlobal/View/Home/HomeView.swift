@@ -31,13 +31,13 @@ struct HomeView: View {
                     PieChart(slices: [(dataModel.totalPrice - dataModel.totalRemPrice, .green),(dataModel.totalRemPrice, .red)])
                         .animation(.smooth, value: dataModel.totalRemPrice)
                         .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                    
-                    
                 }
                 .padding(.horizontal)
                 
-                Spacer()
+                TakenProductView()
+                    .environmentObject(dataModel)
                 
+                Spacer()
             }
             .navigationTitle("Haber Ekranı")
             .navigationBarTitleDisplayMode(.inline)

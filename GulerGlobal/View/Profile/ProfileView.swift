@@ -89,7 +89,7 @@ struct ProfileView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
 
-                            Text("Bitmiş Projeler")
+                            Text("Bitmiş")
                                 .font(.system(size: 12, weight: .black))
                         }
                     }
@@ -112,11 +112,11 @@ struct ProfileView: View {
                             }
                     } label: {
                         VStack {
-                            Image("rejected")
+                            Image("cancel")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                             
-                            Text("Reddedilmiş Projeler")
+                            Text("İptal")
                                 .font(.system(size: 12, weight: .black))
                         }
                     }
@@ -131,6 +131,29 @@ struct ProfileView: View {
                     }
                     .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
                     
+                    
+                    NavigationLink {
+                        
+                    } label: {
+                        VStack {
+                            Image(systemName: "circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                            
+                            Text("Yakında !")
+                                .font(.system(size: 12, weight: .black))
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(10)
+                    .background(.hWhite)
+                    .clipShape(RoundedCorner(radius: 10))
+                    .overlay {
+                        RoundedCorner(radius: 10)
+                            .stroke(style: .init(lineWidth: 1))
+                            .fill(.lGray)
+                    }
+                    .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
                     
                 }
                 .foregroundStyle(.bBlue)
