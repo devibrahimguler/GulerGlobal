@@ -7,13 +7,15 @@
 
 import Foundation
 
-struct Company: Codable, Hashable {
+struct Company: Codable, Hashable, Identifiable {
+    var id: String
     var name: String
     var address: String
     var phone: String
-    var work: Work
+    var work: [Work]
     
     enum CodingKeys: String, CodingKey {
+        case id = "id"
         case name = "name"
         case address = "address"
         case phone = "phone"

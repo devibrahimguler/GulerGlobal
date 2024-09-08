@@ -9,6 +9,7 @@ import Foundation
 
 struct Work: Identifiable, Codable, Hashable {
     var id: String
+    var workId: String
     var name: String
     var desc: String
     var price: Double
@@ -17,7 +18,8 @@ struct Work: Identifiable, Codable, Hashable {
     var product: [Product]
     
     enum CodingKeys: String, CodingKey {
-        case id = "pNum"
+        case id = "id"
+        case workId = "workId"
         case name = "name"
         case desc = "desc"
         case price = "price"

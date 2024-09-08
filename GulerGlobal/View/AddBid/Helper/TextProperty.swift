@@ -28,9 +28,9 @@ struct TextProperty: View {
                     .padding(5)
                     .background(.white)
                     .foregroundStyle(.gray)
-                    .clipShape(RoundedCorner(radius: 5))
+                    .clipShape(RoundedCorner(radius: 5, corners: [.topLeft, .topRight]))
                     .overlay {
-                        RoundedCorner(radius: 5)
+                        RoundedCorner(radius: 5, corners: [.topLeft, .topRight])
                             .stroke(style: .init(lineWidth: 3))
                             .fill(formTitle == title ? .blue : .gray )
                     }
@@ -44,12 +44,13 @@ struct TextProperty: View {
                         }
                     } label: {
                         Text("Seç".uppercased())
-                            .padding(5)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal)
                             .background(.green)
                             .foregroundStyle(.white)
-                            .clipShape(RoundedCorner(radius: 5))
+                            .clipShape(RoundedCorner(radius: 5, corners: [.topLeft, .topRight]))
                             .overlay {
-                                RoundedCorner(radius: 5)
+                                RoundedCorner(radius: 5, corners: [.topLeft, .topRight])
                                     .stroke(style: .init(lineWidth: 3))
                                     .fill(formTitle == title ? .blue : .gray )
                             }
@@ -58,12 +59,12 @@ struct TextProperty: View {
                 
             }
             .zIndex(1)
-            .padding(.horizontal)
+            .padding(.horizontal, 5)
             
             if title == .workDescription {
                 TextEditor(text: $text)
                     .focused($isFocused)
-                    .frame(minHeight: 50)
+                    .frame(minHeight: 30)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(nil)
@@ -71,15 +72,15 @@ struct TextProperty: View {
                     .zIndex(0)
                     .padding(5)
                     .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 5))
+                    .clipShape(RoundedCorner(radius: 5, corners: keyboardType == .phonePad ? [.bottomLeft, .bottomRight] : [.bottomLeft, .bottomRight, .topRight]))
                     .overlay {
-                        RoundedCorner(radius: 5)
+                        RoundedCorner(radius: 5, corners: keyboardType == .phonePad ? [.bottomLeft, .bottomRight] : [.bottomLeft, .bottomRight, .topRight])
                             .stroke(style: .init(lineWidth: 3))
                             .fill(formTitle == title ? .blue : .gray )
                     }
                     .keyboardType(keyboardType)
                     .zIndex(0)
-                    .padding(.top, 15)
+                    .padding(.top, 17)
                     .padding(5)
                     .onChange(of: isFocused) { value in
                         if value {
@@ -95,18 +96,18 @@ struct TextProperty: View {
                             text = text.formatPhoneNumber()
                         }
                     }
-                    .padding(10)
+                    .padding(5)
                     .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 5))
+                    .clipShape(RoundedCorner(radius: 5, corners: keyboardType == .phonePad ? [.bottomLeft, .bottomRight] : [.bottomLeft, .bottomRight, .topRight]))
                     .multilineTextAlignment(.leading)
                     .overlay {
-                        RoundedCorner(radius: 5)
+                        RoundedCorner(radius: 5, corners: keyboardType == .phonePad ? [.bottomLeft, .bottomRight] : [.bottomLeft, .bottomRight, .topRight])
                             .stroke(style: .init(lineWidth: 3))
                             .fill(formTitle == title ? .blue : .gray )
                     }
                     .keyboardType(keyboardType)
                     .zIndex(0)
-                    .padding(.top, 15)
+                    .padding(.top, 17)
                     .padding(5)
                     .onChange(of: isFocused) { value in
                         if value {
@@ -115,7 +116,7 @@ struct TextProperty: View {
                     }
             }
         }
-        .font(.system(size: 15, weight: .black, design: .monospaced))
+        .font(.system(size: 10, weight: .black, design: .monospaced))
         .foregroundStyle(color)
     }
 }
@@ -124,7 +125,7 @@ struct TestTextProperty: View {
     @State private var text: String = ""
     @State private var formTitle: FormTitle = .none
     var body: some View {
-        TextProperty(title: .workDescription, text: $text, formTitle: $formTitle, keyboardType: .numberPad)
+        TextProperty(title: .workName, text: $text, formTitle: $formTitle, keyboardType: .default)
     }
 }
 

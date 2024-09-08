@@ -10,14 +10,14 @@ import SwiftUI
 struct Card: View {
     @Environment(\.colorScheme) var colorScheme
     
-    var company: Company
+    var work: Work
     var isApprove: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             
             HStack {
-                Text(company.name)
+                Text("company.name")
                     .lineLimit(1)
                     .font(.system(size: 17, weight: .black, design: .default))
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -25,7 +25,7 @@ struct Card: View {
                 
                 Spacer()
                 
-                Text("P-\(company.work.id)")
+                Text("P-\(work.id)")
                     .lineLimit(1)
                     .font(.system(size: 11, weight: .black, design: .default))
                     .foregroundStyle(.blue)
@@ -34,14 +34,14 @@ struct Card: View {
             }
             
             HStack {
-                Text("\(company.work.name)")
+                Text("\(work.name)")
                     .lineLimit(1)
                     .font(.system(size: 12, weight: .medium, design: .default))
                     .foregroundStyle(.gray)
                 
                 Spacer()
                 
-                Text("\(isApprove ? company.work.accept.remMoney.customDouble() : company.work.price.customDouble()) ₺")
+                Text("\(isApprove ? work.accept.remMoney.customDouble() : work.price.customDouble()) ₺")
                     .lineLimit(1)
                     .font(.system(size: 20, weight: .black, design: .default))
                     .foregroundStyle(isApprove ? .red : .green)
@@ -61,7 +61,7 @@ struct Card: View {
 
 struct TestCard: View {
     var body: some View {
-        Card(company: Company(name: "Sıcak Pres Mustafa", address: "Adress", phone: "(554) 170 16 35", work: Work(id: "0001", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], startDate: .now, finishDate: .now), product: [Product(name: "name", quantity: 10, price: 1000, suggestion: "deneme", purchased: .now, isBought: false)])), isApprove: true)
+        Card(work: Work(id: "0000", workId: "0000", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], start: .now, finished: .now), product: [Product(name: "name", quantity: 10, price: 1000, suggestion: "deneme", purchased: .now, isBought: false)]), isApprove: true)
     }
 }
 

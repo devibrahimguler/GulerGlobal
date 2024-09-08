@@ -9,19 +9,20 @@ import SwiftUI
 
 struct FinishedBidView: View {
     @EnvironmentObject var dataModel: FirebaseDataModel
-    @Binding var selectedCompany: Company?
     @Binding var tab: Tabs
     @Binding var edit: Edit
     
     var body: some View {
         List {
-            ForEach(dataModel.finishedCompanies, id: \.self) { company in
+            ForEach(dataModel.finishedWorks, id: \.self) { work in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        DetailView(company: company)
-                            .environmentObject(dataModel)
+                        /*
+                         DetailView(company: company)
+                             .environmentObject(dataModel)
+                         */
                     } label: {
-                        Card(company: company, isApprove: true)
+                        Card(work: work, isApprove: true)
                     }
                 }
                 .listRowSeparator(.hidden)

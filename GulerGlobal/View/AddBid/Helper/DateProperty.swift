@@ -25,14 +25,14 @@ struct DateProperty: View {
                 .padding(5)
                 .background(.white)
                 .foregroundStyle(.gray)
-                .clipShape(RoundedCorner(radius: 5))
+                .clipShape(RoundedCorner(radius: 5, corners: [.topLeft, .topRight]))
                 .overlay {
-                    RoundedCorner(radius: 5)
+                    RoundedCorner(radius: 5, corners: [.topLeft, .topRight])
                         .stroke(style: .init(lineWidth: 3))
                         .fill(formTitle == title ? .blue : .gray )
                 }
                 .zIndex(1)
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
             
             Button {
                 withAnimation(.snappy) {
@@ -45,15 +45,15 @@ struct DateProperty: View {
                 Text("\(date.getStringDate())")
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
-                    .padding(10)
+                    .padding(5)
                     .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 5))
+                    .clipShape(RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight]))
                     .overlay {
-                        RoundedCorner(radius: 5)
+                        RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight])
                             .stroke(style: .init(lineWidth: 3))
                             .fill(formTitle == title ? .blue : .gray )
                     }
-                    .padding(.top, 15)
+                    .padding(.top, 17)
                     .padding(5)
             
             }
@@ -61,7 +61,7 @@ struct DateProperty: View {
 
             
         }
-        .font(.system(size: 15, weight: .black, design: .monospaced))
+        .font(.system(size: 10, weight: .black, design: .monospaced))
         .foregroundStyle(color)
     }
 }

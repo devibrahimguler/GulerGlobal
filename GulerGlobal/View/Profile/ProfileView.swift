@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
     
-    @EnvironmentObject var dataModel: FirebaseDataModel
+    @EnvironmentObject var viewModel: MainViewModel
     @Binding var selectedCompany: Company?
     @Binding var tab: Tabs
     @Binding var edit: Edit
@@ -32,7 +32,7 @@ struct ProfileView: View {
                         VStack {
                             Text("Hoş Geldiniz!")
                             
-                            Text("\(dataModel.userConnection.getUserName ?? "") Bey")
+                            Text("\(viewModel.userConnection.getUserName ?? "") Bey")
                                 .foregroundStyle(.red)
                         }
                         
@@ -40,17 +40,17 @@ struct ProfileView: View {
                         
                         Button {
                             withAnimation(.smooth) {
-                                dataModel.isPlaceHolder = true
+                                viewModel.isPlaceHolder = true
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    dataModel.userConnection.logout { result in
+                                    viewModel.userConnection.logout { result in
                                         switch result {
                                         case .success(_):
-                                            dataModel.isConnected = false
-                                            dataModel.isPlaceHolder = false
+                                            viewModel.isConnected = false
+                                            viewModel.isPlaceHolder = false
                         
                                         case .failure(_):
-                                            dataModel.isConnected = true
-                                            dataModel.isPlaceHolder = false
+                                            viewModel.isConnected = true
+                                            viewModel.isPlaceHolder = false
                                       
                                         }
                                     }
@@ -78,8 +78,8 @@ struct ProfileView: View {
                 
                 HStack {
                     NavigationLink {
-                        FinishedBidView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit)
-                            .environmentObject(dataModel)
+                        FinishedBidView(tab: $tab, edit: $edit)
+                            .environmentObject(viewModel)
                             .onAppear {
                                 UITabBar.changeTabBarState(shouldHide: true)
                             }
@@ -105,8 +105,8 @@ struct ProfileView: View {
                     .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
                     
                     NavigationLink {
-                        UnapprovedView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit)
-                            .environmentObject(dataModel)
+                        UnapprovedView(tab: $tab, edit: $edit)
+                            .environmentObject(viewModel)
                             .onAppear {
                                 UITabBar.changeTabBarState(shouldHide: true)
                             }

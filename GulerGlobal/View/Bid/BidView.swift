@@ -18,16 +18,18 @@ struct BidView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(dataModel.waitCompanies, id: \.self) { company in
+                ForEach(dataModel.waitWorks, id: \.self) { work in
                     LazyVStack(spacing: 0){
                         NavigationLink {
-                            DetailView(company: company)
-                                .environmentObject(dataModel)
-                                .onDisappear {
-                                    UITabBar.changeTabBarState(shouldHide: false)
-                                }
+                            /*
+                             DetailView(company: <#Company#>)
+                                 .environmentObject(dataModel)
+                                 .onDisappear {
+                                     UITabBar.changeTabBarState(shouldHide: false)
+                                 }
+                             */
                         } label: {
-                            Card(company: company, isApprove: false)
+                            Card(work: work, isApprove: false)
                         }
                         
                     }
@@ -36,7 +38,9 @@ struct BidView: View {
                         
                         Button {
                             withAnimation(.snappy) {
-                                selectedCompany = company
+                                /*
+                                 selectedCompany = company
+                                 */
                                 tab = .AddBid
                                 edit = .EditWait
                                 
@@ -51,7 +55,9 @@ struct BidView: View {
                         
                         Button {
                             withAnimation(.snappy) {
-                                selectedCompany = company
+                                /*
+                                 selectedCompany = company
+                                 */
                                 tab = .AddBid
                                 edit = .Wait
                             }
@@ -65,22 +71,24 @@ struct BidView: View {
                         
                         Button {
                             withAnimation(.snappy) {
-                                dataModel.companyName = company.name
-                                dataModel.companyAddress = company.address
-                                dataModel.companyPhone = company.phone
+                                /*
+                                 dataModel.companyName = company.name
+                                 dataModel.companyAddress = company.address
+                                 dataModel.companyPhone = company.phone
+                                 */
                                 
-                                dataModel.workPNum = company.work.id
-                                dataModel.workName = company.work.name
-                                dataModel.workDesc = company.work.desc
-                                dataModel.workPrice = "\(company.work.price)"
+                                dataModel.workPNum = work.id
+                                dataModel.workName = work.name
+                                dataModel.workDesc = work.desc
+                                dataModel.workPrice = "\(work.price)"
                                 dataModel.workApprove = "Unapprove"
                                 
-                                dataModel.workRem = "\(company.work.accept.remMoney)"
-                                dataModel.isExpiry = company.work.accept.isExpiry
-                                dataModel.recDateList = company.work.accept.recList
-                                dataModel.expDateList = company.work.accept.expList
-                                dataModel.workStartDate = company.work.accept.startDate
-                                dataModel.workFinishDate = company.work.accept.finishDate
+                                dataModel.workRem = "\(work.accept.remMoney)"
+                                dataModel.isExpiry = work.accept.isExpiry
+                                dataModel.recList = work.accept.recList
+                                dataModel.expList = work.accept.expList
+                                dataModel.workStart = work.accept.start
+                                dataModel.workFinished = work.accept.finished
                                 
                                 dataModel.update()
                             }

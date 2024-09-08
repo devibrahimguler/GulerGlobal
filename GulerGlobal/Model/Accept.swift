@@ -12,16 +12,16 @@ struct Accept: Codable, Hashable {
     var isExpiry: Bool
     var recList: [Statement]
     var expList: [Statement]
-    var startDate: Date
-    var finishDate: Date
+    var start: Date
+    var finished: Date
     
     enum CodingKeys: String, CodingKey {
         case remMoney = "remMoney"
         case isExpiry = "isExpiry"
         case recList = "recList"
         case expList = "expList"
-        case startDate = "startDate"
-        case finishDate = "finishDate"
+        case start = "start"
+        case finished = "finished"
     }
     
 }

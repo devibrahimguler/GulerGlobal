@@ -62,7 +62,7 @@ struct AddBidView: View {
                 .padding(.top, 5)
             
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 10) {
+                VStack(spacing: 2) {
                     TextProperty(title: .companyName, text: $dataModel.companyName, formTitle: $dataModel.formTitle, color: dataModel.isNewCompany ? color : .gray)
                         .disabled(!dataModel.isNewCompany || isEdit)
                         .onTapGesture {
@@ -168,8 +168,8 @@ struct AddBidView: View {
                             HStack(spacing: 10) {
                                 Button {
                                     withAnimation(.snappy) {
-                                        let newStatement = dataModel.createStatement(date: dataModel.workRecDay, price: dataModel.workRec.toDouble())
-                                        dataModel.recDateList.append(newStatement)
+                                        let newStatement = Statement(date: dataModel.workRecDate, price: dataModel.workRec.toDouble())
+                                        dataModel.recList.append(newStatement)
                                         dataModel.workRec = ""
                                     }
                                 } label: {
@@ -179,7 +179,7 @@ struct AddBidView: View {
                                 .foregroundStyle(dataModel.workRec == "" ? .gray : .blue)
                                 .disabled(dataModel.workRec == "")
                                 
-                                DateProperty(timePicker: $timePicker, date: $dataModel.workRecDay, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .recDate)
+                                DateProperty(timePicker: $timePicker, date: $dataModel.workRecDate, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .recDate)
                                 
                                 
                             }
@@ -188,9 +188,9 @@ struct AddBidView: View {
                            
                             
                             VStack(spacing: 5) {
-                                ForEach(dataModel.recDateList, id: \.self) { statement in
-                                    CashCard(date: statement.date , price: statement.price, isExp: false) { isDelete in
-                                        if let index = dataModel.recDateList.firstIndex(of: statement) {
+                                ForEach(dataModel.recList, id: \.self) { statement in
+                                    CashCard(date: statement.date , price: statement.price, isExp: false, isHaveButton: true) { isDelete in
+                                        if let index = dataModel.recList.firstIndex(of: statement) {
                                             dataModel.recDateList.remove(at: index)
                                             
                                             if !isDelete {
@@ -233,10 +233,10 @@ struct AddBidView: View {
                                     Image(systemName: dataModel.isExpiry ? "checkmark.square" : "square")
                                 }
                                 .font(.largeTitle)
-                                .foregroundStyle(!dataModel.expDateList.isEmpty ? .gray : .blue)
+                                .foregroundStyle(!dataModel.expList.isEmpty ? .gray : .blue)
                                 .padding(15)
                                 .padding(.top, 20)
-                                .disabled(!dataModel.expDateList.isEmpty)
+                                .disabled(!dataModel.expList.isEmpty)
                                 
                             }
                             .font(.system(size: 20, weight: .black, design: .monospaced))
@@ -250,8 +250,8 @@ struct AddBidView: View {
                                 HStack(spacing: 10) {
                                     Button {
                                         withAnimation(.snappy) {
-                                            let newStatement = dataModel.createStatement(date: dataModel.workExpiryDay, price: dataModel.workExp.toDouble())
-                                             dataModel.expDateList.append(newStatement)
+                                            let newStatement = dataModel.createStatement(date: dataModel.workExpDate, price: dataModel.workExp.toDouble())
+                                             dataModel.expList.append(newStatement)
                                              dataModel.workExp = ""
                                         }
                                     } label: {
@@ -261,7 +261,7 @@ struct AddBidView: View {
                                     .foregroundStyle(dataModel.workExp == "" ? .gray : .blue)
                                     .disabled(dataModel.workExp == "" )
                                     
-                                    DateProperty(timePicker: $timePicker, date: $dataModel.workExpiryDay, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .expDate)
+                                    DateProperty(timePicker: $timePicker, date: $dataModel.workExpDate, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .expDate)
                                     
                                     
                                 }
@@ -269,30 +269,32 @@ struct AddBidView: View {
                                 
                                
                                 
-                                VStack(spacing: 5) {
-                                    ForEach(dataModel.expDateList, id: \.self) { statement in
-                                        CashCard(date: statement.date , price: statement.price, isExp: true) { isDelete in
-                                            if let index = dataModel.expDateList.firstIndex(of: statement) {
-                                                dataModel.expDateList.remove(at: index)
-                                                
-                                                if !isDelete {
-                                                    let newStatement = dataModel.createStatement(date: statement.date , price: statement.price)
-                                                    dataModel.workRem = "\((Double(dataModel.workRem) ?? 0) - statement.price)"
-                                                    dataModel.recDateList.append(newStatement)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                /*
+                                 VStack(spacing: 5) {
+                                     ForEach(dataModel.expList, id: \.self) { statement in
+                                         CashCard(date: statement.date , price: statement.price, isExp: true, isHaveButton: true) { isDelete in
+                                             if let index = dataModel.expList.firstIndex(of: statement) {
+                                                 dataModel.expDateList.remove(at: index)
+                                                 
+                                                 if !isDelete {
+                                                     let newStatement = dataModel.createStatement(date: statement.date , price: statement.price)
+                                                     dataModel.workRem = "\((Double(dataModel.workRem) ?? 0) - statement.price)"
+                                                     dataModel.recDateList.append(newStatement)
+                                                 }
+                                             }
+                                         }
+                                     }
+                                 }
+                                 */
                                 
                             }
                             
                             Divider()
                         }
                         
-                        DateProperty(timePicker: $timePicker, date: $dataModel.workStartDate, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .startDate)
+                        DateProperty(timePicker: $timePicker, date: $dataModel.workStart, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .startDate)
                         
-                        DateProperty(timePicker: $timePicker, date: $dataModel.workFinishDate, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .finishDate)
+                        DateProperty(timePicker: $timePicker, date: $dataModel.workFinished, isPickerShower: $dataModel.isPickerShower, formTitle: $dataModel.formTitle, title: .finishDate)
                         
                         Divider()
                         
@@ -319,20 +321,20 @@ struct AddBidView: View {
         .onReceive(dataModel.$workRec) { value in
             dataModel.workRem = "\(dataModel.workPrice.toDouble() - dataModel.workRec.toDouble())"
             
-            for rec in dataModel.recDateList {
+            for rec in dataModel.recList {
                 dataModel.workRem = "\(dataModel.workRem.toDouble() - rec.price)"
             }
         }
         .onChange(of: timePicker) { value in
             switch(dataModel.formTitle) {
             case .startDate:
-                dataModel.workStartDate = value
+                dataModel.workStart = value
             case .finishDate:
-                dataModel.workFinishDate = value
+                dataModel.workFinished = value
             case .recDate:
-                dataModel.workRecDay = value
+                dataModel.workRecDate = value
             case .expDate:
-                dataModel.workExpiryDay = value
+                dataModel.workExpDate = value
             case .productPurchased:
                 dataModel.proPurchasedDate = value
             default:
@@ -342,33 +344,37 @@ struct AddBidView: View {
         .onChange(of: tab) { _ in
             dataModel.workPNum = dataModel.getLastPNum() ?? ""
             
-            if let company = company {
-                
-                dataModel.workStartDate = company.work.accept.startDate
-                dataModel.workFinishDate = company.work.accept.finishDate
-                
-                dataModel.companyName = company.name
-                dataModel.companyAddress = company.address
-                dataModel.companyPhone = company.phone
-                
-                dataModel.workPNum = company.work.id
-                dataModel.workName = company.work.name
-                dataModel.workDesc = company.work.desc
-                dataModel.workPrice = String(company.work.price)
-                
-                dataModel.productList = company.work.product
-                
-                dataModel.isExpiry = company.work.accept.isExpiry
-                dataModel.recDateList = company.work.accept.recList
-                dataModel.expDateList = company.work.accept.expList
-                var totalRem = company.work.price
-                
-                for rec in dataModel.recDateList {
-                    totalRem -= rec.price
-                }
-                
-                dataModel.workRem = String(totalRem)
-            }
+            /*
+             if let company = company {
+                 
+                 dataModel.companyName = company.name
+                 dataModel.companyAddress = company.address
+                 dataModel.companyPhone = company.phone
+                 
+                 dataModel.workStartDate = work.accept.startDate
+                 dataModel.workFinishDate = work.accept.finishDate
+                 
+                 
+                 
+                 dataModel.workPNum = work.id
+                 dataModel.workName = work.name
+                 dataModel.workDesc = work.desc
+                 dataModel.workPrice = String(work.price)
+                 
+                 dataModel.productList = work.product
+                 
+                 dataModel.isExpiry = work.accept.isExpiry
+                 dataModel.recDateList = work.accept.recList
+                 dataModel.expDateList = work.accept.expList
+                 var totalRem = work.price
+                 
+                 for rec in dataModel.recDateList {
+                     totalRem -= rec.price
+                 }
+                 
+                 dataModel.workRem = String(totalRem)
+             }
+             */
         }
     }
     
@@ -433,10 +439,10 @@ struct AddBidView: View {
         dataModel.formTitle = .none
         dataModel.isPickerShower = false
         
-        dataModel.workFinishDate = .now
-        dataModel.workStartDate = .now
-        dataModel.recDateList = []
-        dataModel.expDateList = []
+        dataModel.workFinished = .now
+        dataModel.workStart = .now
+        dataModel.recList = []
+        dataModel.expList = []
         dataModel.isExpiry = false
         
         dataModel.workPNum = ""

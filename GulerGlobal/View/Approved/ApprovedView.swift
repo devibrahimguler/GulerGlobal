@@ -16,23 +16,27 @@ struct ApprovedView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(dataModel.approveCompanies, id: \.self) { company in
+                ForEach(dataModel.approveWorks, id: \.self) { work in
                     LazyVStack(spacing: 0) {
                         NavigationLink {
-                            DetailView(company: company)
-                                .environmentObject(dataModel)
-                                .onDisappear {
-                                    UITabBar.changeTabBarState(shouldHide: false)
-                                }
+                            /*
+                             DetailView(company: company)
+                                 .environmentObject(dataModel)
+                                 .onDisappear {
+                                     UITabBar.changeTabBarState(shouldHide: false)
+                                 }
+                             */
                         } label: {
-                            Card(company: company, isApprove: true)
+                            Card(work: work, isApprove: true)
                         }
                     }
                     .listRowSeparator(.hidden)
                     .swipeActions {
                         Button {
                             withAnimation(.snappy) {
-                                selectedCompany = company
+                                /*
+                                 selectedCompany = company
+                                 */
                                 tab = .AddBid
                                 edit = .Approve
                             }

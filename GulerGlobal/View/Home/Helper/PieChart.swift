@@ -36,12 +36,10 @@ struct PieChart: View {
                     p.move(to: .zero)
                     p.addArc(center: .zero, radius: radius, startAngle: startAngle + Angle(degrees: 4) / 2 , endAngle: endAngle, clockwise: false)
                     p.closeSubpath()
-                   
-                }
                     
-                    .trimmedPath(from: 0.0, to: trimTo)
-             
-                    
+                }.trimmedPath(from: 0.0, to: trimTo)
+                
+                
                 pieContext.fill(path, with: .color(color))
                 
                 startAngle = endAngle
@@ -57,9 +55,9 @@ struct PieChart: View {
         .padding(2)
         .overlay {
             RoundedCorner(radius: 300)
-                .stroke(style: .init(lineWidth: 5))
+                .stroke(style: .init(lineWidth: 3))
                 .fill(.hWhite)
-     
+            
         }
         .padding()
     }

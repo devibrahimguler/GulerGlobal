@@ -9,17 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var dataModel: FirebaseDataModel = .init()
+    @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        if dataModel.isPlaceHolder {
+        if viewModel.isPlaceHolder {
             CustomPlaceHolder()
-        } else if dataModel.isConnected {
+        } else if viewModel.isConnected {
             MainView()
-            .environmentObject(dataModel)
+            .environmentObject(viewModel)
         } else {
-            EntryView(userConnection: dataModel.userConnection, isPlaceHolder: $dataModel.isPlaceHolder, isConnected: $dataModel.isConnected)
-                .environmentObject(dataModel)
+            EntryView(userConnection: viewModel.userConnection, isPlaceHolder: $viewModel.isPlaceHolder, isConnected: $viewModel.isConnected)
+                .environmentObject(viewModel)
             
         }
     }

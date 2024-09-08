@@ -11,7 +11,9 @@ struct CashCard: View {
     var date: Date
     var price: Double
     var isExp: Bool = false
-    var action: (_ isDelete: Bool) -> ()
+    var isHaveButton: Bool = false
+    var color: Color = .hWhite
+    var action: ((_ isDelete: Bool) -> ())?
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -20,61 +22,68 @@ struct CashCard: View {
                 .padding(5)
                 .background(.white)
                 .foregroundStyle(.gray)
-                .clipShape(RoundedCorner(radius: 5))
+                .clipShape( RoundedCorner(radius: 5, corners: [.topLeft, .topRight]))
                 .overlay {
-                    RoundedCorner(radius: 5)
+                    RoundedCorner(radius: 5, corners: [.topLeft, .topRight])
                         .stroke(style: .init(lineWidth: 3))
                         .fill(.gray)
                 }
                 .zIndex(1)
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
             
             HStack(spacing: 0) {
                 Text("\(price.customDouble()) ₺")
                     .frame(maxWidth: .infinity)
-                .padding(10)
-                .background(.hWhite)
-                .clipShape(RoundedCorner(radius: 5))
-                .multilineTextAlignment(.center)
-                .overlay {
-                    RoundedCorner(radius: 5)
-                        .stroke(style: .init(lineWidth: 3))
-                        .fill(.gray)
-                }
-                .zIndex(0)
-                .padding(.top, 15)
-                .padding(5)
+                    .padding(5)
+                    .background(color)
+                    .clipShape(RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight]))
+                    .multilineTextAlignment(.center)
+                    .overlay {
+                        RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight])
+                            .stroke(style: .init(lineWidth: 3))
+                            .fill(.gray)
+                    }
+                    .zIndex(0)
+                    .padding(.top, 17)
+                    .padding(5)
                 
-                if isExp {
+                if isHaveButton {
+                    if isExp {
+                        Button {
+                            withAnimation(.snappy) {
+                                if let action = action {
+                                    action(false)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "plus.app")
+                                .font(.title)
+                                .foregroundStyle(.green)
+                                .padding(5)
+                                .padding(.top, 17)
+                            
+                            
+                        }
+                    }
+                    
                     Button {
                         withAnimation(.snappy) {
-                            action(false)
+                            if let action = action {
+                                action(true)
+                            }
                         }
                     } label: {
-                        Image(systemName: "plus.app")
+                        Image(systemName: "minus.square")
                             .font(.title)
-                            .foregroundStyle(.green)
+                            .foregroundStyle(.red)
                             .padding(5)
-                            .padding(.top, 15)
-                        
-                        
+                            .padding(.top, 17)
                     }
                 }
                 
-                Button {
-                    withAnimation(.snappy) {
-                        action(true)
-                    }
-                } label: {
-                    Image(systemName: "minus.square")
-                        .font(.title)
-                        .foregroundStyle(.red)
-                        .padding(5)
-                        .padding(.top, 15)
-                }
             }
         }
-        .font(.system(size: 15, weight: .black, design: .monospaced))
+        .font(.system(size: 10, weight: .black, design: .monospaced))
         .foregroundStyle(.bSea)
     }
 }
