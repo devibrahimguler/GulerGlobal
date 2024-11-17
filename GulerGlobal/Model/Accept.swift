@@ -9,7 +9,6 @@ import Foundation
 
 struct Accept: Codable, Hashable {
     var remMoney: Double
-    var isExpiry: Bool
     var recList: [Statement]
     var expList: [Statement]
     var start: Date
@@ -17,7 +16,6 @@ struct Accept: Codable, Hashable {
     
     enum CodingKeys: String, CodingKey {
         case remMoney = "remMoney"
-        case isExpiry = "isExpiry"
         case recList = "recList"
         case expList = "expList"
         case start = "start"

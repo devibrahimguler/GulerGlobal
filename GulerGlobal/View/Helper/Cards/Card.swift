@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Card: View {
     @Environment(\.colorScheme) var colorScheme
-    
+    var companyName: String?
     var work: Work
     var isApprove: Bool
     
@@ -17,18 +17,20 @@ struct Card: View {
         VStack(alignment: .leading, spacing: 5) {
             
             HStack {
-                Text("company.name")
-                    .lineLimit(1)
-                    .font(.system(size: 17, weight: .black, design: .default))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundStyle(.black)
-                
-                Spacer()
+                if let name = companyName {
+                    Text("\(name)")
+                        .lineLimit(1)
+                        .font(.system(size: 17, weight: .black, design: .default))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(.black)
+                    
+                    Spacer()
+                }
                 
                 Text("P-\(work.id)")
                     .lineLimit(1)
                     .font(.system(size: 11, weight: .black, design: .default))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.accentColor)
                 
                 
             }
@@ -61,7 +63,25 @@ struct Card: View {
 
 struct TestCard: View {
     var body: some View {
-        Card(work: Work(id: "0000", workId: "0000", name: "Sıcak Press", desc: "Sıcak press yapılacak", price: 20000, approve: "Approve", accept: Accept(remMoney: 1000, isExpiry: false, recList: [Statement(date: .now, price: 1000)], expList: [Statement(date: .now, price: 1000)], start: .now, finished: .now), product: [Product(name: "name", quantity: 10, price: 1000, suggestion: "deneme", purchased: .now, isBought: false)]), isApprove: true)
+        Card(work:
+                Work(id: "0000",
+                     companyId: "0",
+                     name: "Sıcak Press",
+                     desc: "Sıcak press yapılacak",
+                     price: 20000,
+                     approve: "Approve",
+                     accept: Accept(remMoney: 1000,
+                                    recList: [Statement(date: .now, price: 1000)],
+                                    expList: [Statement(date: .now, price: 1000)],
+                                    start: .now,
+                                    finished: .now),
+                     products: [Product(name: "name",
+                                        quantity: 10,
+                                        price: 1000,
+                                        suggestion: "deneme",
+                                        purchased: .now,
+                                        isBought: false)]),
+             isApprove: true)
     }
 }
 

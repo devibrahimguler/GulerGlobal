@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "coming-soon.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

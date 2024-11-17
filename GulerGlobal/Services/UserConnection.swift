@@ -5,7 +5,7 @@
 //  Created by ibrahim Güler on 19.07.2024.
 //
 
-import Firebase
+import FirebaseAuth
 
 protocol AuthProtocol {
     var getUserName : String? { get }

@@ -11,9 +11,6 @@ struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var viewModel: MainViewModel
-    @Binding var selectedCompany: Company?
-    @Binding var tab: Tabs
-    @Binding var edit: Edit
     
     var body: some View {
         NavigationView {
@@ -32,7 +29,7 @@ struct ProfileView: View {
                         VStack {
                             Text("Hoş Geldiniz!")
                             
-                            Text("\(viewModel.userConnection.getUserName ?? "") Bey")
+                            Text("\(viewModel.userConnection.getUserName ?? "")")
                                 .foregroundStyle(.red)
                         }
                         
@@ -47,11 +44,11 @@ struct ProfileView: View {
                                         case .success(_):
                                             viewModel.isConnected = false
                                             viewModel.isPlaceHolder = false
-                        
+                                            
                                         case .failure(_):
                                             viewModel.isConnected = true
                                             viewModel.isPlaceHolder = false
-                                      
+                                            
                                         }
                                     }
                                 }
@@ -66,111 +63,95 @@ struct ProfileView: View {
                         }
                         
                         
-                           
-                    }
-                }
-                .padding(10)
-                .background(.hWhite)
-                .clipShape(RoundedCorner(radius: 10))
-                .padding(10)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                
-                HStack {
-                    NavigationLink {
-                        FinishedBidView(tab: $tab, edit: $edit)
-                            .environmentObject(viewModel)
-                            .onAppear {
-                                UITabBar.changeTabBarState(shouldHide: true)
-                            }
-                    } label: {
-                        VStack {
-                            Image("finished")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-
-                            Text("Bitmiş")
-                                .font(.system(size: 12, weight: .black))
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(10)
-                    .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 10))
-                    .overlay {
-                        RoundedCorner(radius: 10)
-                            .stroke(style: .init(lineWidth: 1))
-                            .fill(.lGray)
-                    }
-                    .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                    
-                    NavigationLink {
-                        UnapprovedView(tab: $tab, edit: $edit)
-                            .environmentObject(viewModel)
-                            .onAppear {
-                                UITabBar.changeTabBarState(shouldHide: true)
-                            }
-                    } label: {
-                        VStack {
-                            Image("cancel")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                            
-                            Text("İptal")
-                                .font(.system(size: 12, weight: .black))
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(10)
-                    .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 10))
-                    .overlay {
-                        RoundedCorner(radius: 10)
-                            .stroke(style: .init(lineWidth: 1))
-                            .fill(.lGray)
-                    }
-                    .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                    
-                    
-                    NavigationLink {
                         
-                    } label: {
-                        VStack {
-                            Image(systemName: "circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                            
-                            Text("Yakında !")
-                                .font(.system(size: 12, weight: .black))
-                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(10)
-                    .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 10))
-                    .overlay {
-                        RoundedCorner(radius: 10)
-                            .stroke(style: .init(lineWidth: 1))
-                            .fill(.lGray)
-                    }
-                    .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                    
                 }
-                .foregroundStyle(.bBlue)
-                .padding(.horizontal, 30)
-                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(10)
+                .background(.background, in: .rect(cornerRadius: 20))
                 
+                VStack() {
+                    HStack {
+                        
+                        HomeScreenButton(
+                            content:
+                                FinishedBidView()
+                                .environmentObject(viewModel)
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .finished)
+                        
+                        HomeScreenButton(
+                            content:
+                                UnapprovedView()
+                                .environmentObject(viewModel)
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .cancel)
+                        
+                        HomeScreenButton(
+                            content:
+                                CompaniesView()
+                                .environmentObject(viewModel)
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .companies)
+                        
+                        
+                    }
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.horizontal, 10)
+                    
+                    HStack {
+                        
+                        HomeScreenButton(
+                            content:
+                                CurrentsView()
+                                .environmentObject(viewModel)
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .currents)
+                        
+                        HomeScreenButton(
+                            content:
+                                DebsView()
+                                .environmentObject(viewModel)
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .debs)
+                        
+                        HomeScreenButton(
+                            content:
+                                VStack { Text("Yakında!") }
+                                .onAppear {
+                                    UITabBar.changeTabBarState(shouldHide: true)
+                                },
+                            buttonType: .soon)
+                        
+                        
+                    }
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.horizontal, 10)
+                }
+                .padding(.vertical, 10)
 
-
+                .background(.background, in: .rect(cornerRadius: 20))
+                .padding(.horizontal, 10)
                 Spacer()
                 
             }
+            .padding(.horizontal, 20)
+            .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
             .font(.system(size: 20, weight: .black, design: .monospaced))
-            .foregroundStyle(.black)
             .onAppear {
                 UITabBar.changeTabBarState(shouldHide: false)
             }
         }
+        
     }
 }
 

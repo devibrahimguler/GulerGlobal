@@ -16,38 +16,37 @@ struct Property: View {
     var color: Color = .hWhite
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        VStack(alignment: .leading, spacing: 0) {
             
             Text(title.uppercased())
                 .font(.system(size: 10, weight: .black, design: .monospaced))
                 .padding(.horizontal, 10)
+                .padding(.vertical, 1)
                 .background(.white)
                 .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
                 .overlay {
                     RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
-                        .stroke(style: .init(lineWidth: 1))
-                        .fill(.lGray)
+                        .stroke(style: .init(lineWidth: 2))
+                        .fill(.gray)
                 }
-                .foregroundStyle(.bSea)
-                .zIndex(1)
             
             
             Text(desc)
-                .font(.system(size: 15, weight: .black, design: .rounded))
                 .frame(maxWidth: .infinity)
+                .font(.system(size: 15, weight: .black, design: .rounded))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 1)
                 .background(color)
-                .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight, .topRight]))
+                .clipShape(RoundedCorner(radius: 10, corners: [.topRight, .bottomRight, .bottomLeft]))
                 .overlay {
-                    RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight, .topRight])
-                        .stroke(style: .init(lineWidth: 1))
-                        .fill(.lGray)
+                    RoundedCorner(radius: 10, corners: [.topRight, .bottomRight, .bottomLeft])
+                        .stroke(style: .init(lineWidth: 2))
+                        .fill(.gray)
                 }
                 .foregroundStyle(color == .red || color == .green ? .white : .black)
-                .padding(.top,15)
-                .zIndex(0)
-                .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
             
         }
+        .foregroundStyle(.black)
         .padding(.vertical, 5)
     }
 }

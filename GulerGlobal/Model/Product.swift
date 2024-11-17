@@ -9,7 +9,7 @@ import Foundation
 
 struct Product: Codable, Hashable {
     var name: String
-    var quantity: Int
+    var quantity: Int32
     var price: Double
     var suggestion: String
     var purchased: Date

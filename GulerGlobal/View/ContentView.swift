@@ -14,13 +14,15 @@ struct ContentView: View {
     var body: some View {
         if viewModel.isPlaceHolder {
             CustomPlaceHolder()
-        } else if viewModel.isConnected {
-            MainView()
-            .environmentObject(viewModel)
         } else {
-            EntryView(userConnection: viewModel.userConnection, isPlaceHolder: $viewModel.isPlaceHolder, isConnected: $viewModel.isConnected)
-                .environmentObject(viewModel)
-            
+            if viewModel.isConnected {
+                MainView()
+                    .environmentObject(viewModel)
+            } else {
+                EntryView(userConnection: viewModel.userConnection, isPlaceHolder: $viewModel.isPlaceHolder, isConnected: $viewModel.isConnected)
+                    .environmentObject(viewModel)
+                
+            }
         }
     }
 }

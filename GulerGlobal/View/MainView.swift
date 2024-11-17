@@ -8,50 +8,30 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var dataModel: FirebaseDataModel
-    @State private var selectedCompany: Company? = nil
-    
-    @State private var tab: Tabs = .Home
-    @State private var edit: Edit = .Wait
-    
-    @State private var isAccepts: Bool = false
-    @State private var isDetail: Bool = false
+    @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
-        TabView(selection: $tab) {
+        TabView(selection: $viewModel.tab) {
             HomeView()
-                .environmentObject(dataModel)
+                .environmentObject(viewModel)
                 .tabItem { Image(systemName: "house") }
                 .tag(Tabs.Home)
             
-            BidView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit)
-                .environmentObject(dataModel)
+            BidView()
+                .environmentObject(viewModel)
                 .tabItem { Image(systemName: "rectangle.stack") }
                 .tag(Tabs.Bid)
             
-            AddBidView(tab: $tab, edit: $edit, company: $selectedCompany)
-                .environmentObject(dataModel)
-                .tabItem { Image(systemName: "plus.app.fill") }
-                .tag(Tabs.AddBid)
-               
-            
-            ApprovedView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit)
-                .environmentObject(dataModel)
-                .tabItem {
-                    if #available(iOS 17.0, *) { Image(systemName: "checkmark.rectangle.stack.fill") }
-                    else { Image(systemName: "checkmark.rectangle.fill") }
-                }
+            ApprovedView()
+                .environmentObject(viewModel)
+                .tabItem { Image(systemName: "checkmark.rectangle.stack.fill") }
                 .tag(Tabs.Approved)
             
-            ProfileView(selectedCompany: $selectedCompany, tab: $tab, edit: $edit)
-                .environmentObject(dataModel)
+            ProfileView()
+                .environmentObject(viewModel)
                 .tabItem { Image(systemName: "person.fill") }
                 .tag(Tabs.Profile)
             
-        }.onChange(of: tab) { tab in
-            if tab == .AddBid {
-                UITabBar.changeTabBarState(shouldHide: true)
-            }
         }
         
     }

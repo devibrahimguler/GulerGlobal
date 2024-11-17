@@ -12,14 +12,14 @@ struct Company: Codable, Hashable, Identifiable {
     var name: String
     var address: String
     var phone: String
-    var work: [Work]
+    var works: [String]
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case name = "name"
         case address = "address"
         case phone = "phone"
-        case work = "work"
+        case works = "works"
     }
     
 }

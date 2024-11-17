@@ -9,22 +9,22 @@ import Foundation
 
 struct Work: Identifiable, Codable, Hashable {
     var id: String
-    var workId: String
+    var companyId: String
     var name: String
     var desc: String
     var price: Double
     var approve: String
     var accept: Accept
-    var product: [Product]
+    var products: [Product]
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
-        case workId = "workId"
+        case companyId = "companyId"
         case name = "name"
         case desc = "desc"
         case price = "price"
         case approve = "approve"
         case accept = "accept"
-        case product = "product"
+        case products = "products"
     }
 }

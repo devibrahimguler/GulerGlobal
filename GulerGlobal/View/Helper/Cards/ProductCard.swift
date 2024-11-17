@@ -9,116 +9,110 @@ import SwiftUI
 
 struct ProductCard: View {
     @Environment(\.colorScheme) var colorScheme
-    var isDetail: Bool
+    
     var pro: Product
     var color: Color = .hWhite
-    var complation: () -> ()
+    var action: ((Bool) -> Void)?
     
     var body: some View {
-        HStack(spacing: 5) {
-            HStack {
-                let totalPrice = Double(pro.quantity) * Double(pro.price)
-                
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("İSMİ: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(pro.name)")
+        VStack(spacing: 0) {
+            let totalPrice = Double(pro.quantity) * Double(pro.price)
+            
+            HStack(alignment: .center, spacing: 0) {
+                if !pro.isBought {
+                    Button {
+                        if let action = action {
+                            action(true)
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.headline.bold())
+                            .foregroundStyle(Color.accentColor)
                     }
-                    
-                    HStack {
-                        Text("YER: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(pro.suggestion)")
-                    }
-                    
-                    HStack {
-                        
-                        Text("TARİH: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(pro.purchased.getStringDate())")
-                    }
-                    
+                    .padding(.horizontal, 8)
+                    .clipShape(RoundedCorner(radius: 10, corners: [.bottomRight, .topLeft]))
                     
                 }
                 
                 Spacer()
                 
-                VStack(alignment: .leading) {
-                    
-                    HStack {
-                        Text("ADET: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(pro.quantity)")
-                    }
-                    
-                    HStack {
-                        Text("FİYAT: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(pro.price.customDouble()) ₺")
-                    }
-                    
-                    HStack {
-                        Text("TOPLAM: ")
-                            .foregroundStyle(.blue)
-                        
-                        Text("\(totalPrice.customDouble()) ₺")
-                    }
-                }
-            }
-            .font(.system(size: 12, weight: .black, design: .default))
-            .foregroundStyle(pro.isBought ? .white : .black)
-            .padding(10)
-            .background(pro.isBought ? .green : color)
-            .clipShape(RoundedCorner(radius: 10))
-            .overlay {
-                RoundedCorner(radius: 10)
-                    .stroke(style: .init(lineWidth: 1))
-                    .fill(.lGray)
-            }
-            .shadow(color: colorScheme == .dark ? .white : .black ,radius: 2)
-    
-            if isDetail && !pro.isBought {
+                Text("\(pro.suggestion)")
+                    .font(.system(size: 15, weight: .black, design: .default))
+                    .foregroundStyle(colorScheme == .light ? .primary : Color.white)
+                    .padding(5)
+                   
+                
+                Spacer()
+                
                 Button {
-                    withAnimation(.snappy) {
-                        complation()
+                    if let action = action {
+                        action(false)
                     }
                 } label: {
-                    Image(systemName: "plus.app")
-                        .font(.title)
-                        .foregroundStyle(.hWhite)
-                        .shadow(color: colorScheme == .dark ? .white : .black ,radius: 2)
-
-                }
-            } else if !isDetail {
-                Button {
-                    withAnimation(.snappy) {
-                       complation()
-                    }
-                } label: {
-                    Image(systemName: "minus.square")
-                        .font(.title)
+                    Image(systemName: "minus")
+                        .font(.headline.bold())
                         .foregroundStyle(.red)
-                        .shadow(color: colorScheme == .dark ? .white : .black ,radius: 2)
+                }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 8)
+                .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .topRight]))
+                
+                
+
+            }
+            .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
+            .overlay {
+                RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
+                    .stroke(style: .init(lineWidth: 3))
+                    .fill(.gray)
+            }
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("\(pro.name)")
+                        .font(.system(size: 18, weight: .black, design: .default))
+                        .foregroundStyle(pro.isBought ? .gray : Color.accentColor)
+                        .lineLimit(1)
+                    
+                    Text("\(pro.purchased.getStringDate(.short))")
+                        .foregroundStyle(.gray)
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 5) {
+                    Text("ADET: \(pro.quantity)")
+                        .foregroundStyle(.gray)
+                    
+                    Text("FİYAT: \(pro.price.customDouble()) ₺")
+                        .foregroundStyle(.gray)
+                    
+                    Text("TOPLAM FİYAT: \(totalPrice.customDouble()) ₺")
+                        .foregroundStyle(.gray)
                 }
             }
+            .padding(10)
+            .foregroundStyle(pro.isBought ? .white : .black)
+            .background(pro.isBought ? Color.accentColor : color)
+            .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight]))
+            .overlay {
+                RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight])
+                    .stroke(style: .init(lineWidth: 3))
+                    .fill(.gray)
+            }
+            
         }
-        .padding([.horizontal], 5)
-        .padding([.vertical], 5)
+        .frame(maxWidth: .infinity)
+        .font(.system(size: 10, weight: .black, design: .default))
+        .padding(5)
+  
     }
 }
 
 struct TestProductCard: View {
     var pro: Product = .init(name: "Name", quantity: 2, price: 200, suggestion: "Yıldız", purchased: .now, isBought: false)
     var body: some View {
-        ProductCard(isDetail: false, pro: pro) {
-            
-        }
+        ProductCard(pro: pro)
     }
 }
 

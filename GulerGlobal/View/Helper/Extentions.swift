@@ -11,9 +11,17 @@ import SwiftUI
 enum Tabs {
     case Home
     case Bid
-    case AddBid
     case Approved
     case Profile
+}
+
+enum ButtonType: String {
+    case cancel = "İptal"
+    case finished = "Bitmiş"
+    case companies = "Firmalar"
+    case currents = "Cariler"
+    case debs = "Borçlar"
+    case soon = "Yakında!"
 }
 
 enum Edit {
@@ -47,6 +55,18 @@ enum FormTitle: String {
     case productPrice = "ÜRÜN FİYATI"
     case productSuggestion = "ALINDIĞI YER"
     case productPurchased = "ALINMA TARİHİ"
+}
+
+enum ButtonStyle: String {
+    case accept = "checkmark.square"
+    case reject = "trash"
+}
+
+enum ListType {
+    case none
+    case recStatement
+    case expStatement
+    case product
 }
 
 extension View {
@@ -148,10 +168,10 @@ extension View {
 }
 
 extension Date {
-    func getStringDate() -> String {
+    func getStringDate(_ style: DateFormatter.Style) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "tr")
-        formatter.dateStyle = .long
+        formatter.dateStyle = style
         
         return formatter.string(from: self)
     }

@@ -10,86 +10,78 @@ import SwiftUI
 struct CashCard: View {
     var date: Date
     var price: Double
-    var isExp: Bool = false
-    var isHaveButton: Bool = false
     var color: Color = .hWhite
-    var action: ((_ isDelete: Bool) -> ())?
+    var action: (Bool) -> ()
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .top) {
             
-            Text("\(date.getStringDate())")
-                .padding(5)
-                .background(.white)
-                .foregroundStyle(.gray)
-                .clipShape( RoundedCorner(radius: 5, corners: [.topLeft, .topRight]))
-                .overlay {
-                    RoundedCorner(radius: 5, corners: [.topLeft, .topRight])
-                        .stroke(style: .init(lineWidth: 3))
-                        .fill(.gray)
+            HStack {
+                if color == .yellow {
+                    Button {
+                        withAnimation(.snappy) {
+                            action(true)
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .padding(5)
+                    .background(Color.accentColor)
                 }
-                .zIndex(1)
+                
+                Text("\(date.getStringDate(.long))")
+                    .padding(5)
+                
+                Button {
+                    withAnimation(.snappy) {
+                        action(false)
+                    }
+                } label: {
+                    Image(systemName: "minus")
+                }
                 .padding(.horizontal, 5)
+                .padding(.vertical, 10)
+                .background(.red)
+                   
+
+            }
+            .font(.system(size: 13, weight: .black, design: .monospaced))
+            .background(.white)
+            .foregroundStyle(.black)
+            .clipShape( RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
+            .overlay {
+                RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
+                    .stroke(style: .init(lineWidth: 3))
+                    .fill(.gray)
+            }
+            .zIndex(1)
+            .padding(.horizontal, 5)
             
             HStack(spacing: 0) {
                 Text("\(price.customDouble()) ₺")
                     .frame(maxWidth: .infinity)
                     .padding(5)
                     .background(color)
-                    .clipShape(RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight]))
+                    .clipShape(RoundedCorner(radius: 10))
                     .multilineTextAlignment(.center)
                     .overlay {
-                        RoundedCorner(radius: 5, corners: [.bottomLeft, .bottomRight, .topRight])
+                        RoundedCorner(radius: 10)
                             .stroke(style: .init(lineWidth: 3))
                             .fill(.gray)
                     }
                     .zIndex(0)
-                    .padding(.top, 17)
+                    .padding(.top, 21)
                     .padding(5)
-                
-                if isHaveButton {
-                    if isExp {
-                        Button {
-                            withAnimation(.snappy) {
-                                if let action = action {
-                                    action(false)
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "plus.app")
-                                .font(.title)
-                                .foregroundStyle(.green)
-                                .padding(5)
-                                .padding(.top, 17)
-                            
-                            
-                        }
-                    }
-                    
-                    Button {
-                        withAnimation(.snappy) {
-                            if let action = action {
-                                action(true)
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "minus.square")
-                            .font(.title)
-                            .foregroundStyle(.red)
-                            .padding(5)
-                            .padding(.top, 17)
-                    }
-                }
                 
             }
         }
-        .font(.system(size: 10, weight: .black, design: .monospaced))
-        .foregroundStyle(.bSea)
+        .font(.system(size: 15, weight: .black, design: .monospaced))
+        .foregroundStyle(.black)
     }
 }
 
 #Preview {
-    CashCard(date: .now, price: 2000000000, isExp: true) { isDelete in
+    CashCard(date: .now, price: 2000000000, color: .yellow) { _ in 
         
     }
     .preferredColorScheme(.dark)

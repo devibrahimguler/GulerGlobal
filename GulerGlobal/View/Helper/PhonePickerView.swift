@@ -52,7 +52,7 @@ struct PhonePickerView: UIViewControllerRepresentable {
             if let phoneNumber = contact.phoneNumbers.first?.value.stringValue {
                 handlePhoneNumber(phoneNumber)
             }
-            parent.presentationMode.wrappedValue.dismiss()
+            // parent.presentationMode.wrappedValue.dismiss()
         }
         
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contactProperty: CNContactProperty) {
@@ -65,7 +65,7 @@ struct PhonePickerView: UIViewControllerRepresentable {
                 // You can now use phoneNumberString as needed
                 handlePhoneNumber(phoneNumberString)
             }
-            parent.presentationMode.wrappedValue.dismiss()
+            // parent.presentationMode.wrappedValue.dismiss()
         }
         
         private func handlePhoneNumber(_ phoneNumber: String) {
