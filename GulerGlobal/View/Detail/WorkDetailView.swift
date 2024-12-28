@@ -22,79 +22,80 @@ struct WorkDetailView: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 0) {
-                TextProperty(title: .workName, text: $viewModel.workName, formTitle: $formTitle)
-                    .disabled(!isEditWork)
-                    .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
-                    .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
-                
-                
-                TextProperty(title: .workDescription, text: $viewModel.workDesc, formTitle: $formTitle)
-                    .disabled(!isEditWork)
-                    .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
-                    .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
-                
-                HStack {
-                    TextProperty(title: .workPrice, text: $viewModel.workPrice, formTitle: $formTitle)
+            VStack(spacing: 10) {
+                VStack(spacing: 0) {
+                    TextProperty(title: .workName, text: $viewModel.workName, formTitle: $formTitle)
                         .disabled(!isEditWork)
                         .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                         .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
                     
-                    if !(work.approve == "Finished") {
-                        
-                        
-                        if work.accept.remMoney == 0 {
-                            if !isEditWork {
-                                VStack {
-                                    Text("BİTTİ")
-                                        .foregroundStyle(.red)
-                                        .padding(5)
-                                        .background(.white)
-                                        .foregroundStyle(.gray)
-                                        .clipShape( RoundedCorner(radius: 10))
-                                        .overlay {
-                                            RoundedCorner(radius: 10)
-                                                .stroke(style: .init(lineWidth: 3))
-                                                .fill(.red)
-                                        }
-                                        .zIndex(1)
-                                        .padding(.horizontal, 5)
-                                    
-                                    Button {
-                                        withAnimation(.snappy) {
-                                            viewModel.workUpdate(
-                                                .init(id: work.id,
-                                                      companyId: work.companyId,
-                                                      name: work.name,
-                                                      desc: work.desc,
-                                                      price: work.price,
-                                                      approve: "Finished",
-                                                      accept: work.accept,
-                                                      products: work.products)
-                                            )
-                                            
-                                        }
-                                    } label: {
-                                        Image(systemName: "square")
-                                            .font(.system(size: 20, weight: .bold, design: .monospaced))
-                                            .foregroundStyle(.red)
-                                    }
-                                }
-                                .padding(.horizontal, 5)
-                                .font(.system(size: 15, weight: .black, design: .monospaced))
-                            }
-                        } else {
-                            TextProperty(title: .remMoney, text: $viewModel.acceptRem, formTitle: $formTitle, color: .red)
-                                .disabled(true)
-                        }
-                    }
                     
+                    TextProperty(title: .workDescription, text: $viewModel.workDesc, formTitle: $formTitle)
+                        .disabled(!isEditWork)
+                        .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
+                        .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
+                    
+                    HStack {
+                        TextProperty(title: .workPrice, text: $viewModel.workPrice, formTitle: $formTitle)
+                            .disabled(!isEditWork)
+                            .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
+                            .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
+                        
+                        if !(work.approve == "Finished") {
+                            
+                            
+                            if work.accept.remMoney == 0 {
+                                if !isEditWork {
+                                    VStack {
+                                        Text("BİTTİ")
+                                            .foregroundStyle(.red)
+                                            .padding(5)
+                                            .background(.white)
+                                            .foregroundStyle(.gray)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                                    .stroke(style: .init(lineWidth: 3))
+                                                    .fill(.red)
+                                            }
+                                            .zIndex(1)
+                                            .padding(.horizontal, 5)
+                                        
+                                        Button {
+                                            withAnimation(.snappy) {
+                                                viewModel.updateWork(
+                                                    .init(id: work.id,
+                                                          companyId: work.companyId,
+                                                          name: work.name,
+                                                          desc: work.desc,
+                                                          price: work.price,
+                                                          approve: "Finished",
+                                                          accept: work.accept,
+                                                          products: work.products)
+                                                )
+                                                
+                                            }
+                                        } label: {
+                                            Image(systemName: "square")
+                                                .font(.system(size: 20, weight: .bold, design: .monospaced))
+                                                .foregroundStyle(.red)
+                                        }
+                                    }
+                                    .padding(.horizontal, 5)
+                                    .font(.system(size: 15, weight: .black, design: .monospaced))
+                                }
+                            } else {
+                                TextProperty(title: .remMoney, text: $viewModel.acceptRem, formTitle: $formTitle, color: .red)
+                                    .disabled(true)
+                            }
+                        }
+                        
+                    }
                 }
+                .padding(10)
+                .background(.background, in: .rect(cornerRadius: 20))
                 
-                Divider()
-                    .padding(.vertical, 10)
-                
-                Group {
+                VStack(spacing: 0) {
                     if formTitle == .startDate {
                         CustomDatePicker(timePicker:  $viewModel.acceptStart, title: .startDate, formTitle: $formTitle)
                     } else {
@@ -110,12 +111,11 @@ struct WorkDetailView: View {
                 .disabled(!isEditWork)
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                 .animation(.easeInOut(duration: 0.5).repeatForever(), value: isEditWork)
-                
+                .padding(10)
+                .background(.background, in: .rect(cornerRadius: 20))
                 
                 if !isBidView {
                     VStack(spacing: 0) {
-                        Divider()
-                            .padding(.vertical, 10)
                         
                         CustomList(
                             title: "ALINAN PARA EKLE",
@@ -126,9 +126,7 @@ struct WorkDetailView: View {
                             list: work.accept.recList,
                             work: work)
                         .environmentObject(viewModel)
-                        
-                        Divider()
-                            .padding(.vertical, 10)
+                        .padding()
                         
                         CustomList(
                             title: "ALINACAK PARA EKLE",
@@ -139,9 +137,7 @@ struct WorkDetailView: View {
                             list: work.accept.expList,
                             work: work)
                         .environmentObject(viewModel)
-                        
-                        Divider()
-                            .padding(.vertical, 10)
+                        .padding()
                         
                         CustomList(
                             title: "MALZEME EKLE",
@@ -152,9 +148,12 @@ struct WorkDetailView: View {
                             list: work.products,
                             work: work)
                         .environmentObject(viewModel)
+                        .padding()
                     }
-                    .opacity(isEditWork ? 0 : 1)
                     .frame(maxHeight: isEditWork ? 0 : .infinity)
+                    .padding(.vertical, 10)
+                    .background(.background, in: .rect(cornerRadius: 20))
+                    .opacity(isEditWork ? 0 : 1)
                 }
                 
             }
@@ -163,6 +162,7 @@ struct WorkDetailView: View {
             .blur(radius: isAdd ? 5 : 0)
             .padding(.horizontal, 5)
         }
+        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .onAppear {
             viewModel.workChange(work)
             UITabBar.changeTabBarState(shouldHide: true)
@@ -177,7 +177,7 @@ struct WorkDetailView: View {
                         let remMoney = (viewModel.workPrice.toDouble() - work.price) + work.accept.remMoney
                         viewModel.acceptRem = "\(remMoney)"
                         
-                        viewModel.workUpdate(.init(
+                        viewModel.updateWork(.init(
                             id: work.id,
                             companyId: work.companyId,
                             name: viewModel.workName,
@@ -221,7 +221,7 @@ struct WorkDetailView: View {
                 .presentationBackground(.thinMaterial)
                 .presentationCornerRadius(10)
                 .environmentObject(viewModel)
-                
+            
         }
     }
 }

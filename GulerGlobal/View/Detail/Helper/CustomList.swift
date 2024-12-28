@@ -23,20 +23,21 @@ struct CustomList: View {
         VStack(spacing: 5) {
             HStack(spacing: 0) {
                 
-                Button {
-                    withAnimation(.snappy) {
-                        isHidden.toggle()
+                if (list?.count ?? 0 > 0) {
+                    Button {
+                        withAnimation(.snappy) {
+                            isHidden.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isHidden ? "arrow.up.to.line.square" : "arrow.down.to.line.square")
+                            .font(.title)
+                            .foregroundStyle(isHidden ? .red : .white)
+                            .shadow(color: .black ,radius: 1)
                     }
-                } label: {
-                    Image(systemName: isHidden ? "arrow.up.square" : "arrow.down.square")
-                        .font(.title)
-                        .foregroundStyle(isHidden ? .red : .white)
-                        .shadow(color: .black ,radius: 1)
-                    
+                    .padding(5)
+                    .font(.system(size: 15, weight: .black, design: .monospaced))
+                    .background(Color.accentColor)
                 }
-                .padding(5)
-                .font(.system(size: 15, weight: .black, design: .monospaced))
-                .background(Color.accentColor)
                 
                 Text(title)
                     .padding(10)
@@ -63,15 +64,13 @@ struct CustomList: View {
             }
             .foregroundStyle(.hWhite)
             .background(color)
-            .clipShape(RoundedCorner(radius: 10))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay {
-                RoundedCorner(radius: 10)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .stroke(style: .init(lineWidth: 3))
                     .fill(.black)
                 
             }
-            .padding(.horizontal, 30)
-            .padding(.vertical, 10)
             
             if (list?.count ?? 0 > 0) {
                 if !isHidden {

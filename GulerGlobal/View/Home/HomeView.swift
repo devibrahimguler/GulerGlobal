@@ -49,13 +49,12 @@ struct HomeView: View {
                     .frame(height: 150)
                     .padding(5)
                      .overlay {
-                         RoundedCorner(radius: 70)
+                         RoundedRectangle(cornerRadius: 70, style: .continuous)
                              .stroke(style: .init(lineWidth: 6))
                              .fill(.hWhite)
                              .frame(width: 132, height: 132)
                              .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
                      }
-                     
                     .padding()
                 }
                 .padding(.horizontal)

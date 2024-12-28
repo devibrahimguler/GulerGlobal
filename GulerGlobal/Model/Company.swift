@@ -5,7 +5,7 @@
 //  Created by ibrahim Güler on 1.03.2024.
 //
 
-import Foundation
+import SwiftUI
 
 struct Company: Codable, Hashable, Identifiable {
     var id: String

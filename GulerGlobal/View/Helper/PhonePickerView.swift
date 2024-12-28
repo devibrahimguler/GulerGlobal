@@ -53,6 +53,7 @@ struct PhonePickerView: UIViewControllerRepresentable {
                 handlePhoneNumber(phoneNumber)
             }
             // parent.presentationMode.wrappedValue.dismiss()
+            
         }
         
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contactProperty: CNContactProperty) {

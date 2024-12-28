@@ -11,7 +11,7 @@ struct FinishedBidView: View {
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
-        List {
+        BaseList(title: "Bitmiş Projeler") {
             ForEach(viewModel.finishedWorks, id: \.self) { work in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
@@ -21,12 +21,8 @@ struct FinishedBidView: View {
                         Card(work: work, isApprove: true)
                     }
                 }
-                .listRowSeparator(.hidden)
             }
         }
-        .listStyle(.plain)
-        .navigationTitle("Bitmiş Projeler")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

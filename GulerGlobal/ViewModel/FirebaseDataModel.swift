@@ -114,9 +114,39 @@ final class FirebaseDataModel: ObservableObject {
         
         
     }
+
+    // Get givrecs data from Database.
+    @MainActor
+    func fetchGivrecData(complation: @escaping (Result<[Givrec], Error>) -> Void) {
+        Task {
+            do {
+                let docRef = db.collection("Givrecs")
+                var givrecList: [Givrec] = []
+                let givrecs = try await docRef.getDocuments()
+                
+                for givrec in givrecs.documents {
+                    let newWork = Givrec(
+                        id: givrec["id"] as? String ?? "",
+                        currentId: givrec["currentId"] as? String ?? "",
+                        price: givrec["price"] as? Double ?? 0,
+                        date: (givrec["date"] as? Timestamp ?? .init(date: .now)).dateValue(),
+                        isRec: givrec["isRec"] as? Bool ?? false)
+                    
+                    givrecList.append(newWork)
+                }
+                
+                complation(.success(givrecList))
+                
+            } catch {
+                complation(.failure(error))
+            }
+        }
+        
+        
+    }
     
-    // Add Data to Database.
-    func create(company: Company, work: Work) -> Bool {
+    // Company add Data in Firebase Database.
+    func createCompany(_ company: Company) -> Bool {
         
         db.collection("Company").document(company.id).setData([
             "id": company.id,
@@ -126,9 +156,29 @@ final class FirebaseDataModel: ObservableObject {
             "works": company.works
         ])
         
+        return false
+    }
+    
+    // Company update Data in Firebase Database.
+    func updateCompany(_ company: Company) -> Bool {
+        
+        db.collection("Company").document(company.id).setData([
+            "id": company.id,
+            "name": company.name,
+            "address": company.address,
+            "phone": company.phone,
+            "works": company.works
+        ])
+        
+        return false
+    }
+    
+    // Work add Data in Firebase Database.
+    func createWork(_ work: Work) -> Bool {
+        
         db.collection("Works").document(work.id).setData([
             "id": work.id,
-            "companyId": company.id,
+            "companyId": work.id,
             "name": work.name,
             "desc": work.desc,
             "price": work.price,
@@ -144,26 +194,11 @@ final class FirebaseDataModel: ObservableObject {
             "products": []
         ])
         
-        
         return false
     }
     
-    // Company update Data to Database.
-    func companyUpdate(company: Company) -> Bool {
-        
-        db.collection("Company").document(company.id).setData([
-            "id": company.id,
-            "name": company.name,
-            "address": company.address,
-            "phone": company.phone,
-            "works": company.works
-        ])
-        
-        return false
-    }
-    
-    // Work update Data to Database.
-    func workUpdate(work: Work) -> Bool {
+    // Work update Data in Firebase Database.
+    func updateWork(_ work: Work) -> Bool {
         
         var newRecList: [[String: Any]] = []
         for rec in work.accept.recList {
@@ -213,10 +248,32 @@ final class FirebaseDataModel: ObservableObject {
         return false
     }
     
-    // Delete Data from Database.
-    func delete(_ company: Company) {
+    // Givrec add Data in Firebase Database.
+    func addGivrec(_ givrec: Givrec) -> Bool {
         
-        // fetchData()
+        db.collection("Givrecs").document(givrec.id).setData([
+            "id": givrec.id,
+            "currentId": givrec.currentId,
+            "price": givrec.price,
+            "date": givrec.date,
+            "isRec": givrec.isRec,
+        ])
+        
+        return false
+    }
+    
+    // Givrec update Data in Firebase Database.
+    func updateGivrec(_ givrec: Givrec) -> Bool {
+        
+        db.collection("Givrecs").document(givrec.id).setData([
+            "id": givrec.id,
+            "currentId": givrec.currentId,
+            "price": givrec.price,
+            "date": givrec.date,
+            "isRec": givrec.isRec,
+        ])
+        
+        return false
     }
     
     

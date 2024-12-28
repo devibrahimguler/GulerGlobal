@@ -17,7 +17,7 @@ struct SwipeButton: View {
     var body: some View {
         Button {
             withAnimation(.snappy) {
-                viewModel.workUpdate(.init(
+                viewModel.updateWork(.init(
                     id: work.id,
                     companyId: work.companyId,
                     name: work.name,

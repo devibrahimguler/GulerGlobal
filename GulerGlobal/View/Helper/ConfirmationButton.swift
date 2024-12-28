@@ -17,14 +17,14 @@ struct ConfirmationButton: View {
             }
         } label: {
             Text("ONAYLA")
-                .padding(5)
+                .padding(.horizontal)
         }
         .font(.system(size: 25, weight: .black, design: .monospaced))
         .foregroundStyle(.white)
         .background(.green)
-        .clipShape(RoundedCorner(radius: 10))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay {
-            RoundedCorner(radius: 10)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(style: .init(lineWidth: 3))
         }
         .padding(.horizontal)

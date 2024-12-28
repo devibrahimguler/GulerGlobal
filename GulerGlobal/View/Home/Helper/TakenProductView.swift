@@ -40,9 +40,9 @@ struct TakenProductView: View {
                     .padding(8)
                     .padding(.horizontal)
                     .background(.hWhite)
-                    .clipShape(RoundedCorner(radius: 10))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .overlay {
-                        RoundedCorner(radius: 10)
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .stroke(style: .init(lineWidth: 3))
                             .fill(.gray)
                     }

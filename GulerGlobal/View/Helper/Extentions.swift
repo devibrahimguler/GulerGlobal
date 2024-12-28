@@ -18,7 +18,6 @@ enum Tabs {
 enum ButtonType: String {
     case cancel = "İptal"
     case finished = "Bitmiş"
-    case companies = "Firmalar"
     case currents = "Cariler"
     case debs = "Borçlar"
     case soon = "Yakında!"
@@ -44,7 +43,7 @@ enum FormTitle: String {
     case workDescription = "İŞ AÇIKLAMA"
     case workPrice = "İŞ FİYATI"
     case recMoney = "ALINAN PARA"
-    case remMoney = "KALAN"
+    case remMoney = "KALAN PARA"
     case expMoney = "ALINACAK PARA"
     case recDate = "TAHSİLAT TARİHİ"
     case expDate = "VADE TARİHİ"
@@ -55,6 +54,8 @@ enum FormTitle: String {
     case productPrice = "ÜRÜN FİYATI"
     case productSuggestion = "ALINDIĞI YER"
     case productPurchased = "ALINMA TARİHİ"
+    case givMoney = "BAĞLANTI MİKTARI"
+    case givDate = "BAĞLANTI TARİHİ"
 }
 
 enum ButtonStyle: String {
@@ -67,6 +68,9 @@ enum ListType {
     case recStatement
     case expStatement
     case product
+    case give
+    case rec
+    case work
 }
 
 extension View {

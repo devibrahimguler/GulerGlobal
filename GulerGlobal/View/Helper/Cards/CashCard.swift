@@ -62,10 +62,10 @@ struct CashCard: View {
                     .frame(maxWidth: .infinity)
                     .padding(5)
                     .background(color)
-                    .clipShape(RoundedCorner(radius: 10))
+                    .clipShape( RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .multilineTextAlignment(.center)
                     .overlay {
-                        RoundedCorner(radius: 10)
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .stroke(style: .init(lineWidth: 3))
                             .fill(.gray)
                     }

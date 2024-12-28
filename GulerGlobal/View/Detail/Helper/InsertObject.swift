@@ -49,7 +49,7 @@ struct InsertObject: View {
                                             purchased: viewModel.proPurchasedDate,
                                             isBought: false))
                                         
-                                        viewModel.workUpdate(.init(id: work.id, companyId: work.companyId, name: work.name, desc: work.desc, price: work.price, approve: work.approve, accept: work.accept, products: viewModel.productList))
+                                        viewModel.updateWork(.init(id: work.id, companyId: work.companyId, name: work.name, desc: work.desc, price: work.price, approve: work.approve, accept: work.accept, products: viewModel.productList))
                                         
                                         viewModel.proName = ""
                                         viewModel.proQuantity = ""
@@ -98,7 +98,7 @@ struct InsertObject: View {
                                 remMoney -= rec.price
                             }
                             
-                            viewModel.workUpdate(.init(
+                            viewModel.updateWork(.init(
                                 id: work.id,
                                 companyId: work.companyId,
                                 name: work.name,

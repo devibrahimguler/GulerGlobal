@@ -2,10 +2,10 @@
 //  Product.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 21.07.2024.
+//  Created by ibrahim Güler on 11/23/24.
 //
 
-import Foundation
+import SwiftUI
 
 struct Product: Codable, Hashable {
     var name: String

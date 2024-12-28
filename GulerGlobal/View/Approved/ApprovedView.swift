@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ApprovedView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
         NavigationView {
-            List {
+            BaseList(title: "Onaylanan Teklifler") {
                 ForEach(viewModel.approveWorks, id: \.self) { work in
                     let company = viewModel.getCompanyById(work.companyId)
                     LazyVStack(spacing: 0) {
@@ -26,12 +28,8 @@ struct ApprovedView: View {
                             Card(companyName: company.name, work: work, isApprove: true)
                         }
                     }
-                    .listRowSeparator(.hidden)
-                }                
+                }
             }
-            .listStyle(.plain)
-            .navigationTitle("Onaylanan Teklifler")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

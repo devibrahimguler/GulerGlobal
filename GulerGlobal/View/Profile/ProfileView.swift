@@ -27,7 +27,7 @@ struct ProfileView: View {
                         Spacer()
                         
                         VStack {
-                            Text("Hoş Geldiniz!")
+                            Text("Hoş Geldin!")
                             
                             Text("\(viewModel.userConnection.getUserName ?? "")")
                                 .foregroundStyle(.red)
@@ -92,12 +92,13 @@ struct ProfileView: View {
                         
                         HomeScreenButton(
                             content:
-                                CompaniesView()
+                                CurrentsView()
                                 .environmentObject(viewModel)
                                 .onAppear {
                                     UITabBar.changeTabBarState(shouldHide: true)
                                 },
-                            buttonType: .companies)
+                            buttonType: .currents)
+                        
                         
                         
                     }
@@ -105,15 +106,6 @@ struct ProfileView: View {
                     .padding(.horizontal, 10)
                     
                     HStack {
-                        
-                        HomeScreenButton(
-                            content:
-                                CurrentsView()
-                                .environmentObject(viewModel)
-                                .onAppear {
-                                    UITabBar.changeTabBarState(shouldHide: true)
-                                },
-                            buttonType: .currents)
                         
                         HomeScreenButton(
                             content:
@@ -138,7 +130,7 @@ struct ProfileView: View {
                     .padding(.horizontal, 10)
                 }
                 .padding(.vertical, 10)
-
+                
                 .background(.background, in: .rect(cornerRadius: 20))
                 .padding(.horizontal, 10)
                 Spacer()

@@ -2,10 +2,10 @@
 //  Accept.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 1.03.2024.
+//  Created by ibrahim Güler on 11/23/24.
 //
 
-import Foundation
+import SwiftUI
 
 struct Accept: Codable, Hashable {
     var remMoney: Double

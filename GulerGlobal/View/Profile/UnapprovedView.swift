@@ -11,7 +11,7 @@ struct UnapprovedView: View {
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
-        List {
+        BaseList(title: "İptal Projeler") {
             ForEach(viewModel.unapproveWorks, id: \.self) { work in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
@@ -21,12 +21,8 @@ struct UnapprovedView: View {
                         Card(work: work, isApprove: true)
                     }
                 }
-                .listRowSeparator(.hidden)
             }
         }
-        .listStyle(.plain)
-        .navigationTitle("İptal Projeler")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

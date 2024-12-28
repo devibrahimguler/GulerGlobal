@@ -50,6 +50,10 @@ final class MainViewModel: ObservableObject {
     @Published var acceptStart: Date = .now
     @Published var acceptFinished: Date = .now
     
+    @Published var givrecPrice: String = ""
+    
+    @Published var givrecDate: Date = .now
+    
     @Published var proName: String = ""
     @Published var proQuantity: String = ""
     @Published var proPrice: String = ""
@@ -69,6 +73,8 @@ final class MainViewModel: ObservableObject {
     
     @Published var traking: [Tracking] = []
     @Published var isAnimated: Bool = false
+    
+    @Published var hasAlert: Bool = false
     
     init() {
         fetchData()
@@ -306,40 +312,56 @@ final class MainViewModel: ObservableObject {
         }
     }
     
+    func givrecChange(_ givrec: Givrec?) {
+        if let givrec = givrec {
+            givrecPrice = "\(givrec.price)"
+            givrecDate = givrec.date
+        } else {
+            workPrice = ""
+            givrecDate = .now
+        }
+    }
+    
     func createCompany() {
         isPlaceHolder = true
         
         let companyId = generateCompanyId() ?? "0"
-        var workList: [String] = []
         
-        let price = Double(workPrice) ?? 0
-        
-        workList.append(workPNum)
-        
-        isPlaceHolder = dataModel.create(
-            company: Company(
+        isPlaceHolder = dataModel.createCompany(
+            Company(
                 id: companyId,
                 name: companyName,
                 address: companyAddress,
                 phone: companyPhone,
-                works: workList
-            ),
-            work: Work(
-                id: workPNum,
-                companyId: companyId,
-                name: workName,
-                desc: workDesc,
-                price: price,
-                approve: workApprove,
-                accept: .init(
-                    remMoney: price,
-                    recList: [],
-                    expList: [],
-                    start: .now,
-                    finished: .now),
-                products: []
+                works: []
             )
         )
+        
+        /*
+         ,
+         work: Work(
+             id: workPNum,
+             companyId: companyId,
+             name: workName,
+             desc: workDesc,
+             price: price,
+             approve: workApprove,
+             accept: .init(
+                 remMoney: price,
+                 recList: [],
+                 expList: [],
+                 start: .now,
+                 finished: .now),
+             products: []
+         )
+         */
+        
+        fetchData()
+    }
+    
+    func updateCompany(_ company: Company) {
+        isPlaceHolder = true
+        isPlaceHolder = dataModel.updateCompany(company)
         
         fetchData()
     }
@@ -359,15 +381,8 @@ final class MainViewModel: ObservableObject {
         
         workList.append(workPNum)
         
-        isPlaceHolder = dataModel.create(
-            company: Company(
-                id: companyId,
-                name: companyName,
-                address: companyAddress,
-                phone: companyPhone,
-                works: workList
-            ),
-            work: Work(
+        isPlaceHolder = dataModel.createWork(
+            Work(
                 id: workPNum,
                 companyId: companyId,
                 name: workName,
@@ -384,19 +399,22 @@ final class MainViewModel: ObservableObject {
             )
         )
         
-        fetchData()
-    }
-    
-    func companyUpdate(_ company: Company) {
-        isPlaceHolder = true
-        isPlaceHolder = dataModel.companyUpdate(company: company)
+        /*
+         company: Company(
+             id: companyId,
+             name: companyName,
+             address: companyAddress,
+             phone: companyPhone,
+             works: workList
+         ),
+         */
         
         fetchData()
     }
     
-    func workUpdate(_ work: Work) {
+    func updateWork(_ work: Work) {
         isPlaceHolder = true
-        isPlaceHolder = dataModel.workUpdate(work: work)
+        isPlaceHolder = dataModel.updateWork(work)
         
         fetchData()
     }
@@ -422,7 +440,7 @@ final class MainViewModel: ObservableObject {
             productList.append(newProduct)
         }
         
-        workUpdate(.init(
+        updateWork(.init(
             id: work.id,
             companyId: work.companyId,
             name: work.name,
@@ -458,7 +476,7 @@ final class MainViewModel: ObservableObject {
                 }
             }
             
-            workUpdate(.init(
+            updateWork(.init(
                 id: work.id,
                 companyId: work.companyId,
                 name: work.name,

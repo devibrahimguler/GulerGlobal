@@ -30,9 +30,9 @@ struct HomeScreenButton<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(10)
         .background(.hWhite)
-        .clipShape(RoundedCorner(radius: 10))
+        .clipShape( RoundedRectangle(cornerRadius: 10, style: .continuous))
         .overlay {
-            RoundedCorner(radius: 10)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .stroke(style: .init(lineWidth: 3))
                 .fill(.gray)
         }
