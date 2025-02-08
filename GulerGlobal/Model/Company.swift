@@ -9,17 +9,14 @@ import SwiftUI
 
 struct Company: Codable, Hashable, Identifiable {
     var id: String
-    var name: String
-    var address: String
-    var phone: String
-    var works: [String]
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case name = "name"
-        case address = "address"
-        case phone = "phone"
-        case works = "works"
-    }
-    
+    var companyName: String
+    var companyAddress: String
+    var contactNumber: String
+    var workList: [Work]
+}
+
+struct TupleModel: Hashable, Identifiable {
+    let id: String = UUID().uuidString
+    let company: Company
+    let work: Work
 }

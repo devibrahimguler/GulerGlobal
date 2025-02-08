@@ -23,45 +23,13 @@ struct BasicEntry: View {
     var body: some View {
         VStack(alignment: .leading) {
             
-            VStack(alignment: .leading) {
-
-                HStack(alignment: .center) {
-                    Spacer()
-                    VStack {
-                        Text("Guler Global")
-                            .font(.system(size: 50, weight: .black, design: .rounded))
-                            .foregroundStyle(colorScheme == .light ? .bSea : .hWhite)
-                            .zIndex(2)
-                        
-                        ZStack {
-                            Image("icon")
-                                .resizable()
-                                .frame(width: 200, height: 200)
-                                .aspectRatio(contentMode: .fit)
-                                .clipShape(RoundedRectangle(cornerRadius: 200, style: .continuous))
-                                .overlay {
-                                    RoundedCorner(radius: 200).stroke(style: .init(lineWidth: 5))
-                                        .fill(LinearGradient(colors: colorScheme == .light ?  [.bSea, .hWhite] : [.hWhite, .bSea], startPoint: .top, endPoint: .bottom))
-                                }
-                                .shadow(radius: 5)
-                                .zIndex(1)
-                            
-                            ForEach(0...3, id: \.self) { i in
-                                Circle() // Ball
-                                    .fill(.star)
-                                    .frame (width: 50, height: 50)
-                                    .offset(y: -160 - Double(i) * 60)
-                                    .rotationEffect(.degrees(isAnimation ? 360 : 0))
-                                    .animation(.easeInOut(duration: Double(i) + 1).repeatForever(autoreverses: false), value: isAnimation)
-                                    .shadow(color:colorScheme == .light ? .black : .white,radius: 3)
-                                    .blur(radius: 10)
-                            }
-                            .zIndex(0)
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(.bottom, 100)
+            VStack(alignment: .center) {
+                
+                Spacer()
+                
+                CustomPlaceHolder(distance: 1)
+                
+                Spacer()
                 
                 VStack {
                     
@@ -110,7 +78,7 @@ struct BasicEntry: View {
                 }
                 .frame(height: 136)
                 .frame(maxWidth: 712)
-                .background(.hWhite)
+                .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .shadow(color: .black.opacity(0.15), radius: 20, x: 0, y: 20)
                 .padding()
@@ -125,7 +93,7 @@ struct BasicEntry: View {
                 .frame(maxWidth: .infinity)
                 .padding(12)
                 .padding(.horizontal, 20)
-                .background(.hWhite)
+                .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .shadow(color: .black.opacity(0.15), radius: 20, x: 0, y: 20)
                 .padding()
@@ -139,7 +107,7 @@ struct BasicEntry: View {
                     Text(loginActionText)
                 }
                 .font(.system(size: 13, weight: .black))
-                .foregroundStyle(.bBlue)
+                .foregroundStyle(colorScheme == .light ? .blackCyan : .white)
                 .frame(maxWidth: .infinity,alignment: .center)
 
             }
@@ -167,7 +135,6 @@ struct TestBasicEntry: View {
         } isLoginAction: {
             print("Giriş Yapıldı")
         }
-
     }
 }
 

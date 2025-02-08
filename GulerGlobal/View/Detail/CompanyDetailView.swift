@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CompanyDetailView: View {
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: MainViewModel
     
     @State private var isEditCompany: Bool = false
@@ -16,156 +17,108 @@ struct CompanyDetailView: View {
     
     @State private var addType: ListType = .none
     @State private var isAdd: Bool = false
+    @State private var isReset: Bool = false
     
     var company: Company
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            
-            VStack(spacing: 10) {
+            VStack(spacing: 20) {
+           
                 VStack(spacing: 0) {
-                    TextProperty(title: .companyName, text: $viewModel.companyName, formTitle: $formTitle)
+                    CustomTextField(title: .companyName, text: $viewModel.companyDetails.name, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    TextProperty(title: .companyAddress, text: $viewModel.companyAddress, formTitle: $formTitle)
+                    CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    TextProperty(title: .companyPhone, text: $viewModel.companyPhone, formTitle: $formTitle)
+                    CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.contactNumber, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                 }
                 .padding(10)
                 .background(.background, in: .rect(cornerRadius: 20))
                 
-                VStack(spacing: 10) {
-                    VStack {
-                        
-                        Button {
-                            isAdd = true
-                            addType = .work
-                        } label: {
-                            Text("İŞ EKLE")
-                                .customAddBorder(.green)
-                        }
-                        
-                        HStack(alignment: .center) {
-                            Button {
-                                isAdd = true
-                                addType = .rec
-                            } label: {
-                                VStack(alignment: .center, spacing: 1) {
-                                    Text("ALACAK")
-                                    Text("EKLE")
-                                }
-                                .customAddBorder(.yellow)
-                            }
-                            
-                            Button {
-                                isAdd = true
-                                addType = .give
-                            } label: {
-                                VStack(alignment: .center, spacing: 1) {
-                                    Text("VERECEK")
-                                    Text("EKLE")
-                                }
-                                .customAddBorder()
-                            }
-                        }
-                    }
-                    .customAddTwoBorder()
-                    
-                    Text("GİRDİLER")
-                        .foregroundStyle(.black)
-                        .customBorder(.hWhite)
-                      
-                    
-                    VStack(spacing: 10) {
-                        ForEach(company.works, id: \.self) { workId in
-                            let work = viewModel.getWorkById(workId)
-                            if company.id == work.companyId {
-                                let approved = work.approve == "Approve" ? true : false
-                                
-                                Card(work: work, isApprove: approved)
-                            }
-                        }
-                    }
-                    .customAddTwoBorder()
+      
+               VStack(spacing: 10) {
+                   
+                   Text("Durum Raporu")
+                       .font(.title)
+                       .fontWeight(.semibold)
+                       .frame(maxWidth: .infinity)
+                       .padding(.vertical, 10)
+                       .background(.background, in: .rect(cornerRadius: 20))
+                     
+                   
+                   VStack(spacing: 5) {
+                       ForEach(company.workList, id: \.self) { work in
+                           let approved = work.approve == .approved ? true : false
+                           SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                               WorkCard(companyName: company.companyName , work: work, isApprove: approved, color: .bRenk)
+                           } actions: {
+                               Action(tint: .red, icon: "trash.fill") {
+                                   withAnimation(.snappy) {
+                                       viewModel.deleteWork(companyId: company.id, workId: work.id)
+                                   }
+                               }
+                           }
+                           
+                       }
+                   }
+                   .padding(10)
+                   .background(.background)
+                   .clipShape(RoundedRectangle(cornerRadius: 20))
 
-                }
-                .opacity(isEditCompany ? 0 : 1)
+
+               }
+               .opacity(isEditCompany || company.workList.isEmpty ? 0 : 1)
+          
             }
             .navigationTitle("Guler Global")
             .navigationBarTitleDisplayMode(.inline)
             .blur(radius: isAdd ? 5 : 0)
         }
-        .padding()
+        .padding(.horizontal, 10)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
-        .onAppear {
-            viewModel.companyChange(company)
-            UITabBar.changeTabBarState(shouldHide: true)
-        }
-        .onDisappear {
-            viewModel.companyChange(nil)
-        }
         .toolbar(content: {
             Button {
                 withAnimation(.spring) {
                     
                     if isEditCompany {
-                        viewModel.updateCompany(.init(
-                            id: company.id,
-                            name: viewModel.companyName,
-                            address: viewModel.companyAddress,
-                            phone: viewModel.companyPhone,
-                            works: company.works))
+                        let updateArea = [
+                            "companyName": viewModel.companyDetails.name,
+                            "companyAddress": viewModel.companyDetails.address,
+                            "contactNumber": viewModel.companyDetails.contactNumber
+                        ]
+                        
+                        viewModel.updateCompany(companyId: company.id, updateArea: updateArea)
                     }
                     
-                    viewModel.tab = .Profile
                     formTitle = .none
                     isEditCompany.toggle()
                 }
             } label: {
-                Text(isEditCompany ? "KAYDET" : "DÜZENLE")
+                Text(isEditCompany ? "Kaydet" : "Düzenle")
                     .foregroundStyle(isEditCompany ? .green : .yellow)
                     .font(.system(size: 14, weight: .black, design: .monospaced))
             }
             
         })
-        .sheet(isPresented: $isAdd) {
-            GivrecObject(addType: addType, isAdd: $isAdd, companyId: company.id)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
-                .presentationBackground(.thinMaterial)
-                .presentationCornerRadius(10)
-                .environmentObject(viewModel)
-            
+        .onAppear {
+            viewModel.updateCompanyDetails(with: company)
         }
+        .onDisappear {
+            viewModel.updateCompanyDetails(with: nil)
+        }
+            
     }
 }
 
 struct TestDetailView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
-    private let company: Company = .init(id: "0", name: "Firma Adı", address: "Address", phone: "(554) 170 16 35", works: ["0001", "0002", "0003", "0004", "0005"])
-    
-    private let works: [Work] = [
-        .init(id: "0001", companyId: "0", name: "iş ismi", desc: "iş açıklama", price: 10000, approve: "Wait", accept: .init(remMoney: 10000, recList: [.init(date: .now, price: 10000)], expList: [], start: .now, finished: .now), products: []),
-        
-            .init(id: "0002", companyId: "0", name: "iş ismi 2", desc: "iş açıklama 2", price: 20000, approve: "Approve", accept: .init(remMoney: 10000, recList: [.init(date: .now, price: 10000)], expList: [], start: .now, finished: .now), products: []),
-        
-            .init(id: "0003", companyId: "0", name: "iş ismi 3", desc: "iş açıklama 3", price: 30000, approve: "Wait", accept: .init(remMoney: 10000, recList: [.init(date: .now, price: 10000)], expList: [], start: .now, finished: .now), products: []),
-        
-            .init(id: "0004", companyId: "0", name: "iş ismi 4", desc: "iş açıklama 4", price: 40000, approve: "Approve", accept: .init(remMoney: 10000, recList: [.init(date: .now, price: 10000)], expList: [], start: .now, finished: .now), products: []),
-        
-            .init(id: "0005", companyId: "0", name: "iş ismi 5", desc: "iş açıklama 5", price: 50000, approve: "Wait", accept: .init(remMoney: 10000, recList: [.init(date: .now, price: 10000)], expList: [], start: .now, finished: .now), products: [])
-    ]
-    
     var body: some View {
-        CompanyDetailView(company: company)
+        CompanyDetailView(company: example_TupleModel.company)
             .environmentObject(viewModel)
-            .onAppear {
-                viewModel.companies = [company]
-                viewModel.works = works
-            }
     }
 }
 

@@ -9,497 +9,307 @@ import SwiftUI
 
 @MainActor
 final class MainViewModel: ObservableObject {
+    // MARK: - Dependencies
+    let authService: AuthProtocol = UserConnection()
+    private let firebaseDataService = FirebaseDataModel()
     
-    let userConnection: AuthProtocol = UserConnection()
-    private let dataModel: FirebaseDataModel = .init()
+    // MARK: - Published Properties
+    @Published var activeTab: TabValue = .Home
+    @Published var tabAnimationTrigger: TabValue?
+    @Published var isTabBarHidden: Bool = false
+    @Published var isNewCompany: Bool = false
     
-    @Published var tab: Tabs = .Home
+    @Published var isLoadingPlaceholder: Bool = false
+    @Published var isUserConnected: Bool = false
     
-    @Published var isPlaceHolder: Bool = false
-    @Published var isConnected: Bool = false
+    @Published var companyList: [Company] = []
     
-    @Published var companies: [Company] = []
+    @Published var allTasks: [TupleModel] = []
+    @Published var pendingTasks: [TupleModel] = []
+    @Published var approvedTasks: [TupleModel] = []
+    @Published var rejectedTasks: [TupleModel] = []
+    @Published var completedTasks: [TupleModel] = []
     
-    @Published var works: [Work] = []
-    @Published var waitWorks: [Work] = []
-    @Published var approveWorks: [Work] = []
-    @Published var unapproveWorks: [Work] = []
-    @Published var finishedWorks: [Work] = []
-    
-    @Published var takenProducts: [Work] = []
-    
-    @Published var totalPrice: Double = 0
-    @Published var totalRemPrice: Double = 0
-    
-    @Published var timePicker: Date = .now
-    @Published var isPickerShower: Bool = false
-    
-    @Published var companyName: String = ""
-    @Published var companyAddress: String = ""
-    @Published var companyPhone: String = ""
-    
-    @Published var workPNum: String = ""
-    @Published var workName: String = ""
-    @Published var workDesc: String = ""
-    @Published var workPrice: String = ""
-    @Published var workRec: String = ""
-    @Published var acceptRem: String = ""
-    @Published var workExp: String = ""
-    @Published var workApprove: String = ""
-    
-    @Published var acceptStart: Date = .now
-    @Published var acceptFinished: Date = .now
-    
-    @Published var givrecPrice: String = ""
-    
-    @Published var givrecDate: Date = .now
-    
-    @Published var proName: String = ""
-    @Published var proQuantity: String = ""
-    @Published var proPrice: String = ""
-    @Published var proSuggestion: String = ""
+    @Published var pendingProducts: [TupleModel] = []
     
     @Published var productList: [Product] = []
-    @Published var proPurchasedDate: Date = .now
     
-    @Published var workRecDate: Date = .now
-    @Published var recList: [Statement] = []
+    @Published var totalRevenue: Double = 0
+    @Published var remainingRevenue: Double = 0
     
-    @Published var workExpDate: Date = .now
-    @Published var expList: [Statement] = []
-
-    @Published var isNewCompany: Bool = true
-    @Published var isPNum: Bool = true
-    
+    @Published var companyDetails = CompanyDetails()
+    @Published var workDetails = WorkDetails()
+    @Published var productDetails = ProductDetails()
     @Published var traking: [Tracking] = []
     @Published var isAnimated: Bool = false
-    
     @Published var hasAlert: Bool = false
     
+    @Published var acceptRem: String = ""
+    
+    // MARK: - Initializer
     init() {
-        fetchData()
         connectionControl()
+        fetchData()
     }
     
+    // MARK: - Public Methods
     func connectionControl() {
-        if self.userConnection.getUid != nil {
-            self.isConnected = true
-        }
+        isUserConnected = authService.getUid != nil
     }
     
     func fetchData() {
-        isPlaceHolder = true
-        
-        companies = []
-        
-        works = []
-        waitWorks = []
-        approveWorks = []
-        unapproveWorks = []
-        finishedWorks = []
-        takenProducts = []
-        productList = []
-        
-        totalPrice = 0
-        totalRemPrice = 0
+        isLoadingPlaceholder = true
+        resetData()
         
         DispatchQueue.main.async {
-            self.dataModel.fetchCompaniesData { companyResult  in
-       
-                switch companyResult {
-                    
-                case .failure(let companyError):
-                    
-                    print(companyError.localizedDescription)
-                    self.isPlaceHolder = false
+            self.firebaseDataService.fetchCompanies { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .failure(let error):
+                    print("Fetch error: \(error.localizedDescription)")
+                    self.isLoadingPlaceholder = false
                     
                 case .success(let companies):
-                    
-                    self.companies = companies
-                    
-                    self.dataModel.fetchWorksData { workResult in
-                        
-                        switch workResult {
-                            
-                        case .failure(let workError):
-                            
-                            print(workError.localizedDescription)
-                            self.isPlaceHolder = false
-                            
-                        case .success(let works):
-                            
-                            self.works = works
-                            
-                            for work in works {
-                                
-                                switch work.approve {
-                                    
-                                case "Wait":
-                                    
-                                    self.waitWorks.append(work)
-                                    
-                                case "Approve":
-                                    
-                                    self.approveWorks.append(work)
-                                    
-                                    self.totalRemPrice += work.accept.remMoney
-                                    
-                                    self.totalPrice += work.price
-                                    
-                                case "Unapprove":
-                                    
-                                    self.unapproveWorks.append(work)
-                                    
-                                case "Finished":
-                                    
-                                    self.finishedWorks.append(work)
-                                    
-                                default:
-                                    
-                                    print("Not found any information!")
-                                    
-                                }
-                                
-                                if work.products.contains(where: { !$0.isBought }) {
-                                    self.takenProducts.append(work)
-                                }
-                            }
-                            
-                            self.waitWorks = self.waitWorks.sorted(by: { $0.id > $1.id })
-                            self.approveWorks = self.approveWorks.sorted(by: { $0.id > $1.id })
-                            self.unapproveWorks = self.unapproveWorks.sorted(by: { $0.id > $1.id })
-                            self.finishedWorks = self.finishedWorks.sorted(by: { $0.id > $1.id })
-                            self.companies = self.companies.sorted(by: { $0.id > $1.id })
-                            
-                            self.isPlaceHolder = false
-                            self.traking = [
-                                .init(color: .green, value: (self.totalPrice - self.totalRemPrice)),
-                                .init(color: .red, value: self.totalRemPrice)]
-                        }
-                    }
-                    
+                    self.processCompanies(companies)
                 }
-                
             }
         }
     }
     
-    func generateProjectNumber() -> String? {
-        var projectNumber = 0
-        for work in works {
-            if Int(work.id) ?? 0 > projectNumber {
-                projectNumber = Int(work.id) ?? 0
-            }
-        }
-        
-        projectNumber = projectNumber + 1
-        var string = "\(projectNumber)"
-        for _ in 0...(3 - string.count){
-            string = "0" + string
-        }
-        
-        return string
+    func generateUniqueID(isWork: Bool = true) -> String {
+        let highestID = isWork
+        ? allTasks.compactMap {  Int($0.work.id) }.max() ?? 0
+        : companyList.compactMap {  Int($0.id) }.max() ?? 0
+        return isWork ? String(format: "%04d", highestID + 1) : String(highestID + 1)
     }
     
-    func generateCompanyId() -> String? {
-        var companyId = 0
-        for company in companies {
-            if Int(company.id) ?? 0 > companyId {
-                companyId = Int(company.id) ?? 0
-            }
-        }
-        
-        companyId = companyId + 1
-        
-        return "\(companyId)"
+    func searchCompanies(by name: String) -> [Company]? {
+        guard !name.isEmpty else { return nil }
+        return companyList.filter { $0.companyName.lowercased().hasPrefix(name.lowercased()) }
     }
     
-    func searchCompanies(_ value: String) -> [Company]? {
-        var newCompanies = [Company]()
-        
-        for i in companies {
-            if !newCompanies.contains(where: {$0.name == i.name }) {
-                newCompanies.append(i)
-            }
-        }
-        
-        return value == "" ? nil : newCompanies.filter({ $0.name.lowercased().hasPrefix(value.lowercased()) })
+    func updateCompanyDetails(with company: Company?) {
+        companyDetails = CompanyDetails(from: company)
     }
     
-    func getCompanyById(_ companyId: String) -> Company {
-        var newCompany: Company = Company(
-            id: "0",
-            name: "none",
-            address: "none",
-            phone: "none",
-            works: [String]()
-        )
-        
-        for company in companies {
-            if companyId == company.id {
-                newCompany = company
-            }
-        }
-        
-        return newCompany
+    func updateWorkDetails(with work: Work?) {
+        workDetails = WorkDetails(from: work)
     }
     
-    func getWorkById(_ workId: String) -> Work {
-        var newWork: Work = Work(
-            id: "0000",
-            companyId: "0",
-            name: "none",
-            desc: "none",
-            price: 0,
-            approve: "Wait",
-            accept: .init(
-                remMoney: 0,
-                recList: [],
-                expList: [],
-                start: .now,
-                finished: .now),
-            products: []
-        )
-        
-        for work in works {
-            if workId == work.id {
-                newWork = work
-            }
-        }
-        
-        return newWork
-    }
-    
-    func companyChange(_ company: Company?) {
-        if let company = company {
-            companyName = company.name
-            companyAddress = company.address
-            companyPhone = company.phone
-        } else {
-            companyName = ""
-            companyAddress = ""
-            companyPhone = ""
-        }
-    }
-    
-    func workChange(_ work: Work?) {
-        if let work = work {
-            workPNum = work.id
-            workName = work.name
-            workDesc = work.desc
-            workPrice = "\(work.price)"
-            workApprove = work.approve
-            productList = work.products
-            
-            acceptRem = "\(work.accept.remMoney)"
-            recList = work.accept.recList
-            expList = work.accept.expList
-            acceptStart = work.accept.start
-            acceptFinished = work.accept.finished
-            
-        } else {
-            workPNum = ""
-            workName = ""
-            workDesc = ""
-            workPrice = ""
-            workApprove = ""
-            productList = []
-            acceptRem = ""
-            recList = []
-            expList = []
-            acceptStart = .now
-            acceptFinished = .now
-        }
-    }
-    
-    func givrecChange(_ givrec: Givrec?) {
-        if let givrec = givrec {
-            givrecPrice = "\(givrec.price)"
-            givrecDate = givrec.date
-        } else {
-            workPrice = ""
-            givrecDate = .now
-        }
+    func updateProductDetails(with product: Product?) {
+        productDetails = ProductDetails(from: product)
     }
     
     func createCompany() {
-        isPlaceHolder = true
+        guard !companyDetails.name.isEmpty else { return }
+        isLoadingPlaceholder = true
         
-        let companyId = generateCompanyId() ?? "0"
-        
-        isPlaceHolder = dataModel.createCompany(
-            Company(
-                id: companyId,
-                name: companyName,
-                address: companyAddress,
-                phone: companyPhone,
-                works: []
-            )
+        let newCompany = Company(
+            id: generateUniqueID(isWork: false),
+            companyName: companyDetails.name,
+            companyAddress: companyDetails.address,
+            contactNumber: companyDetails.contactNumber,
+            workList: []
         )
         
-        /*
-         ,
-         work: Work(
-             id: workPNum,
-             companyId: companyId,
-             name: workName,
-             desc: workDesc,
-             price: price,
-             approve: workApprove,
-             accept: .init(
-                 remMoney: price,
-                 recList: [],
-                 expList: [],
-                 start: .now,
-                 finished: .now),
-             products: []
-         )
-         */
+        isLoadingPlaceholder = firebaseDataService.saveCompany(newCompany)
+        fetchData()
+    }
+    func updateCompany(companyId: String, updateArea: [String: Any]) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.updateCompany(companyId, updateArea: updateArea)
         
         fetchData()
     }
-    
-    func updateCompany(_ company: Company) {
-        isPlaceHolder = true
-        isPlaceHolder = dataModel.updateCompany(company)
+    func createWork(companyId: String, work: Work) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.saveWork(companyId, work)
         
         fetchData()
     }
+    func updateWork(companyId: String, workId: String, updateArea: [String: Any]) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.updateWork(companyId, workId, updateArea: updateArea)
+        
+        fetchData()
+    }
+    func deleteWork(companyId: String, workId: String) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.deleteWork(companyId, workId)
+        
+        fetchData()
+    }
+    func createProduct(companyId: String, workId: String, product: Product) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.saveProduct(companyId, workId, product)
+        
+        fetchData()
+    }
+    func updateProduct(companyId: String, workId: String, productId: String, updateArea: [String: Any]) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.updateProduct(companyId, workId, productId, updateArea: updateArea)
+        
+        fetchData()
+    }
+    func deleteProduct(companyId: String, workId: String, productId: String) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.deleteProduct(companyId, workId, productId)
+        
+        fetchData()
+    }
+    func createStatement(companyId: String, workId: String, statement: Statement) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.saveStatement(companyId, workId, statement)
+    }
+    func updateStatement(companyId: String, workId: String, statementId: String, updateArea: [String: Any]) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.updateStatement(companyId, workId, statementId, updateArea: updateArea)
+    }
+    func deleteStatement(companyId: String, workId: String, statementId: String) {
+        isLoadingPlaceholder = true
+        
+        isLoadingPlaceholder = firebaseDataService.deleteStatement(companyId, workId, statementId)
+    }
     
-    func createWork(_ companyId: String) {
-        isPlaceHolder = true
-        
-        var workList: [String] = []
-        
-        let price = Double(workPrice) ?? 0
+    // MARK: - Private Methods
+    
+    private func resetData() {
+        companyList.removeAll()
+        allTasks.removeAll()
+        pendingTasks.removeAll()
+        approvedTasks.removeAll()
+        rejectedTasks.removeAll()
+        completedTasks.removeAll()
+        pendingProducts.removeAll()
+        productList.removeAll()
+        totalRevenue = 0
+        remainingRevenue = 0
+    }
+    
+    private func processCompanies(_ companies: [Company]) {
+        self.companyList = companies.sorted(by: { $0.id > $1.id })
         
         for company in companies {
-            if company.id == companyId {
-                workList = company.works
+            for work in company.workList {
+                categorizeWork(work, for: company)
             }
         }
         
-        workList.append(workPNum)
+        pendingTasks.sort { $0.work.id > $1.work.id }
+        approvedTasks.sort { $0.work.id > $1.work.id }
+        rejectedTasks.sort { $0.work.id > $1.work.id }
+        completedTasks.sort { $0.work.id > $1.work.id }
         
-        isPlaceHolder = dataModel.createWork(
-            Work(
-                id: workPNum,
-                companyId: companyId,
-                name: workName,
-                desc: workDesc,
-                price: price,
-                approve: workApprove,
-                accept: .init(
-                    remMoney: price,
-                    recList: [],
-                    expList: [],
-                    start: .now,
-                    finished: .now),
-                products: []
-            )
-        )
+        traking = [
+            Tracking(color: .green, value: totalRevenue - remainingRevenue),
+            Tracking(color: .red, value: remainingRevenue)
+        ]
         
-        /*
-         company: Company(
-             id: companyId,
-             name: companyName,
-             address: companyAddress,
-             phone: companyPhone,
-             works: workList
-         ),
-         */
-        
-        fetchData()
+        isLoadingPlaceholder = false
     }
     
-    func updateWork(_ work: Work) {
-        isPlaceHolder = true
-        isPlaceHolder = dataModel.updateWork(work)
+    private func categorizeWork(_ work: Work, for company: Company) {
+        let tuple = TupleModel(company: company, work: work)
         
-        fetchData()
-    }
-    
-    func editProduct(_ isBought: Bool, product: Product, work: Work) {
-        productList = []
-        
-        let newProduct = Product(
-            name: product.name,
-            quantity: product.quantity,
-            price: product.price,
-            suggestion: product.suggestion,
-            purchased: product.purchased,
-            isBought: true)
-        
-        for pro in work.products {
-            if pro.name != product.name {
-                productList.append(pro)
-            }
+        switch work.approve {
+        case .none:
+            print("Invalid approval status")
+        case .pending:
+            pendingTasks.append(tuple)
+        case .approved:
+            approvedTasks.append(tuple)
+            remainingRevenue += work.remainingBalance
+            totalRevenue += work.totalCost
+        case .rejected:
+            rejectedTasks.append(tuple)
+        case .finished:
+            completedTasks.append(tuple)
         }
         
-        if isBought {
-            productList.append(newProduct)
+        if work.productList.contains(where: { !$0.isBought }) {
+            pendingProducts.append(tuple)
         }
-        
-        updateWork(.init(
-            id: work.id,
-            companyId: work.companyId,
-            name: work.name,
-            desc: work.desc,
-            price: work.price,
-            approve: work.approve,
-            accept: .init(
-                remMoney: work.accept.remMoney,
-                recList: work.accept.recList,
-                expList: work.accept.expList,
-                start: work.accept.start,
-                finished: work.accept.finished),
-            products: productList))
+        allTasks.append(tuple)
     }
     
-    func editStatement(_ isRec: Bool, list: [Statement], statement: Statement, work: Work) {
-        var newList = list
-        if let index = list.firstIndex(of: statement) {
-            newList.remove(at: index)
-    
-            var remMoney = work.price
-            var newRecList = work.accept.recList
-            
-            newRecList.append(statement)
-            
-            if isRec {
-                for rec in newList {
-                    remMoney -= rec.price
-                }
-            } else {
-                for rec in newRecList {
-                    remMoney -= rec.price
-                }
-            }
-            
-            updateWork(.init(
-                id: work.id,
-                companyId: work.companyId,
-                name: work.name,
-                desc: work.desc,
-                price: work.price,
-                approve: work.approve,
-                accept: .init(
-                    remMoney: remMoney,
-                    recList: isRec ? newList : newRecList,
-                    expList: isRec ? work.accept.expList : newList,
-                    start: work.accept.start,
-                    finished: work.accept.finished),
-                products: productList))
-            
-        }
-    }
-    
-    func remMoneySnapping(price: Double, work: Work) {
+    func remMoneySnapping(price: Double, statements: [Statement]) -> Double {
         var totalPrice = price
-        for rec in work.accept.recList {
-            totalPrice -= rec.price
+        for statement in statements {
+            if statement.status == .received {
+                totalPrice -= statement.amount
+            }
         }
-        acceptRem = "\(totalPrice)"
+        
+        return totalPrice
     }
-
 }
+
+// MARK: - Supporting Models
+
+struct CompanyDetails {
+    var name: String = ""
+    var address: String = ""
+    var contactNumber: String = ""
+    
+    init() {}
+    
+    init(from company: Company?) {
+        name = company?.companyName ?? ""
+        address = company?.companyAddress ?? ""
+        contactNumber = company?.contactNumber ?? ""
+    }
+}
+
+struct WorkDetails {
+    var id: String = ""
+    var name: String = ""
+    var description: String = ""
+    var totalCost: String = ""
+    var approve: ApprovalStatus = .none
+    var startDate: Date = .now
+    var endDate: Date = .now
+    var statementAmount: String = ""
+    var statementDate: Date = .now
+    var isChangeProjeNumber: Bool = true
+    
+    init() {}
+    
+    init(from work: Work?) {
+        id = work?.id ?? ""
+        name = work?.workName ?? ""
+        description = work?.workDescription ?? ""
+        totalCost = "\(work?.totalCost ?? 0)"
+        approve = work?.approve ?? .none
+        startDate = work?.startDate ?? .now
+        endDate = work?.endDate ?? .now
+    }
+}
+
+struct ProductDetails {
+    var name: String = ""
+    var quantity: String = ""
+    var unitPrice: String = ""
+    var suggestion: String = ""
+    var purchased: Date = .now
+    
+    init() {}
+    
+    init(from product: Product?) {
+        name = product?.productName ?? ""
+        quantity = "\(product?.quantity ?? 0)"
+        unitPrice = "\(product?.unitPrice ?? 0)"
+        suggestion = product?.suggestion ?? ""
+        purchased = product?.purchased ?? .now
+    }
+}
+

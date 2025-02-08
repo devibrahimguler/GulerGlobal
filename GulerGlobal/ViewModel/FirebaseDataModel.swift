@@ -8,274 +8,296 @@
 import FirebaseFirestore
 
 final class FirebaseDataModel: ObservableObject {
+    private let database: Firestore = Firestore.firestore()
     
-    private let db: Firestore = Firestore.firestore()
-    
-    // Get companies data from Database.
+    // Fetch company data from the database
     @MainActor
-    func fetchCompaniesData(complation: @escaping (Result<[Company], Error>) -> Void) {
+    func fetchCompanies(completion: @escaping (Result<[Company], Error>) -> Void) {
         Task {
             do {
-                let docRef = self.db.collection("Company")
-                var worksList: [String] = []
-                var companiesList: [Company] = []
-                let companies = try await docRef.getDocuments()
+                let snapshot = try await database.collection("Companies").getDocuments()
+                var companyList: [Company] = []
                 
-                for company in companies.documents {
-                    
-                    if let getWorks = company.data()["works"] as? [String]  {
-                        
-                        for work in getWorks {
-                            worksList.append(work)
-                        }
-                        
-                        let newCompany = Company(
-                            id: company.data()["id"] as? String ?? "",
-                            name: company.data()["name"] as? String ?? "",
-                            address: company.data()["address"] as? String ?? "",
-                            phone: company.data()["phone"] as? String ?? "",
-                            works: worksList)
-                        
-                        companiesList.append(newCompany)
-                    }
+                for document in snapshot.documents {
+                    guard let company = try await parseCompany(from: document) else { continue }
+                    companyList.append(company)
                 }
                 
-                complation(.success(companiesList))
-                
+                completion(.success(companyList))
             } catch {
-                complation(.failure(error))
+                completion(.failure(error))
             }
         }
-    }
-    
-    // Get works data from Database.
-    @MainActor
-    func fetchWorksData(complation: @escaping (Result<[Work], Error>) -> Void) {
-        Task {
-            do {
-                let docRef = db.collection("Works")
-                var workList: [Work] = []
-                let works = try await docRef.getDocuments()
-                
-                for work in works.documents {
-                    if let accept = work["accept"] as? [String: Any] {
-                        var recList: [Statement] = []
-                        for rec in accept["recList"] as? [[String: Any]] ?? [] {
-                            let date = rec["date"] as? Timestamp ?? .init(date: .now)
-                            let price = rec["price"] as? Double ?? 0
-                            recList.append(Statement(date: date.dateValue(), price: price))
-                        }
-                        
-                        var expList: [Statement] = []
-                        for rec in accept["expList"] as? [[String: Any]] ?? [] {
-                            let date = rec["date"] as? Timestamp ?? .init(date: .now)
-                            let price = rec["price"] as? Double ?? 0
-                            expList.append(Statement(date: date.dateValue(), price: price))
-                        }
-                        
-                        var proList: [Product] = []
-                        for pro in work["products"] as? [[String: Any]] ?? [] {
-                            let name = pro["name"] as? String ?? ""
-                            let quantity = pro["quantity"] as? Int32 ?? 0
-                            let price = pro["price"] as? Double ?? 0
-                            let suggestion = pro["suggestion"] as? String ?? ""
-                            let purchased = pro["purchased"] as? Timestamp ?? .init(date: .now)
-                            let isBought = pro["isBought"] as? Bool ?? false
-                            proList.append(Product(name: name, quantity: quantity, price: price, suggestion: suggestion, purchased: purchased.dateValue(), isBought: isBought))
-                        }
-                        let start = accept["start"] as? Timestamp ?? .init(date: .now)
-                        let finished = accept["finished"] as? Timestamp ?? .init(date: .now)
-                        
-                        let newWork = Work(
-                            id: work["id"] as? String ?? "",
-                            companyId: work["companyId"] as? String ?? "",
-                            name: work["name"] as? String ?? "",
-                            desc: work["desc"] as? String ?? "",
-                            price: work["price"] as? Double ?? 0,
-                            approve: work["approve"] as? String ?? "",
-                            accept: Accept(
-                                remMoney: accept["remMoney"] as? Double ?? 0,
-                                recList: recList,
-                                expList: expList,
-                                start: start.dateValue(),
-                                finished: finished.dateValue()),
-                            products: proList)
-                        
-                        workList.append(newWork)
-                    }
-                }
-                
-                complation(.success(workList))
-                
-            } catch {
-                complation(.failure(error))
-            }
-        }
-        
-        
     }
 
-    // Get givrecs data from Database.
-    @MainActor
-    func fetchGivrecData(complation: @escaping (Result<[Givrec], Error>) -> Void) {
+    private func parseCompany(from document: DocumentSnapshot) async throws -> Company? {
+        let data = document.data()
+        
+        guard
+            let id = data?["id"] as? String,
+            let companyName = data?["companyName"] as? String,
+            let companyAddress = data?["companyAddress"] as? String,
+            let contactNumber = data?["contactNumber"] as? String
+        else { return nil }
+        
+        let workList = try await fetchWorkList(for: id)
+        
+        return Company(id: id, companyName: companyName, companyAddress: companyAddress, contactNumber: contactNumber, workList: workList)
+    }
+
+    private func fetchWorkList(for companyId: String) async throws -> [Work] {
+        let snapshot = try await database.collection("Companies").document(companyId).collection("WorkList").getDocuments()
+        var workList: [Work] = []
+        
+        for document in snapshot.documents {
+            guard let work = try await parseWork(from: document, companyId: companyId) else { continue }
+            workList.append(work)
+        }
+        
+        return workList
+    }
+
+    private func parseWork(from document: DocumentSnapshot, companyId: String) async throws -> Work? {
+        let data = document.data()
+        
+        guard
+            let workId = data?["id"] as? String,
+            let workName = data?["workName"] as? String,
+            let workDescription = data?["workDescription"] as? String,
+            let totalCost = data?["totalCost"] as? Double,
+            let approveRawValue = data?["approve"] as? String,
+            let remainingBalance = data?["remainingBalance"] as? Double,
+            let startDate = (data?["startDate"] as? Timestamp)?.dateValue(),
+            let endDate = (data?["endDate"] as? Timestamp)?.dateValue()
+        else { return nil }
+        
+        let approve = ApprovalStatus(rawValue: approveRawValue) ?? .none
+        let productList = try await fetchProductList(for: companyId, workId: workId)
+        let statementList = try await fetchStatementList(for: companyId, workId: workId)
+        
+        return Work(id: workId, workName: workName, workDescription: workDescription, totalCost: totalCost, approve: approve, remainingBalance: remainingBalance, statements: statementList, startDate: startDate, endDate: endDate, productList: productList)
+    }
+
+    private func fetchProductList(for companyId: String, workId: String) async throws -> [Product] {
+        let snapshot = try await database.collection("Companies").document(companyId).collection("WorkList").document(workId).collection("ProductList").getDocuments()
+        var productList: [Product] = []
+        
+        for document in snapshot.documents {
+            guard let product = parseProduct(from: document) else { continue }
+            productList.append(product)
+        }
+        
+        return productList
+    }
+
+    private func parseProduct(from document: DocumentSnapshot) -> Product? {
+        let data = document.data()
+        
+        guard
+            let productId = data?["id"] as? String,
+            let productName = data?["productName"] as? String,
+            let quantity = data?["quantity"] as? Int,
+            let unitPrice = data?["unitPrice"] as? Double,
+            let suggestion = data?["suggestion"] as? String,
+            let purchased = (data?["purchased"] as? Timestamp)?.dateValue(),
+            let isBought = data?["isBought"] as? Bool
+        else { return nil }
+        
+        return Product(id: productId, productName: productName, quantity: quantity, unitPrice: unitPrice, suggestion: suggestion, purchased: purchased, isBought: isBought)
+    }
+
+    private func fetchStatementList(for companyId: String, workId: String) async throws -> [Statement] {
+        let snapshot = try await database.collection("Companies").document(companyId).collection("WorkList").document(workId).collection("StatementList").getDocuments()
+        var statementList: [Statement] = []
+        
+        for document in snapshot.documents {
+            guard let statement = parseStatement(from: document) else { continue }
+            statementList.append(statement)
+        }
+        
+        return statementList
+    }
+
+    private func parseStatement(from document: DocumentSnapshot) -> Statement? {
+        let data = document.data()
+        
+        guard
+            let statementId = data?["id"] as? String,
+            let amount = data?["amount"] as? Double,
+            let date = (data?["date"] as? Timestamp)?.dateValue(),
+            let statusRawValue = data?["status"] as? String
+        else { return nil }
+        
+        let status = StatementStatus(rawValue: statusRawValue) ?? .none
+        
+        return Statement(id: statementId, amount: amount, date: date, status: status)
+    }
+
+    
+    // Cast a Statement
+    private func castStatement(_ statement: Statement) -> [String: Any] {
+        let data: [String: Any] = [
+            "id": statement.id,
+            "amount": statement.amount,
+            "date": statement.date,
+            "status": statement.status.rawValue
+        ]
+        
+        return data
+    }
+    
+    // Cast a Product
+    private func castProduct(_ product: Product) -> [String: Any] {
+        let data: [String: Any] = [
+            "id": product.id,
+            "productName": product.productName,
+            "quantity": product.quantity,
+            "unitPrice": product.unitPrice,
+            "suggestion": product.suggestion,
+            "purchased": product.purchased,
+            "isBought": product.isBought
+        ]
+        
+        return data
+    }
+    
+    // Cast a Work
+    private func castWork(_ work: Work) -> [String: Any] {
+        let data: [String: Any] = [
+            "id": work.id,
+            "workName": work.workName,
+            "workDescription": work.workDescription,
+            "totalCost": work.totalCost,
+            "approve": work.approve.rawValue,
+            "remainingBalance": work.remainingBalance,
+            "startDate": work.startDate,
+            "endDate": work.endDate
+        ]
+        
+        return data
+    }
+    
+    // Cast a Company
+    private func castCompany(_ company: Company) -> [String: Any] {
+        let data: [String: Any] = [
+            "id": company.id,
+            "companyName": company.companyName,
+            "companyAddress": company.companyAddress,
+            "contactNumber": company.contactNumber,
+        ]
+        
+        return data
+    }
+    
+    // Create a Company
+    func saveCompany(_ company: Company) -> Bool{
+        let data = castCompany(company)
         Task {
-            do {
-                let docRef = db.collection("Givrecs")
-                var givrecList: [Givrec] = []
-                let givrecs = try await docRef.getDocuments()
-                
-                for givrec in givrecs.documents {
-                    let newWork = Givrec(
-                        id: givrec["id"] as? String ?? "",
-                        currentId: givrec["currentId"] as? String ?? "",
-                        price: givrec["price"] as? Double ?? 0,
-                        date: (givrec["date"] as? Timestamp ?? .init(date: .now)).dateValue(),
-                        isRec: givrec["isRec"] as? Bool ?? false)
-                    
-                    givrecList.append(newWork)
-                }
-                
-                complation(.success(givrecList))
-                
-            } catch {
-                complation(.failure(error))
-            }
+            try await database.collection("Companies").document(company.id).setData(data)
+            return false
         }
-        
-        
+        return true
     }
-    
-    // Company add Data in Firebase Database.
-    func createCompany(_ company: Company) -> Bool {
-        
-        db.collection("Company").document(company.id).setData([
-            "id": company.id,
-            "name": company.name,
-            "address": company.address,
-            "phone": company.phone,
-            "works": company.works
-        ])
-        
-        return false
-    }
-    
-    // Company update Data in Firebase Database.
-    func updateCompany(_ company: Company) -> Bool {
-        
-        db.collection("Company").document(company.id).setData([
-            "id": company.id,
-            "name": company.name,
-            "address": company.address,
-            "phone": company.phone,
-            "works": company.works
-        ])
-        
-        return false
-    }
-    
-    // Work add Data in Firebase Database.
-    func createWork(_ work: Work) -> Bool {
-        
-        db.collection("Works").document(work.id).setData([
-            "id": work.id,
-            "companyId": work.id,
-            "name": work.name,
-            "desc": work.desc,
-            "price": work.price,
-            "approve": work.approve,
-            "accept": [
-                "remMoney": work.price,
-                "isExpiry": false,
-                "recList": [],
-                "expList": [],
-                "start": Date.now,
-                "finished": Date.now
-            ],
-            "products": []
-        ])
-        
-        return false
-    }
-    
-    // Work update Data in Firebase Database.
-    func updateWork(_ work: Work) -> Bool {
-        
-        var newRecList: [[String: Any]] = []
-        for rec in work.accept.recList {
-            newRecList.append([
-                "date": rec.date,
-                "price": rec.price
-            ])
+    // Update a Company
+    func updateCompany(_ companyId: String, updateArea: [String: Any]) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId).updateData(updateArea)
+            return false
         }
-        
-        var newExpList: [[String: Any]] = []
-        for exp in work.accept.expList {
-            newExpList.append([
-                "date": exp.date,
-                "price": exp.price
-            ])
+        return true
+    }
+    // Create a Work
+    func saveWork(_ companyId: String, _ work: Work) -> Bool{
+        let data = castWork(work)
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(work.id).setData(data)
+            return false
         }
-        
-        var newProList: [[String: Any]] = []
-        for pro in work.products {
-            newProList.append([
-                "name": pro.name,
-                "quantity": pro.quantity,
-                "price": pro.price,
-                "suggestion": pro.suggestion,
-                "purchased": pro.purchased,
-                "isBought": pro.isBought,
-            ])
+        return true
+    }
+    // Update a Work
+    func updateWork(_ companyId: String, _ workId: String, updateArea: [String: Any]) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId).updateData(updateArea)
+            return false
         }
-        
-        db.collection("Works").document(work.id).setData([
-            "id": work.id,
-            "companyId": work.companyId,
-            "name": work.name,
-            "desc": work.desc,
-            "price": work.price,
-            "approve": work.approve,
-            "accept": [
-                "remMoney": work.accept.remMoney,
-                "recList": newRecList,
-                "expList": newExpList,
-                "start": work.accept.start,
-                "finished": work.accept.finished
-            ],
-            "products": newProList
-        ])
-        
-        return false
+        return true
+    }
+    // delete a Work
+    func deleteWork(_ companyId: String, _ workId: String) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId).delete()
+            return false
+        }
+        return true
+    }
+    // Create a Product
+    func saveProduct(_ companyId: String, _ workId: String, _ product: Product) -> Bool{
+        let data = castProduct(product)
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("ProductList").document(product.id).setData(data)
+            return false
+        }
+        return true
+    }
+    // Update a Product
+    func updateProduct(_ companyId: String, _ workId: String, _ productId: String, updateArea: [String: Any]) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("ProductList").document(productId).updateData(updateArea)
+            return false
+        }
+        return true
+    }
+    // Delete a Product
+    func deleteProduct(_ companyId: String, _ workId: String, _ productId: String) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("ProductList").document(productId).delete()
+            return false
+        }
+        return true
     }
     
-    // Givrec add Data in Firebase Database.
-    func addGivrec(_ givrec: Givrec) -> Bool {
-        
-        db.collection("Givrecs").document(givrec.id).setData([
-            "id": givrec.id,
-            "currentId": givrec.currentId,
-            "price": givrec.price,
-            "date": givrec.date,
-            "isRec": givrec.isRec,
-        ])
-        
-        return false
+    // Create a Statement
+    func saveStatement(_ companyId: String, _ workId: String, _ statement: Statement) -> Bool{
+        let data = castStatement(statement)
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("StatementList").document(statement.id).setData(data)
+            return false
+        }
+        return true
     }
-    
-    // Givrec update Data in Firebase Database.
-    func updateGivrec(_ givrec: Givrec) -> Bool {
-        
-        db.collection("Givrecs").document(givrec.id).setData([
-            "id": givrec.id,
-            "currentId": givrec.currentId,
-            "price": givrec.price,
-            "date": givrec.date,
-            "isRec": givrec.isRec,
-        ])
-        
-        return false
+    // Update a Statement
+    func updateStatement(_ companyId: String, _ workId: String, _ statementId: String, updateArea: [String: Any]) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("StatementList").document(statementId).updateData(updateArea)
+            return false
+        }
+        return true
     }
-    
+    // Delete a Statement
+    func deleteStatement(_ companyId: String, _ workId: String, _ statementId: String) -> Bool{
+        Task {
+            try await database.collection("Companies").document(companyId)
+                .collection("WorkList").document(workId)
+                .collection("StatementList").document(statementId).delete()
+            return false
+        }
+        return true
+    }
     
 }
+
 

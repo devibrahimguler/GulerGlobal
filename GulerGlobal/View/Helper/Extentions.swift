@@ -7,234 +7,72 @@
 
 import SwiftUI
 
-
-enum Tabs {
-    case Home
-    case Bid
-    case Approved
-    case Profile
-}
-
-enum ButtonType: String {
+enum ButtonType: String, CaseIterable {
     case cancel = "İptal"
     case finished = "Bitmiş"
     case currents = "Cariler"
     case debs = "Borçlar"
     case soon = "Yakında!"
+    
+    var symbolImage: String {
+        switch self {
+        case .cancel: "trash.fill"
+        case .finished: "text.badge.checkmark"
+        case .currents: "house.lodge.fill"
+        case .debs: "list.bullet.rectangle"
+        case .soon: "hourglass"
+        }
+    }
+    
 }
-
-enum Edit {
-    case Wait
-    case EditWait
-    case Approve
-    case NotApprove
-    case Finished
-    case Detail
-}
-
 
 enum FormTitle: String {
     case none = ""
-    case companyName = "FİRMA İSMİ"
-    case companyAddress = "ADDRES"
-    case companyPhone = "TELEFON"
-    case projeNumber = "PROJE ID"
-    case workName = "İŞ İSMİ"
-    case workDescription = "İŞ AÇIKLAMA"
-    case workPrice = "İŞ FİYATI"
-    case recMoney = "ALINAN PARA"
-    case remMoney = "KALAN PARA"
-    case expMoney = "ALINACAK PARA"
-    case recDate = "TAHSİLAT TARİHİ"
-    case expDate = "VADE TARİHİ"
-    case startDate = "BAŞLAMA TARİHİ"
-    case finishDate = "TAHMİNİ BİTİŞ TARİHİ"
-    case productName = "ÜRÜN İSMİ"
-    case productQuantity = "ÜRÜN ADEDİ"
-    case productPrice = "ÜRÜN FİYATI"
-    case productSuggestion = "ALINDIĞI YER"
-    case productPurchased = "ALINMA TARİHİ"
-    case givMoney = "BAĞLANTI MİKTARI"
-    case givDate = "BAĞLANTI TARİHİ"
+    case companyName = "Firma İsmi"
+    case companyAddress = "Addres"
+    case companyPhone = "Telefon"
+    case projeNumber = "Proje Id"
+    case workName = "İş İsmi"
+    case workDescription = "İş Açıklama"
+    case workPrice = "İş Fiyatı"
+    case recMoney = "Alınan Para"
+    case remMoney = "Kalan Para"
+    case expMoney = "Alınacak Para"
+    case recDate = "Tahsilat Tarihi"
+    case expDate = "Vade Tarihi"
+    case startDate = "Başlama Tarihi"
+    case finishDate = "Tahmini Bitiş Tarihi"
+    case productName = "Ürün İsmi"
+    case productQuantity = "Ürün Adedi"
+    case productPrice = "Ürün Fiyatı"
+    case productSuggestion = "Alındığı Yer"
+    case productPurchased = "Alınma Tarihi"
+    case givMoney = "Bağlantı Miktarı"
+    case givDate = "Bağlantı Tarihi"
 }
 
-enum ButtonStyle: String {
-    case accept = "checkmark.square"
-    case reject = "trash"
-}
-
-enum ListType {
-    case none
-    case recStatement
-    case expStatement
-    case product
-    case give
-    case rec
-    case work
-}
-
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape( RoundedCorner(radius: radius, corners: corners) )
-    }
-}
-
-struct RoundedCorner: Shape {
-
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
-    }
-}
-
-extension View {
-    func getRect() -> CGSize {
-        return UIScreen.main.bounds.size
-    }
-}
-
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-
-        ZStack(alignment: alignment) {
-            placeholder().padding(.leading).opacity(shouldShow ? 1 : 0)
-            self
+enum ListType: String, CaseIterable {
+    case none = "None"
+    case work = "İş"
+    case received = "Tahsilat"
+    case expiry = "Vade"
+    case product = "Ürün"
+    
+    var color: String {
+        switch self {
+        case .none: "trash.fill"
+        case .work: "command"
+        case .received: "text.badge.checkmark"
+        case .expiry: "house.lodge.fill"
+        case .product: "list.bullet.rectangle"
         }
     }
-}
-
-extension UIApplication {
-    var key: UIWindow? {
-        self.connectedScenes
-            .map({$0 as? UIWindowScene})
-            .compactMap({$0})
-            .first?
-            .windows
-            .filter({$0.isKeyWindow})
-            .first
-    }
-}
-
-extension UIView {
-    func allSubviews() -> [UIView] {
-        var allSubviews = subviews
-        for subview in subviews {
-            allSubviews.append(contentsOf: subview.allSubviews())
-        }
-        return allSubviews
-    }
+    
 }
 
 
-extension UITabBar {
-    private static var originalY: Double?
-
-    static public func changeTabBarState(shouldHide: Bool) {
-        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-        windowScene?.windows.first(where: { $0.isKeyWindow })?.allSubviews().forEach({ view in
-            if let tabBar = view as? UITabBar {
-                if let superview = tabBar.superview {
-                    tabBar.snapshotView(afterScreenUpdates: true)
-                    superview.snapshotView(afterScreenUpdates: true)
-                    if !tabBar.isHidden && shouldHide {
-                        originalY = superview.frame.origin.y
-                        superview.frame.origin.y = superview.frame.origin.y + 4.5
-                    } else if tabBar.isHidden && !shouldHide {
-                        guard let originalY else {
-                            return
-                        }
-                        superview.frame.origin.y = originalY
-          
-                    }
-                    
-                    tabBar.isHidden = shouldHide
-                    tabBar.setNeedsLayout()
-                    tabBar.layoutIfNeeded()
-                    superview.setNeedsLayout()
-                    superview.layoutIfNeeded()
-                }
-            }
-        })
-    }
-}
-
-extension View {
-    func hideKeyboard() {
-        let resign = #selector(UIResponder.resignFirstResponder)
-        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
-    }
-}
-
-extension Date {
-    func getStringDate(_ style: DateFormatter.Style) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "tr")
-        formatter.dateStyle = style
-        
-        return formatter.string(from: self)
-    }
-}
 
 
-/* old hidden tab
- extension UIView {
-     func allSubviews() -> [UIView] {
-         var subs = self.subviews
-         for subview in self.subviews {
-             let rec = subview.allSubviews()
-             subs.append(contentsOf: rec)
-         }
-         return subs
-     }
- }
- 
- struct TabBarModifier {
-     static func showTabBar() {
-         UIApplication.shared.key?.allSubviews().forEach({ subView in
-             if let view = subView as? UITabBar {
-                 view.isHidden = false
-             }
-         })
-     }
-     
-     static func hideTabBar() {
-         UIApplication.shared.key?.allSubviews().forEach({ subView in
-             if let view = subView as? UITabBar {
-                 view.isHidden = true
-             }
-         })
-     }
- }
 
- struct ShowTabBar: ViewModifier {
-     func body(content: Content) -> some View {
-         return content.padding(.zero).onAppear {
-             TabBarModifier.showTabBar()
-         }
-     }
- }
- struct HiddenTabBar: ViewModifier {
-     func body(content: Content) -> some View {
-         return content.padding(.zero).onAppear {
-             TabBarModifier.hideTabBar()
-         }
-     }
- }
 
- extension View {
-     
-     func showTabBar() -> some View {
-         return self.modifier(ShowTabBar())
-     }
 
-     func hiddenTabBar() -> some View {
-         return self.modifier(HiddenTabBar())
-     }
- }
- */

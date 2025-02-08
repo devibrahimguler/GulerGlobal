@@ -11,52 +11,79 @@ struct BidView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var viewModel: MainViewModel
-    @State private var isAddBid: Bool = false
+    @State private var isReset: Bool = false
+    @State private var company: Company?
     
     var body: some View {
-        NavigationView {
-            BaseList(title: "Teklifler") {
-                ForEach(viewModel.waitWorks, id: \.self) { work in
-                    let company = viewModel.getCompanyById(work.companyId)
-                    
-                    LazyVStack(spacing: 0){
-                        NavigationLink {
-                            
-                            WorkDetailView(work: work, isBidView: true)
-                                .environmentObject(viewModel)
-                                .onDisappear {
-                                    UITabBar.changeTabBarState(shouldHide: false)
-                                }
-                            
-                        } label: {
-                            Card(companyName: company.name, work: work, isApprove: false)
+        ZStack(alignment: .topTrailing) {
+            HStack {
+                
+                Text("Teklifler")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                NavigationLink {
+                    WorkEntryView(company: $company)
+                        .environmentObject(viewModel)
+                } label: {
+                    Text("Ekle")
+                        .foregroundStyle(.uRenk)
+                        .font(.system(size: 14, weight: .black, design: .monospaced))
+                }
+                .padding(.trailing)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(10)
+            .background(.ultraThinMaterial)
+            .zIndex(1)
+            
+            BaseList(isEmpty: viewModel.pendingTasks.isEmpty, padding: 50) {
+                ForEach(viewModel.pendingTasks, id: \.self) { tuple in
+                    let company = tuple.company
+                    let work = tuple.work
+                    NavigationLink {
+                        WorkDetailView(tuple: tuple, isBidView: true)
+                            .environmentObject(viewModel)
+                            .onAppear {
+                                isReset.toggle()
+                            }
+                    } label: {
+                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                            WorkCard(companyName: company.companyName, work: work, isApprove: false, color: .bRenk)
                         }
-                        
-                    }
-                    .swipeActions {
-                        
-                        SwipeButton(
-                            approveText: "Approve",
-                            work: work,
-                            buttonStyle: .accept
-                        )
-                        .environmentObject(viewModel)
-                        
-                        
-                        
-                        SwipeButton(
-                            approveText: "Unapprove",
-                            work: work,
-                            buttonStyle: .reject
-                        )
-                        .environmentObject(viewModel)
+                        actions: {
+                            Action(tint: .red, icon: "trash.fill") {
+                                viewModel.updateWork(
+                                    companyId: company.id,
+                                    workId: work.id,
+                                    updateArea: ["approve": ApprovalStatus.rejected.rawValue,]
+                                )
+                            }
+                            
+                            Action(tint: .green, icon: "checkmark.square") {
+                                withAnimation(.snappy) {
+                                    viewModel.updateWork(
+                                        companyId: company.id,
+                                        workId: work.id,
+                                        updateArea: ["approve": ApprovalStatus.approved.rawValue]
+                                    )
+                                }
+                            }
+                        }
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(lineWidth: 1)
+                                .fill(Color.iRenk.gradient)
+                        }
                     }
                 }
             }
+            .zIndex(0)
+
         }
-        
     }
-    
 }
 
 struct TestBidView: View {
@@ -66,9 +93,24 @@ struct TestBidView: View {
         BidView()
             .environmentObject(viewModel)
             .onAppear {
-                viewModel.companies = [.init(id: "0", name: "Firma ismi", address: "Fİrma adresi", phone: "(554) 170 16 35", works: ["0000"])]
-                viewModel.works = [.init(id: "0000", companyId: "0", name: "iş adı", desc: "iş açıklaması", price: 10000, approve: "Wait", accept: .init(remMoney: 0, recList: [], expList: [], start: .now, finished: .now), products: [])]
-                viewModel.waitWorks = [.init(id: "0000", companyId: "0", name: "iş adı", desc: "iş açıklaması", price: 10000, approve: "Wait", accept: .init(remMoney: 0, recList: [], expList: [], start: .now, finished: .now), products: [])]
+                viewModel.companyList = [
+                    example_TupleModel.company,
+                    example_TupleModel.company,
+                    example_TupleModel.company,
+                    example_TupleModel.company,
+                    example_TupleModel.company
+                ]
+                viewModel.allTasks = [
+                    example_TupleModel,
+                    example_TupleModel,
+                    example_TupleModel,
+                    example_TupleModel,
+                    example_TupleModel
+                ]
+                viewModel.pendingTasks = [
+                    example_TupleModel,
+                    example_TupleModel,
+                ]
             }
     }
 }

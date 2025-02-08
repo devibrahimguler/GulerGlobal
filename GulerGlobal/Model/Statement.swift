@@ -7,12 +7,17 @@
 
 import SwiftUI
 
-struct Statement: Codable, Hashable {
+struct Statement: Codable, Hashable, Identifiable {
+    var id: String = UUID().uuidString
+    var amount: Double
     var date: Date
-    var price: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case date = "date"
-        case price = "price"
-    }
+    var status: StatementStatus
+}
+
+enum StatementStatus: String, Codable {
+    case none = ""
+    case received = "Received"
+    case expired = "Expired"
+    case debs = "Debs"
+    case hookup = "Hookup"
 }

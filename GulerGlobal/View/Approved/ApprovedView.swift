@@ -11,21 +11,47 @@ struct ApprovedView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var viewModel: MainViewModel
+    @State private var isReset: Bool = false
     
     var body: some View {
-        NavigationView {
-            BaseList(title: "Onaylanan Teklifler") {
-                ForEach(viewModel.approveWorks, id: \.self) { work in
-                    let company = viewModel.getCompanyById(work.companyId)
-                    LazyVStack(spacing: 0) {
-                        NavigationLink {
-                            WorkDetailView(work: work)
-                                .environmentObject(viewModel)
-                                .onDisappear {
-                                    UITabBar.changeTabBarState(shouldHide: false)
-                                }
-                        } label: {
-                            Card(companyName: company.name, work: work, isApprove: true)
+        BaseList(isEmpty: viewModel.approvedTasks.isEmpty) {
+            ForEach(viewModel.approvedTasks, id: \.self) { tuple in
+                let company = tuple.company
+                let work = tuple.work
+                LazyVStack(spacing: 0) {
+                    NavigationLink {
+                        WorkDetailView(tuple: tuple)
+                            .environmentObject(viewModel)
+                            .onAppear {
+                                isReset.toggle()
+                            }
+                            .onDisappear {
+                                viewModel.isTabBarHidden = false
+                            }
+                    } label: {
+                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                            WorkCard(companyName: company.companyName, work: work, isApprove: true, color: .bRenk)
+                        }
+                        actions: {
+                            Action(tint: .red, icon: "trash.fill") {
+                                /*
+                                 viewModel.updateWork(.init(
+                                     id: work.id,
+                                     companyId: work.companyId,
+                                     name: work.name,
+                                     description: work.description,
+                                     price: work.price,
+                                     approve: "Unapprove",
+                                     accept: work.accept,
+                                     products: work.products)
+                                 )
+                                 */
+                            }
+                        }
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(lineWidth: 1)
+                                .fill(Color.iRenk.gradient)
                         }
                     }
                 }

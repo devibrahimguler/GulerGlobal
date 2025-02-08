@@ -10,60 +10,31 @@ import SwiftUI
 struct TakenProductView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: MainViewModel
+    @State private var hiddingAnimation: Bool = false
     
     var body: some View {
-        VStack {
+        
+        LazyVStack(spacing: 5) {
             
-            Text("ALINACAK LİSTESİ")
-                .font(.system(size: 20, weight: .black, design: .default))
-                .padding(.top, 5)
+            Text("Malzeme Listesi")
+                .font(.title)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(.background, in: .rect(cornerRadius: 20))
             
-            ForEach(viewModel.takenProducts, id: \.self) { work in
-                VStack {
-                    
-                    RoundedCorner(radius: 1)
-                        .fill(colorScheme == .dark ? .white : .black)
-                        .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5, x: 0 , y: 1)
-                        .frame(height: 1)
-                        .padding(.bottom, 5)
-                    
-                    VStack {
-                        HStack {
-                            Text("Proje Numarası:")
-                                .foregroundStyle(.blue)
-                            
-                            Text("\(work.id)")
-                                .foregroundStyle(.black)
-                        }
-                    }
-                    .font(.system(size: 12, weight: .black, design: .default))
-                    .padding(8)
-                    .padding(.horizontal)
-                    .background(.hWhite)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(style: .init(lineWidth: 3))
-                            .fill(.gray)
-                    }
-                    .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5, x: 0 , y: 1)
-                    
-                    LazyVStack(spacing: 0){
-                        ForEach(work.products, id: \.self) { product in
-                            
-                            if !product.isBought {
-                                ProductCard(pro: product) { isBought in
-                                    viewModel.editProduct(isBought, product: product, work: work)
-                                }
-                            }
-                        }
-                    }
-                }
-                
+            ForEach(viewModel.pendingProducts, id: \.self) { tuple in
+                ProductListView(
+                    title: "Proje Numarası: \(tuple.work.id)",
+                    list: tuple.work.productList.filter { !$0.isBought },
+                    tuple: tuple,
+                    hiddingAnimation: $hiddingAnimation
+                )
+                .environmentObject(viewModel)
             }
-            .padding([.horizontal])
             
         }
+        .opacity(viewModel.pendingProducts.isEmpty ? 0 : 1)
     }
 }
 

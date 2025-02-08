@@ -9,20 +9,33 @@ import SwiftUI
 
 struct FinishedBidView: View {
     @EnvironmentObject var viewModel: MainViewModel
+    @State private var isReset: Bool = false
     
     var body: some View {
-        BaseList(title: "Bitmiş Projeler") {
-            ForEach(viewModel.finishedWorks, id: \.self) { work in
+        BaseList(isEmpty: viewModel.completedTasks.isEmpty) {
+            ForEach(viewModel.completedTasks, id: \.self) { tuple in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        WorkDetailView(work: work)
+                        WorkDetailView(tuple: tuple)
                             .environmentObject(viewModel)
                     } label: {
-                        Card(work: work, isApprove: true)
+                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                            WorkCard(companyName: tuple.company.companyName, work: tuple.work, isApprove: true, color: .bRenk)
+                        } actions: {
+                            Action(tint: .red, icon: "trash.fill") {
+                                
+                            }
+                        }
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(lineWidth: 1)
+                                .fill(Color.iRenk.gradient)
+                        }
                     }
                 }
             }
         }
+        .navigationTitle("Bitmiş Projeler")
     }
 }
 

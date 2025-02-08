@@ -10,43 +10,40 @@ import SwiftUI
 struct CurrentsView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isAddCurrent: Bool = false
+    @State private var isReset: Bool = false
     
     var body: some View {
-        BaseList(title: "Cariler") {
-            ForEach(viewModel.companies, id: \.self) { company in
-                LazyVStack(spacing: 0) {
-                    NavigationLink {
-                        CompanyDetailView(company: company)
-                            .environmentObject(viewModel)
-                    } label: {
-                        CompanyCard(company: company)
+        BaseList(isEmpty: viewModel.companyList.isEmpty) {
+            ForEach(viewModel.companyList, id: \.self) { company in
+                NavigationLink {
+                    CompanyDetailView(company: company)
+                        .environmentObject(viewModel)
+                } label: {
+                    SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                        CompanyCard(company: company, color: .bRenk)
+                    } actions: {
+                        Action(tint: .red, icon: "trash.fill") {
+                            
+                        }
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .stroke(lineWidth: 1)
+                            .fill(Color.iRenk.gradient)
                     }
                 }
             }
         }
-        .blur(radius: isAddCurrent ? 5 : 0)
         .toolbar(content: {
-            Button {
-                withAnimation(.spring) {
-                    isAddCurrent.toggle()
-                }
+            NavigationLink {
+                CompanyEntryView(isAddCurrent: $isAddCurrent)
             } label: {
-                Text("EKLE")
+                Text("Ekle")
                     .font(.system(size: 14, weight: .black, design: .monospaced))
                     .foregroundStyle(.green)
             }
         })
-        .animation(.snappy, value: isAddCurrent)
-        .sheet(isPresented: $isAddCurrent) {
-            AddCurrentView(isAddCurrent: $isAddCurrent)
-                .presentationDetents([.height(300)])
-                .presentationDragIndicator(.visible)
-                .presentationBackground(.thinMaterial)
-                .presentationCornerRadius(10)
-                .environmentObject(viewModel)
-            
-        }
-        
+        .navigationTitle("Cariler")
     }
 }
 

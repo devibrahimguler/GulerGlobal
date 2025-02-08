@@ -9,22 +9,21 @@ import SwiftUI
 
 struct Work: Identifiable, Codable, Hashable {
     var id: String
-    var companyId: String
-    var name: String
-    var desc: String
-    var price: Double
-    var approve: String
-    var accept: Accept
-    var products: [Product]
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case companyId = "companyId"
-        case name = "name"
-        case desc = "desc"
-        case price = "price"
-        case approve = "approve"
-        case accept = "accept"
-        case products = "products"
-    }
+    var workName: String
+    var workDescription: String
+    var totalCost: Double
+    var approve: ApprovalStatus
+    var remainingBalance: Double
+    var statements: [Statement]
+    var startDate: Date
+    var endDate: Date
+    var productList: [Product]
+}
+
+enum ApprovalStatus: String, Codable {
+    case none = ""
+    case pending = "Pending"
+    case approved = "Approved"
+    case rejected = "Rejected"
+    case finished = "Finished"
 }

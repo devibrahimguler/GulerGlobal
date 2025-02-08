@@ -7,43 +7,39 @@
 
 import SwiftUI
 
-struct Property: View {
+struct ChartCard: View {
     @Environment(\.colorScheme) var colorScheme
     
     var title: String
-    var desc: String
+    var description: String
     
-    var color: Color = .hWhite
+    var color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 5) {
             
             Text(title.uppercased())
-                .font(.system(size: 10, weight: .black, design: .monospaced))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 1)
-                .background(.white)
-                .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
-                .overlay {
-                    RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
-                        .stroke(style: .init(lineWidth: 2))
-                        .fill(.gray)
-                }
+                .font(.caption)
+                .fontWeight(.semibold)
             
             
-            Text(desc)
+            Label {
+                Text(description)
+            } icon: {
+                Image(systemName: "turkishlirasign")
+            }
                 .frame(maxWidth: .infinity)
-                .font(.system(size: 15, weight: .black, design: .rounded))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 1)
-                .background(color)
-                .clipShape(RoundedCorner(radius: 10, corners: [.topRight, .bottomRight, .bottomLeft]))
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .padding(.vertical, 5)
+                .background(color.gradient)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay {
-                    RoundedCorner(radius: 10, corners: [.topRight, .bottomRight, .bottomLeft])
-                        .stroke(style: .init(lineWidth: 2))
-                        .fill(.gray)
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(lineWidth: 3)
+                        .fill(Color.accentColor.gradient)
                 }
-                .foregroundStyle(color == .red || color == .green ? .white : .black)
+                .foregroundStyle(.white)
             
         }
         .foregroundStyle(.black)
@@ -52,6 +48,5 @@ struct Property: View {
 }
 
 #Preview {
-    Property(title: "title", desc: "27.500")
-        .preferredColorScheme(.dark)
+    ChartCard(title: "title", description: "27.500", color: .bRenk)
 }

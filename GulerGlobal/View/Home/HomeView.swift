@@ -9,77 +9,61 @@ import SwiftUI
 import Charts
 
 struct HomeView: View {
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
     
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
-        NavigationView {
-            ScrollView(showsIndicators: false) {
-                HStack(alignment: .center) {
-                    VStack(spacing: 0) {
-                        Property(title: "Toplam Para", desc: "\(viewModel.totalPrice.customDouble()) ₺")
-
-                        
-                        Property(title: "Alınan Para", desc: "\((viewModel.totalPrice - viewModel.totalRemPrice).customDouble()) ₺", color: .green)
-                        
-                        Property(title: "Kalan Para", desc: "\(viewModel.totalRemPrice.customDouble()) ₺", color: .red)
-                          
-                    }
-                    .animation(.smooth, value: viewModel.totalRemPrice)
-
-                    Chart {
-                        ForEach(viewModel.traking) { traking in
-                            SectorMark(
-                                angle: .value("Price", traking.isAnimated ? traking.value : 0),
-                                         
-                                innerRadius: .fixed(15),
-                                angularInset: 1)
-                         
-                        
-                            .foregroundStyle(traking.color)
-                            
-                            .opacity(traking.isAnimated ? 1 : 0)
-                            
-                        
-                        }
-                        
-                    }
-                    .chartYScale(domain: 0...12000)
-                    .frame(height: 150)
-                    .padding(5)
-                     .overlay {
-                         RoundedRectangle(cornerRadius: 70, style: .continuous)
-                             .stroke(style: .init(lineWidth: 6))
-                             .fill(.hWhite)
-                             .frame(width: 132, height: 132)
-                             .shadow(color: colorScheme == .dark ? .white : .black ,radius: 5)
-                     }
-                    .padding()
+        ScrollView(.vertical, showsIndicators: false) {
+            HStack(alignment: .center) {
+                VStack(spacing: 0) {
+                    ChartCard(title: "Toplam Para", description: "\(viewModel.totalRevenue.customDouble())", color: .bRenk)
+                    
+                    ChartCard(title: "Alınan Para", description: "\((viewModel.totalRevenue - viewModel.remainingRevenue).customDouble())", color: .green)
+                    
+                    ChartCard(title: "Kalan Para", description: "\(viewModel.remainingRevenue.customDouble())", color: .red)
+                    
                 }
-                .padding(.horizontal)
-                .background(.background, in: .rect(cornerRadius: 20))
-                .padding(.horizontal)
+                .animation(.smooth, value: viewModel.remainingRevenue)
                 
-                TakenProductView()
-                    .environmentObject(viewModel)
-                    .padding(.bottom)
-                    .background(.background, in: .rect(cornerRadius: 20))
-                    .padding([.horizontal])
-                
-                
-                Spacer()
+                Chart {
+                    ForEach(viewModel.traking) { traking in
+                        SectorMark(
+                            angle: .value("Price", traking.isAnimated ? traking.value : 0),
+                            innerRadius: .fixed(15),
+                            angularInset: 1)
+                        .foregroundStyle(traking.color)
+                        .opacity(traking.isAnimated ? 1 : 0)
+                    }
+                    
+                }
+                .chartYScale(domain: 0...12000)
+                .frame(height: 150)
+                .padding(5)
+                .overlay {
+                    Circle()
+                        .stroke(style: .init(lineWidth: 5))
+                        .fill(Color.bRenk.gradient)
+                        .frame(width: 155)
+                }
+                .padding(10)
             }
-            .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
-            .onAppear(perform: animateChart)
-            .onReceive(viewModel.$totalRemPrice, perform: { _ in
-                resetChartAnimation()
-                animateChart()
-            })
-        .navigationTitle("Haber Ekranı")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal, 10)
+            .background(.background, in: .rect(cornerRadius: 20))
+            
+            TakenProductView()
+                .environmentObject(viewModel)
+            
+            Spacer()
         }
-    
+        .padding(.horizontal, 10)
+        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
+        .onAppear(perform: animateChart)
+        .onReceive(viewModel.$remainingRevenue) { _ in
+            resetChartAnimation()
+            animateChart()
+        }
+        
         
         
     }

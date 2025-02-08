@@ -7,42 +7,37 @@
 
 import SwiftUI
 
-struct HomeScreenButton<Content: View>: View {
-    @Environment(\.colorScheme) var colorScheme
-    var content: Content
-    var buttonType: ButtonType
-    
+struct NavigationButton<Content: View>: View {
+    @Environment(\..colorScheme) private var colorScheme
+    let content: Content
+    let buttonType: ButtonType
+
     var body: some View {
-        
-        NavigationLink {
-            content
-        } label: {
-            VStack {
-                
-                Image("\(buttonType)")
+        NavigationLink(destination: content) {
+            VStack(spacing: 8) {
+                Image(systemName: buttonType.symbolImage)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                
-                Text("\(buttonType.rawValue)")
-                    .font(.system(size: 12, weight: .black))
+                    .scaledToFit()
+                    .frame(height: 40)
+
+                Text(buttonType.rawValue)
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
             }
+            .foregroundStyle(.bRenk.gradient)
+            .frame(width: 75, height: 75)
+            .padding(10)
+            .background(Color.accentColor.gradient)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
         }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .padding(10)
-        .background(.hWhite)
-        .clipShape( RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(style: .init(lineWidth: 3))
-                .fill(.gray)
-        }
-        .shadow(color: colorScheme == .dark ? .white : .black ,radius: 1)
     }
 }
 
 struct TestHomeScreenButton: View {
     var body: some View {
-        HomeScreenButton(content: Text("deneme"), buttonType: .cancel)
+        NavigationButton(content: Text("deneme"), buttonType: .cancel)
     }
 }
 
