@@ -11,10 +11,11 @@ extension View {
     func placeholder<Content: View>(
         when shouldShow: Bool,
         alignment: Alignment = .leading,
+        padding: CGFloat? = nil,
         @ViewBuilder placeholder: () -> Content) -> some View {
 
         ZStack(alignment: alignment) {
-            placeholder().padding(.leading).opacity(shouldShow ? 1 : 0)
+            placeholder().padding(.leading, padding).opacity(shouldShow ? 1 : 0)
             self
         }
     }

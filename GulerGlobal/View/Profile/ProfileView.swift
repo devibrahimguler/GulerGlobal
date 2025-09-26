@@ -59,11 +59,11 @@ struct ProfileView: View {
                     }
                     .font(.caption)
                     .fontWeight(.black)
-                    .foregroundStyle(.bRenk.gradient)
+                    .foregroundStyle(.accent)
                 }
             }
             .padding(10)
-            .background(.background, in: .rect(cornerRadius: 20))
+            .glassEffect(in: .rect(cornerRadius: 20))
             
             VStack() {
                 HStack {
@@ -82,7 +82,7 @@ struct ProfileView: View {
                     
                     NavigationButton(
                         content:
-                            CurrentsView()
+                            CurrentView()
                             .environmentObject(viewModel),
                         buttonType: .currents)
                     
@@ -94,9 +94,9 @@ struct ProfileView: View {
                     
                     NavigationButton(
                         content:
-                            DebsView()
+                            SupplierView()
                             .environmentObject(viewModel),
-                        buttonType: .debs)
+                        buttonType: .supplier)
                     
                     NavigationButton(
                         content:
@@ -108,7 +108,7 @@ struct ProfileView: View {
             }
             .frame(maxWidth: .infinity, alignment: .center)
             .padding()
-            .background(.background, in: .rect(cornerRadius: 20))
+            .glassEffect(in: .rect(cornerRadius: 20))
             
             Spacer()
             
@@ -119,6 +119,15 @@ struct ProfileView: View {
     }
 }
 
+struct Test_ProfileView: View {
+    @StateObject private var viewModel: MainViewModel = .init()
+    
+    var body: some View {
+        ProfileView()
+            .environmentObject(viewModel)
+    }
+}
+
 #Preview {
-    ContentView()
+    Test_ProfileView()
 }

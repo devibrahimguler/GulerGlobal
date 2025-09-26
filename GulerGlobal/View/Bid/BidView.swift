@@ -29,7 +29,7 @@ struct BidView: View {
                         .environmentObject(viewModel)
                 } label: {
                     Text("Ekle")
-                        .foregroundStyle(.uRenk)
+                        .foregroundStyle(.isGreen)
                         .font(.system(size: 14, weight: .black, design: .monospaced))
                 }
                 .padding(.trailing)
@@ -51,10 +51,10 @@ struct BidView: View {
                             }
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            WorkCard(companyName: company.companyName, work: work, isApprove: false, color: .bRenk)
+                            WorkCard(companyName: company.companyName, work: work, isApprove: false)
                         }
                         actions: {
-                            Action(tint: .red, icon: "trash.fill") {
+                            Action(tint: .red, icon: "xmark.bin") {
                                 viewModel.updateWork(
                                     companyId: company.id,
                                     workId: work.id,
@@ -75,7 +75,7 @@ struct BidView: View {
                         .overlay {
                             RoundedRectangle(cornerRadius: 20, style: .continuous)
                                 .stroke(lineWidth: 1)
-                                .fill(Color.iRenk.gradient)
+                                .fill(Color.isSkyBlue.gradient)
                         }
                     }
                 }
@@ -94,22 +94,13 @@ struct TestBidView: View {
             .environmentObject(viewModel)
             .onAppear {
                 viewModel.companyList = [
-                    example_TupleModel.company,
-                    example_TupleModel.company,
-                    example_TupleModel.company,
-                    example_TupleModel.company,
                     example_TupleModel.company
                 ]
                 viewModel.allTasks = [
-                    example_TupleModel,
-                    example_TupleModel,
-                    example_TupleModel,
-                    example_TupleModel,
                     example_TupleModel
                 ]
                 viewModel.pendingTasks = [
-                    example_TupleModel,
-                    example_TupleModel,
+                    example_TupleModel
                 ]
             }
     }

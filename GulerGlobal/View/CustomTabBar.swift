@@ -33,6 +33,7 @@ struct CustomTabBar: View {
                 ProfileView()
                     .tag(TabValue.Profile)
                     .toolbarBackground(.visible, for: .tabBar)
+                
             }
             .navigationBarHidden(true)
             .environmentObject(viewModel)
@@ -67,7 +68,8 @@ struct CustomTabBar: View {
             }
         }
         .allowsHitTesting(false)
-        .frame(height: 48)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .padding(.horizontal, 30)
     }
     
     // MARK: - Tab Item
@@ -85,10 +87,10 @@ struct CustomTabBar: View {
             
             Text(tab.rawValue)
                 .font(.caption2)
-                .foregroundStyle(viewModel.activeTab == tab ? .bRenk : .gray)
         }
-        .foregroundColor(viewModel.activeTab == tab ? .bRenk : .gray)
+        .foregroundColor(viewModel.activeTab == tab ? .accent : .gray)
         .frame(maxWidth: .infinity)
+        
     }
 }
 

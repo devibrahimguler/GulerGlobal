@@ -11,7 +11,7 @@ enum ButtonType: String, CaseIterable {
     case cancel = "İptal"
     case finished = "Bitmiş"
     case currents = "Cariler"
-    case debs = "Borçlar"
+    case supplier = "Tedarikçiler"
     case soon = "Yakında!"
     
     var symbolImage: String {
@@ -19,7 +19,7 @@ enum ButtonType: String, CaseIterable {
         case .cancel: "trash.fill"
         case .finished: "text.badge.checkmark"
         case .currents: "house.lodge.fill"
-        case .debs: "list.bullet.rectangle"
+        case .supplier: "list.bullet.rectangle"
         case .soon: "hourglass"
         }
     }

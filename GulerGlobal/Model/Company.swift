@@ -12,7 +12,15 @@ struct Company: Codable, Hashable, Identifiable {
     var companyName: String
     var companyAddress: String
     var contactNumber: String
+    var partnerRole: PartnerRole
     var workList: [Work]
+}
+
+enum PartnerRole: String, Codable, CaseIterable {
+    case none = "None"
+    case current = "Current"
+    case supplier = "Supplier"
+    case both = "Both"
 }
 
 struct TupleModel: Hashable, Identifiable {

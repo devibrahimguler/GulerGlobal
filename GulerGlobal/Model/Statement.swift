@@ -21,3 +21,9 @@ enum StatementStatus: String, Codable {
     case debs = "Debs"
     case hookup = "Hookup"
 }
+
+struct StatementTupleModel: Hashable, Identifiable {
+    let id: String = UUID().uuidString
+    let companyId: String
+    let statement: [Statement]
+}

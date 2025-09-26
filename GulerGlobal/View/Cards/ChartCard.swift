@@ -16,31 +16,27 @@ struct ChartCard: View {
     var color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 2) {
             
             Text(title)
-                .font(.caption)
+                .font(.caption2)
                 .fontWeight(.semibold)
             
-            
             Label {
-                Text(description)
+                HStack {
+                    Text(description)
+                    
+                    Circle()
+                        .fill(color.gradient)
+                        .frame(width: 10, height: 10)
+                }
             } icon: {
                 Image(systemName: "turkishlirasign")
             }
-            .foregroundStyle(.black)
-            .frame(maxWidth: .infinity)
-            .font(.caption2)
+            .font(.caption)
             .fontWeight(.semibold)
             .padding(5)
-            .background(color.gradient)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(lineWidth: 3)
-                    .fill(Color.accentColor.gradient)
-            }
-            .foregroundStyle(.white)
+            .glassEffect(in: RoundedRectangle(cornerRadius: 10))
             
         }
         .padding(.vertical, 5)
@@ -48,5 +44,6 @@ struct ChartCard: View {
 }
 
 #Preview {
-    ChartCard(title: "title", description: "27.500", color: .bRenk)
+    ChartCard(title: "title", description: "27.500", color: .isCream)
+        .preferredColorScheme(.dark)
 }

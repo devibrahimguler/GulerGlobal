@@ -15,16 +15,18 @@ struct HomeView: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            HStack(alignment: .center) {
+            HStack() {
                 VStack(spacing: 0) {
-                    ChartCard(title: "Toplam Para", description: "\(viewModel.totalRevenue.customDouble())", color: .bRenk)
+                    ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue.customDouble())", color: .isCream)
                     
-                    ChartCard(title: "Alınan Para", description: "\((viewModel.totalRevenue - viewModel.remainingRevenue).customDouble())", color: .green)
+                    ChartCard(title: "Alınan", description: "\((viewModel.totalRevenue - viewModel.remainingRevenue).customDouble())", color: .green)
                     
-                    ChartCard(title: "Kalan Para", description: "\(viewModel.remainingRevenue.customDouble())", color: .red)
+                    ChartCard(title: "Kalan", description: "\(viewModel.remainingRevenue.customDouble())", color: .red)
                     
                 }
                 .animation(.smooth, value: viewModel.remainingRevenue)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 5)
                 
                 Chart {
                     ForEach(viewModel.traking) { traking in
@@ -38,19 +40,18 @@ struct HomeView: View {
                     
                 }
                 .chartYScale(domain: 0...12000)
-                .frame(height: 150)
+                .frame(height: 170)
                 .padding(5)
                 .overlay {
                     Circle()
                         .stroke(style: .init(lineWidth: 5))
-                        .fill(Color.bRenk.gradient)
-                        .frame(width: 155)
+                        .fill(Color.isCream.opacity(85))
                 }
-                .padding(10)
+                .padding(5)
             }
             .padding(.horizontal, 10)
-            .background(.background, in: .rect(cornerRadius: 20))
-            
+            .glassEffect(in: .rect(cornerRadius: 30))
+
             TakenProductView()
                 .environmentObject(viewModel)
             

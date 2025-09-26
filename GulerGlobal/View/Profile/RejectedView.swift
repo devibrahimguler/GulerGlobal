@@ -19,7 +19,7 @@ struct RejectedView: View {
                             .environmentObject(viewModel)
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            WorkCard(companyName: tuple.company.companyName, work: tuple.work, isApprove: true, color: .bRenk)
+                            WorkCard(companyName: tuple.company.companyName, work: tuple.work, isApprove: true)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 
@@ -28,7 +28,7 @@ struct RejectedView: View {
                         .overlay {
                             RoundedRectangle(cornerRadius: 20, style: .continuous)
                                 .stroke(lineWidth: 1)
-                                .fill(Color.iRenk.gradient)
+                                .fill(Color.isSkyBlue.gradient)
                         }
                     }
                 }

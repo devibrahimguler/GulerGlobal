@@ -15,8 +15,8 @@
 		0F2165442D25D70C002726CD /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2165432D25D701002726CD /* Date+Extensions.swift */; };
 		0F2760072C52D1FB00C87159 /* CustomPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2760062C52D1FB00C87159 /* CustomPlaceHolder.swift */; };
 		0F2760092C52E4F600C87159 /* BasicEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2760082C52E4F600C87159 /* BasicEntry.swift */; };
-		0F2D1C052CCE0DA1002C9715 /* CurrentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2D1C042CCE0DA1002C9715 /* CurrentsView.swift */; };
-		0F2D1C072CCE0DDB002C9715 /* DebsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2D1C062CCE0DDB002C9715 /* DebsView.swift */; };
+		0F2D1C052CCE0DA1002C9715 /* CurrentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2D1C042CCE0DA1002C9715 /* CurrentView.swift */; };
+		0F2D1C072CCE0DDB002C9715 /* SupplierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2D1C062CCE0DDB002C9715 /* SupplierView.swift */; };
 		0F2D1C0D2CCE1A32002C9715 /* Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2D1C0C2CCE1A32002C9715 /* Tracking.swift */; };
 		0F32DF2E2CA8C36300090277 /* CompanyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F32DF2D2CA8C36300090277 /* CompanyCard.swift */; };
 		0F3360DE2C67E91900D53A7D /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F3360DD2C67E91900D53A7D /* ProductCard.swift */; };
@@ -83,8 +83,8 @@
 		0F2165432D25D701002726CD /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		0F2760062C52D1FB00C87159 /* CustomPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlaceHolder.swift; sourceTree = "<group>"; };
 		0F2760082C52E4F600C87159 /* BasicEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicEntry.swift; sourceTree = "<group>"; };
-		0F2D1C042CCE0DA1002C9715 /* CurrentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentsView.swift; sourceTree = "<group>"; };
-		0F2D1C062CCE0DDB002C9715 /* DebsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebsView.swift; sourceTree = "<group>"; };
+		0F2D1C042CCE0DA1002C9715 /* CurrentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentView.swift; sourceTree = "<group>"; };
+		0F2D1C062CCE0DDB002C9715 /* SupplierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplierView.swift; sourceTree = "<group>"; };
 		0F2D1C0C2CCE1A32002C9715 /* Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracking.swift; sourceTree = "<group>"; };
 		0F32DF2D2CA8C36300090277 /* CompanyCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCard.swift; sourceTree = "<group>"; };
 		0F3360DD2C67E91900D53A7D /* ProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCard.swift; sourceTree = "<group>"; };
@@ -157,8 +157,6 @@
 				0F423A8C2C58027000B78DC3 /* PhonePickerView.swift */,
 				0F2165412D25D57D002726CD /* RoundedCorner.swift */,
 				0F0B1F9C2CC856E90088C18F /* NavigationButton.swift */,
-				0F465F742CF229A100E31FB0 /* WorkEntryView.swift */,
-				0F465F682CF1B59B00E31FB0 /* CompanyEntryView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -166,6 +164,7 @@
 		0F27600A2C52F07500C87159 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				0FD9BD622D5EA5C5003F2EDD /* Entry */,
 				0F9FE5762C5839DB00E3A423 /* Helper */,
 				88B5A9882B7C814000B1B46D /* CompanyDetailView.swift */,
 				0F4922B02CA0144000E04189 /* WorkDetailView.swift */,
@@ -201,11 +200,20 @@
 			isa = PBXGroup;
 			children = (
 				0FA6EBF72D3B013900652EDB /* StatementListView.swift */,
-				0F4DAFB52D4E10B300ED8D3E /* StatementEntryView.swift */,
-				0F4DAFB72D4E3BBC00ED8D3E /* ProductEntryView.swift */,
 				0F9075252D4E408200D5C2EA /* ProductListView.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		0FD9BD622D5EA5C5003F2EDD /* Entry */ = {
+			isa = PBXGroup;
+			children = (
+				0F4DAFB72D4E3BBC00ED8D3E /* ProductEntryView.swift */,
+				0F465F742CF229A100E31FB0 /* WorkEntryView.swift */,
+				0F4DAFB52D4E10B300ED8D3E /* StatementEntryView.swift */,
+				0F465F682CF1B59B00E31FB0 /* CompanyEntryView.swift */,
+			);
+			path = Entry;
 			sourceTree = "<group>";
 		};
 		0FE51EDE2C4A888E00239081 /* Home */ = {
@@ -223,8 +231,8 @@
 				88FD26162B68C60C00EA5E71 /* ProfileView.swift */,
 				884C02A22B98386C00D695D7 /* RejectedView.swift */,
 				884C02A42B98398B00D695D7 /* FinishedBidView.swift */,
-				0F2D1C042CCE0DA1002C9715 /* CurrentsView.swift */,
-				0F2D1C062CCE0DDB002C9715 /* DebsView.swift */,
+				0F2D1C042CCE0DA1002C9715 /* CurrentView.swift */,
+				0F2D1C062CCE0DDB002C9715 /* SupplierView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -418,7 +426,7 @@
 				0F4DAFB62D4E10B300ED8D3E /* StatementEntryView.swift in Sources */,
 				0F066B022D2005700022A33C /* String+Extensions.swift in Sources */,
 				0F2760092C52E4F600C87159 /* BasicEntry.swift in Sources */,
-				0F2D1C072CCE0DDB002C9715 /* DebsView.swift in Sources */,
+				0F2D1C072CCE0DDB002C9715 /* SupplierView.swift in Sources */,
 				0F2D1C0D2CCE1A32002C9715 /* Tracking.swift in Sources */,
 				0F32DF2E2CA8C36300090277 /* CompanyCard.swift in Sources */,
 				0F465F732CF1B96C00E31FB0 /* Statement.swift in Sources */,
@@ -427,7 +435,7 @@
 				0F4DAFB82D4E3BBC00ED8D3E /* ProductEntryView.swift in Sources */,
 				0FDE48072D2028B60092857F /* SwipeAction.swift in Sources */,
 				0F066A832D1FF4E90022A33C /* View+Extensions.swift in Sources */,
-				0F2D1C052CCE0DA1002C9715 /* CurrentsView.swift in Sources */,
+				0F2D1C052CCE0DA1002C9715 /* CurrentView.swift in Sources */,
 				0F465F752CF229A100E31FB0 /* WorkEntryView.swift in Sources */,
 				0F1705502CEC4CF8002FFD19 /* BaseList.swift in Sources */,
 				88B687532B5A9E9800F49DA3 /* BidView.swift in Sources */,
@@ -606,7 +614,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -648,7 +656,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

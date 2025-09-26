@@ -34,7 +34,7 @@ struct CustomDatePicker: View {
                 }
             }
             .padding(.vertical, 5)
-            .background(.white)
+            .background(.isCream.gradient)
             .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight, .topRight]))
             .overlay(borderOverlay(for: [.bottomLeft, .bottomRight, .topRight]))
         }
@@ -45,7 +45,7 @@ struct CustomDatePicker: View {
     private func borderOverlay(for corners: UIRectCorner) -> some View {
         RoundedCorner(radius: 10, corners: corners)
             .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            .fill(activeTitle == title ? Color.accentColor.gradient : Color.iRenk.gradient)
+            .fill(activeTitle == title ? Color.accentColor.gradient : Color.isSkyBlue.gradient)
     }
 }
 
@@ -66,7 +66,7 @@ struct DatePickerHeader: View {
 // MARK: - DatePickerOptionsSection
 struct DatePickerOptionsSection: View {
     @Binding var config: DateConfig
-    var dayOptions = Array(1...30).map(String.init)
+    var dayOptions = Array(1...31).map(String.init)
     var monthOptions = Array(1...12).compactMap { getMonthName(for: $0) }
     var yearOptions = Array(2000...2050).map(String.init)
     

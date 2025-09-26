@@ -21,7 +21,7 @@ struct CompanyCard: View {
             } icon: {
                 Image(systemName: "character.textbox")
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(.isText)
             .lineLimit(1)
             
             Label {
@@ -31,7 +31,7 @@ struct CompanyCard: View {
             } icon: {
                 Image(systemName: "mappin.square")
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(.isSilver)
             .lineLimit(1)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -44,13 +44,9 @@ struct CompanyCard: View {
 
 struct TestCompanyCard: View {
     var body: some View {
-        CompanyCard(company: Company(
-            id: "0",
-            companyName: "Guler Global",
-            companyAddress: "Burhaniye mahallesi, Ali galip sokak, Numara:9",
-            contactNumber: "(554) 170 16 35",
-            workList: []),
-                    color: .bRenk
+        CompanyCard (
+            company: example_TupleModel.company,
+            color: .isCream
         )
     }
 }

@@ -20,24 +20,23 @@ struct EntryView: View {
             BasicEntry(
                 username: $dataModel.username,
                 password: $dataModel.password,
-                loginActionText: "Kayıt olmak için tıkla!",
-                complationText: "Giriş Yap") {
-                dataModel.loginUser()
-            } isLoginAction: {
-                dataModel.isLogin = false
-            }
+                // loginActionText: "Kayıt olmak için tıkla!",
+                complationText: "Giriş Yap") { dataModel.loginUser() }
+                // isLoginAction: { dataModel.isLogin = false }
             .offset(x:dataModel.isLogin ? 0 : getRect().width * 2)
             
-            BasicEntry(
-                username: $dataModel.username,
-                password: $dataModel.password,
-                loginActionText: "Giriş yapmak için tıklayın!",
-                complationText: "Kayıt Ol") {
-                dataModel.registerUser()
-            } isLoginAction: {
-                dataModel.isLogin = true
-            }
-            .offset(x:dataModel.isLogin ? -getRect().width * 2 : 0)
+            /*
+             BasicEntry(
+                 username: $dataModel.username,
+                 password: $dataModel.password,
+                 loginActionText: "Giriş yapmak için tıklayın!",
+                 complationText: "Kayıt Ol") {
+                 dataModel.registerUser()
+             } isLoginAction: {
+                 dataModel.isLogin = true
+             }
+             .offset(x:dataModel.isLogin ? -getRect().width * 2 : 0)
+             */
         }
         .animation(.easeInOut, value: dataModel.isLogin)
     }

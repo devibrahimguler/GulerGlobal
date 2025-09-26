@@ -14,11 +14,11 @@ struct BasicEntry: View {
     @Binding var username : String
     @Binding var password : String
     
-    var loginActionText : String
+    // var loginActionText : String
     var complationText: String
     
     var complation : () -> ()
-    var isLoginAction : () -> ()
+    // var isLoginAction : () -> ()
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -37,10 +37,7 @@ struct BasicEntry: View {
                         
                         Image(systemName: "person.fill")
                             .frame(width: 44, height: 44)
-                            .foregroundStyle(.gray)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .shadow(color: .black.opacity(0.15), radius: 5, x: 0, y: 5)
+                            .glassEffect(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                             .padding(.leading)
                         
                         TextField("", text: $username)
@@ -50,20 +47,16 @@ struct BasicEntry: View {
                             .padding(.leading)
                             .frame(height: 44)
                             .placeholder(when: username.isEmpty) {
-                                    Text("Kullanıcı Adı".uppercased()).foregroundStyle(.gray)
+                                    Text("Kullanıcı Adı".uppercased())
                             }
                     }
                     
                     Divider()
-                        .padding(.top, 4)
                     
                     HStack {
                         Image(systemName: "lock.fill")
                             .frame(width: 44, height: 44)
-                            .foregroundStyle(.gray)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .shadow(color: .black.opacity(0.15), radius: 5, x: 0, y: 5)
+                            .glassEffect(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                             .padding(.leading)
                         
                         SecureField("", text: $password)
@@ -72,15 +65,13 @@ struct BasicEntry: View {
                             .padding(.leading)
                             .frame(height: 44)
                             .placeholder(when: password.isEmpty) {
-                                    Text("Şifre".uppercased()).foregroundStyle(.gray)
+                                    Text("Şifre".uppercased())
                             }
                     }
                 }
                 .frame(height: 136)
                 .frame(maxWidth: 712)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                .shadow(color: .black.opacity(0.15), radius: 20, x: 0, y: 20)
+                .glassEffect(in: RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .padding()
                 
                 Button(action: {
@@ -93,26 +84,26 @@ struct BasicEntry: View {
                 .frame(maxWidth: .infinity)
                 .padding(12)
                 .padding(.horizontal, 20)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .shadow(color: .black.opacity(0.15), radius: 20, x: 0, y: 20)
+                .glassEffect(in: RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .padding()
            
                 
-                Button(action: {
-                    withAnimation(.snappy) {
-                        isLoginAction()
-                    }
-                }) {
-                    Text(loginActionText)
-                }
-                .font(.system(size: 13, weight: .black))
-                .foregroundStyle(colorScheme == .light ? .blackCyan : .white)
-                .frame(maxWidth: .infinity,alignment: .center)
+                /*
+                 Button(action: {
+                     withAnimation(.snappy) {
+                         isLoginAction()
+                     }
+                 }) {
+                     Text(loginActionText)
+                 }
+                 .font(.system(size: 13, weight: .black))
+                 .foregroundStyle(colorScheme == .light ? .black : .white)
+                 .frame(maxWidth: .infinity,alignment: .center)
+                 */
 
             }
             .font(.system(size: 15, weight: .black))
-            .foregroundStyle(.black)
+            .foregroundStyle(colorScheme == .light ? .black.opacity(0.65) : .white.opacity(0.65))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .padding()
             .onAppear {
@@ -130,11 +121,12 @@ struct TestBasicEntry: View {
     @State var isLogin : Bool = true
     
     var body: some View {
-        BasicEntry(username: $username, password: $password, loginActionText: "Kayıt Olmak için tıklayın !", complationText: "Giriş Yap") {
+        BasicEntry(username: $username, password: $password,
+                   // loginActionText: "Kayıt Olmak için tıklayın !",
+                   complationText: "Giriş Yap") {
             print("Complation")
-        } isLoginAction: {
-            print("Giriş Yapıldı")
         }
+        // isLoginAction: { print("Giriş Yapıldı") }
     }
 }
 

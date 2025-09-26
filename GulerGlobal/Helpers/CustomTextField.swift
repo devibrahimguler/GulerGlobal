@@ -18,19 +18,20 @@ struct CustomTextField: View {
 
     var keyboardType: UIKeyboardType = .default
     // color -> accentColor
-    var color: Color = .yazi
+    var color: Color = .isText
     var actionContent: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             headerView
 
-            TextField("", text: $text)
+            TextField("", text: $text, axis: .vertical)
+                .lineLimit(nil)
                 .font(.caption)
                 .fontWeight(.semibold)
                 .focused($isFocused)
                 .padding(10)
-                .background(Color.white)
+                .background(Color.isCream.gradient)
                 .clipShape(RoundedCorner(radius: 10, corners: textFieldCorners))
                 .overlay(borderOverlay(for: textFieldCorners))
                 .keyboardType(keyboardType)
@@ -67,7 +68,7 @@ struct CustomTextField: View {
                         .fontWeight(.semibold)
                         .padding(.vertical, 5)
                         .padding(.horizontal)
-                        .background(Color.uRenk)
+                        .background(Color.isGreen)
                         .foregroundStyle(.white)
                         .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
                         .overlay(borderOverlay(for: [.topLeft, .topRight]))
@@ -79,7 +80,7 @@ struct CustomTextField: View {
     private func borderOverlay(for corners: UIRectCorner) -> some View {
         RoundedCorner(radius: 10, corners: corners)
             .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            .fill(formTitle == title ? Color.accentColor.gradient : Color.iRenk.gradient)
+            .fill(formTitle == title ? Color.accentColor.gradient : Color.isSkyBlue.gradient)
     }
 
     private var textFieldCorners: UIRectCorner {

@@ -17,7 +17,6 @@ final class MainViewModel: ObservableObject {
     @Published var activeTab: TabValue = .Home
     @Published var tabAnimationTrigger: TabValue?
     @Published var isTabBarHidden: Bool = false
-    @Published var isNewCompany: Bool = false
     
     @Published var isLoadingPlaceholder: Bool = false
     @Published var isUserConnected: Bool = false
@@ -30,9 +29,12 @@ final class MainViewModel: ObservableObject {
     @Published var rejectedTasks: [TupleModel] = []
     @Published var completedTasks: [TupleModel] = []
     
+    @Published var statementTasks: [StatementTupleModel] = []
+
+    @Published var allProducts: [Product] = []
     @Published var pendingProducts: [TupleModel] = []
     
-    @Published var productList: [Product] = []
+    @Published var allStatements: [Statement] = []
     
     @Published var totalRevenue: Double = 0
     @Published var remainingRevenue: Double = 0
@@ -101,84 +103,63 @@ final class MainViewModel: ObservableObject {
         productDetails = ProductDetails(from: product)
     }
     
-    func createCompany() {
+    func createCompany(company: Company) {
         guard !companyDetails.name.isEmpty else { return }
         isLoadingPlaceholder = true
-        
-        let newCompany = Company(
-            id: generateUniqueID(isWork: false),
-            companyName: companyDetails.name,
-            companyAddress: companyDetails.address,
-            contactNumber: companyDetails.contactNumber,
-            workList: []
-        )
-        
-        isLoadingPlaceholder = firebaseDataService.saveCompany(newCompany)
-        fetchData()
+        firebaseDataService.saveCompany(company)
+        createWork(companyId: company.id, work: example_Work)
     }
     func updateCompany(companyId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.updateCompany(companyId, updateArea: updateArea)
-        
+        firebaseDataService.updateCompany(companyId, updateArea: updateArea)
+        fetchData()
+    }
+    func deleteCompany(companyId: String) {
+        isLoadingPlaceholder = true
+        firebaseDataService.deleteCompany(companyId)
         fetchData()
     }
     func createWork(companyId: String, work: Work) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.saveWork(companyId, work)
-        
+        firebaseDataService.saveWork(companyId, work)
         fetchData()
     }
     func updateWork(companyId: String, workId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.updateWork(companyId, workId, updateArea: updateArea)
-        
+        firebaseDataService.updateWork(companyId, workId, updateArea: updateArea)
         fetchData()
     }
     func deleteWork(companyId: String, workId: String) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.deleteWork(companyId, workId)
-        
+        firebaseDataService.deleteWork(companyId, workId)
         fetchData()
     }
     func createProduct(companyId: String, workId: String, product: Product) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.saveProduct(companyId, workId, product)
-        
+        firebaseDataService.saveProduct(companyId, workId, product)
         fetchData()
     }
     func updateProduct(companyId: String, workId: String, productId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.updateProduct(companyId, workId, productId, updateArea: updateArea)
-        
+        firebaseDataService.updateProduct(companyId, workId, productId, updateArea: updateArea)
         fetchData()
     }
     func deleteProduct(companyId: String, workId: String, productId: String) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.deleteProduct(companyId, workId, productId)
-        
+        firebaseDataService.deleteProduct(companyId, workId, productId)
         fetchData()
     }
     func createStatement(companyId: String, workId: String, statement: Statement) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.saveStatement(companyId, workId, statement)
+        firebaseDataService.saveStatement(companyId, workId, statement)
     }
     func updateStatement(companyId: String, workId: String, statementId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.updateStatement(companyId, workId, statementId, updateArea: updateArea)
+        firebaseDataService.updateStatement(companyId, workId, statementId, updateArea: updateArea)
     }
     func deleteStatement(companyId: String, workId: String, statementId: String) {
         isLoadingPlaceholder = true
-        
-        isLoadingPlaceholder = firebaseDataService.deleteStatement(companyId, workId, statementId)
+        firebaseDataService.deleteStatement(companyId, workId, statementId)
     }
     
     // MARK: - Private Methods
@@ -190,8 +171,10 @@ final class MainViewModel: ObservableObject {
         approvedTasks.removeAll()
         rejectedTasks.removeAll()
         completedTasks.removeAll()
+        statementTasks.removeAll()
+        allProducts.removeAll()
+        allStatements.removeAll()
         pendingProducts.removeAll()
-        productList.removeAll()
         totalRevenue = 0
         remainingRevenue = 0
     }
@@ -211,8 +194,8 @@ final class MainViewModel: ObservableObject {
         completedTasks.sort { $0.work.id > $1.work.id }
         
         traking = [
-            Tracking(color: .green, value: totalRevenue - remainingRevenue),
-            Tracking(color: .red, value: remainingRevenue)
+            Tracking(color: .green.opacity(0.85), value: totalRevenue - remainingRevenue),
+            Tracking(color: .red.opacity(0.85), value: remainingRevenue)
         ]
         
         isLoadingPlaceholder = false
@@ -223,7 +206,8 @@ final class MainViewModel: ObservableObject {
         
         switch work.approve {
         case .none:
-            print("Invalid approval status")
+            let statementTupleModel = StatementTupleModel(companyId: company.id, statement: work.statements.filter({ $0.status == .debs || $0.status == .hookup }))
+            statementTasks.append(statementTupleModel)
         case .pending:
             pendingTasks.append(tuple)
         case .approved:
@@ -236,8 +220,18 @@ final class MainViewModel: ObservableObject {
             completedTasks.append(tuple)
         }
         
-        if work.productList.contains(where: { !$0.isBought }) {
-            pendingProducts.append(tuple)
+        for product in work.productList {
+            if !product.isBought {
+                pendingProducts.append(tuple)
+            }
+            
+            allProducts.append(product)
+        }
+        
+        for statement in work.statements {
+            if statement.status == .debs || statement.status == .hookup {
+                allStatements.append(statement)
+            }
         }
         allTasks.append(tuple)
     }
@@ -260,6 +254,7 @@ struct CompanyDetails {
     var name: String = ""
     var address: String = ""
     var contactNumber: String = ""
+    var partnerRole: PartnerRole = .none
     
     init() {}
     
@@ -267,6 +262,7 @@ struct CompanyDetails {
         name = company?.companyName ?? ""
         address = company?.companyAddress ?? ""
         contactNumber = company?.contactNumber ?? ""
+        partnerRole = company?.partnerRole ?? .none
     }
 }
 
@@ -299,7 +295,7 @@ struct ProductDetails {
     var name: String = ""
     var quantity: String = ""
     var unitPrice: String = ""
-    var suggestion: String = ""
+    var supplier: String = ""
     var purchased: Date = .now
     
     init() {}
@@ -308,8 +304,7 @@ struct ProductDetails {
         name = product?.productName ?? ""
         quantity = "\(product?.quantity ?? 0)"
         unitPrice = "\(product?.unitPrice ?? 0)"
-        suggestion = product?.suggestion ?? ""
+        supplier = product?.supplier ?? ""
         purchased = product?.purchased ?? .now
     }
 }
-

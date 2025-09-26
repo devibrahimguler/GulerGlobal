@@ -11,7 +11,6 @@ struct WorkCard: View {
     var companyName: String
     var work: Work
     var isApprove: Bool
-    var color: Color
     
     var body: some View {
         HStack(spacing: 12) {
@@ -23,26 +22,25 @@ struct WorkCard: View {
         .lineLimit(1)
         .fontWeight(.semibold)
         .padding(10)
-        .background(color.gradient)
     }
     
     private var companyInitials: some View {
         Text(String(companyName.prefix(1)))
             .font(.title)
-            .foregroundStyle(.yazi)
+            .foregroundStyle(.isText)
             .frame(width: 45, height: 45)
-            .background(Color.iRenk.gradient, in: Circle())
+            .background(Color.isSkyBlue.gradient, in: Circle())
     }
     
     private var companyDetails: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(companyName)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(.isText)
             
             Text(work.workName)
                 .font(.caption)
-                .foregroundStyle(.white)
+                .foregroundStyle(.gray)
         }
     }
     
@@ -51,7 +49,7 @@ struct WorkCard: View {
             Text("P-\(work.id)")
                 .font(.caption2)
                 .fontWeight(.black)
-                .foregroundStyle(.white)
+                .foregroundStyle(.isText)
             
             Label {
                 Text("\((isApprove ? work.remainingBalance : work.totalCost).customDouble())")
@@ -60,7 +58,7 @@ struct WorkCard: View {
             }
             .font(.headline)
             .fontWeight(.black)
-            .foregroundStyle(isApprove ? .red : .uRenk)
+            .foregroundStyle(isApprove ? .red : .isGreen)
         }
     }
 }
@@ -71,8 +69,7 @@ struct TestCard: View {
     var body: some View {
         WorkCard(companyName: tuple.company.companyName,
                  work: tuple.work,
-                 isApprove: false,
-                 color: .bRenk)
+                 isApprove: false)
         .preferredColorScheme(.light)
     }
 }

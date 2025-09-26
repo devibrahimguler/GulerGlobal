@@ -30,28 +30,21 @@ struct ApprovedView: View {
                             }
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            WorkCard(companyName: company.companyName, work: work, isApprove: true, color: .bRenk)
+                            WorkCard(companyName: company.companyName, work: work, isApprove: true)
                         }
                         actions: {
-                            Action(tint: .red, icon: "trash.fill") {
-                                /*
-                                 viewModel.updateWork(.init(
-                                     id: work.id,
-                                     companyId: work.companyId,
-                                     name: work.name,
-                                     description: work.description,
-                                     price: work.price,
-                                     approve: "Unapprove",
-                                     accept: work.accept,
-                                     products: work.products)
-                                 )
-                                 */
+                            Action(tint: .red, icon: "xmark.bin") {
+                                viewModel.updateWork(
+                                    companyId: company.id,
+                                    workId: work.id,
+                                    updateArea: ["approve": ApprovalStatus.rejected.rawValue,]
+                                )
                             }
                         }
                         .overlay {
                             RoundedRectangle(cornerRadius: 20, style: .continuous)
                                 .stroke(lineWidth: 1)
-                                .fill(Color.iRenk.gradient)
+                                .fill(Color.isSkyBlue.gradient)
                         }
                     }
                 }

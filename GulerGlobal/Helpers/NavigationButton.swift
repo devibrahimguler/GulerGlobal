@@ -25,7 +25,7 @@ struct NavigationButton<Content: View>: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
             }
-            .foregroundStyle(.bRenk.gradient)
+            .foregroundStyle(.isCream.gradient)
             .frame(width: 75, height: 75)
             .padding(10)
             .background(Color.accentColor.gradient)

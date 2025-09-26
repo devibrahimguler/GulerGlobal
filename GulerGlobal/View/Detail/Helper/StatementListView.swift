@@ -51,30 +51,7 @@ struct StatementListView: View {
                 LazyVStack(spacing: 0) {
                     ForEach(list, id: \.self) { statement in
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            VStack(alignment: .trailing, spacing: 0) {
-                                
-                                Label {
-                                    Text("\(statement.amount.customDouble())")
-                                } icon: {
-                                    Image(systemName: "turkishlirasign")
-                                }
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                
-                                Label {
-                                    Text("\(statement.date.getStringDate(.long))")
-                                } icon: {
-                                    Image(systemName: "calendar")
-                                }
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.gray)
-                                
-                            }
-                            .padding()
-                            .background(Color.bRenk)
-                            .frame(maxWidth: .infinity)
+                            StatementCard(statement: statement)
                         }
                         actions: {
                             Action(tint: .red, icon: "trash.fill", iconFont: .title3) {
@@ -93,7 +70,7 @@ struct StatementListView: View {
                                 }
                             }
                             
-                            Action(tint: .uRenk, icon: "checkmark.square", iconFont: .title3, isEnabled: !(status == .received)) {
+                            Action(tint: .isGreen, icon: "checkmark.square", iconFont: .title3, isEnabled: !(status == .received)) {
                                 withAnimation(.snappy) {
                                     let remainingBalance: Double = viewModel.remMoneySnapping(price: tuple.work.totalCost, statements: tuple.work.statements) - statement.amount
                                     
@@ -144,4 +121,36 @@ struct Test_StatementListView: View {
 
 #Preview {
     Test_StatementListView()
+}
+
+struct StatementCard: View {
+    
+    var statement: Statement
+    
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 0) {
+            
+            Label {
+                Text("\(statement.amount.customDouble())")
+            } icon: {
+                Image(systemName: "turkishlirasign")
+            }
+            .font(.title3)
+            .fontWeight(.bold)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Label {
+                Text("\(statement.date.getStringDate(.long))")
+            } icon: {
+                Image(systemName: "calendar")
+            }
+            .font(.caption)
+            .fontWeight(.bold)
+            .foregroundStyle(.gray)
+            
+        }
+        .padding()
+        .background(statement.status == .debs ? Color.red : Color.isCream)
+        .frame(maxWidth: .infinity)
+    }
 }

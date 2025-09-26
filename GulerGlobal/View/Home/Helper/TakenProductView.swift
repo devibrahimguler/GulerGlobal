@@ -25,6 +25,7 @@ struct TakenProductView: View {
             
             ForEach(viewModel.pendingProducts, id: \.self) { tuple in
                 ProductListView(
+                    isGetHome: true,
                     title: "Proje Numarası: \(tuple.work.id)",
                     list: tuple.work.productList.filter { !$0.isBought },
                     tuple: tuple,

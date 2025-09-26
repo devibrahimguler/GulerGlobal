@@ -17,13 +17,14 @@ struct ProductCard: View {
         
         VStack(spacing: 0) {
             // Suggestion Title
-            Text(product.suggestion)
+            Text(product.supplier)
                 .padding(5)
                 .frame(maxWidth: .infinity)
                 .font(.callout)
                 .fontWeight(.bold)
-                .background(Color.iRenk)
-                .foregroundStyle(.accent)
+                .foregroundStyle(.isText)
+                .background(Color.isSkyBlue)
+             
             
             // Product Details
             HStack {
@@ -61,8 +62,8 @@ struct ProductCard: View {
             .padding(.horizontal, 13)
             .background(
                 product.isBought
-                ? Color.uRenk.gradient
-                : Color.bRenk.gradient)
+                ? Color.isGreen.gradient
+                : Color.isCream.gradient)
         }
         .frame(maxWidth: .infinity)
     }
@@ -77,6 +78,7 @@ struct ProductCard: View {
         } icon: {
             icon
         }
+        .foregroundStyle(.isText)
         .foregroundStyle(.white)
         .lineLimit(1)
     }
@@ -84,7 +86,8 @@ struct ProductCard: View {
 
 
 struct TestProductCard: View {
-    var pro: Product = Product(productName: "productName", quantity: 10, unitPrice: 100, suggestion: "suggestion", purchased: .now)
+    var pro: Product = example_Product
+    
     var body: some View {
         ProductCard(product: pro)
     }

@@ -71,6 +71,7 @@ struct SwipeAction<Content: View> : View {
                         .opacity(scrollOffset == .zero ? 0 : 1)
                 }
             }
+            .glassEffect(in: .rect(cornerRadius: 30))
             .clipShape(.rect(cornerRadius: cornerRadius))
             .rotationEffect(.init(degrees: direction == .leading ? 180 : 0 ))
         }

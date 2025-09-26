@@ -37,16 +37,11 @@ struct BaseList<Content: View>: View {
                         .fontWeight(.semibold)
                         .padding()
                         .background(.background, in: .rect(cornerRadius: 30))
-                        .padding(.top)
+                        .padding(.top, 30 + padding)
                 }
             }
         }
         .padding([.horizontal, .top], 10)
-        .background(
-            colorScheme == .light
-            ? Color.gray.opacity(0.15)
-            : Color.white.opacity(0.15)
-        )
     }
 }
 
@@ -61,8 +56,7 @@ struct BaseListTests: View {
                     WorkCard(
                         companyName: tuple.company.companyName,
                         work: tuple.work,
-                        isApprove: false,
-                        color: .bRenk)
+                        isApprove: false)
                 }
                 actions: {
                     Action(tint: .red, icon: "trash.fill") { }
@@ -73,7 +67,7 @@ struct BaseListTests: View {
                 .overlay {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
                         .stroke(lineWidth: 2)
-                        .fill(Color.iRenk.gradient)
+                        .fill(Color.isSkyBlue.gradient)
                         .padding(2)
                     
                 }

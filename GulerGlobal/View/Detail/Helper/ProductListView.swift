@@ -12,6 +12,7 @@ struct ProductListView: View {
     @State private var isHidden: Bool = true
     @State private var isReset: Bool = true
     
+    var isGetHome: Bool = false
     var title: String
     var list: [Product]
     var tuple: TupleModel
@@ -20,11 +21,13 @@ struct ProductListView: View {
     var body: some View {
         VStack(spacing: 5) {
             HStack(spacing: 20) {
-                NavigationLink {
-                    ProductEntryView(tuple: tuple)
-                        .environmentObject(viewModel)
-                } label: {
-                    Image(systemName: "plus.viewfinder")
+                if !isGetHome {
+                    NavigationLink {
+                        ProductEntryView(tuple: tuple)
+                            .environmentObject(viewModel)
+                    } label: {
+                        Image(systemName: "plus.viewfinder")
+                    }
                 }
                 
                 Spacer()
@@ -60,7 +63,7 @@ struct ProductListView: View {
                                 )
                             }
                             
-                            Action(tint: .myGreen, icon: "checkmark.square", isEnabled: !product.isBought) {
+                            Action(tint: .isGreen, icon: "checkmark.square", isEnabled: !product.isBought) {
                                 withAnimation(.snappy) {
                                     viewModel.updateProduct(
                                         companyId: tuple.company.id,
@@ -104,153 +107,51 @@ struct Test_ProductListView: View {
 #Preview {
     Test_ProductListView()
 }
+var example_Work = Work(
+    id: "0000",
+    workName: "Company Work",
+    workDescription: "Company Work",
+    totalCost: 0,
+    approve: .none,
+    remainingBalance: 0,
+    statements: example_StatementList,
+    startDate: .now,
+    endDate: .now,
+    productList: example_ProductList
+)
+
+var example_WorkList = [
+    example_Work,
+]
+
+var example_Company = Company(
+    id: "0",
+    companyName: "GulerGlobal",
+    companyAddress: "Burhaniye mahallesi, Ali galip sokak no: 9",
+    contactNumber: "(554) 170 16 35",
+    partnerRole: .current,
+    workList: example_WorkList
+)
 
 var example_TupleModel = TupleModel(
-    company: Company(
-        id: "0",
-        companyName: "GulerGlobal",
-        companyAddress: "Burhaniye mahallesi, Ali galip sokak no: 9",
-        contactNumber: "(554) 170 16 35",
-        workList: [
-            Work(
-                id: "0000",
-                workName: "Sıcak Press",
-                workDescription: "Sıcak press yapılacak",
-                totalCost: 20000,
-                approve: .approved,
-                remainingBalance: 1000,
-                statements: [
-                    Statement(amount: 1000, date: .now, status: .received),
-                    Statement(amount: 1000, date: .now, status: .received),
-                    Statement(amount: 1000, date: .now, status: .received),
-                    Statement(amount: 1000, date: .now, status: .received),
-                    Statement(amount: 1000, date: .now, status: .received),
-                    Statement(amount: 1000, date: .now, status: .expired),
-                    Statement(amount: 1000, date: .now, status: .expired),
-                    Statement(amount: 1000, date: .now, status: .expired),
-                    Statement(amount: 1000, date: .now, status: .expired),
-                    Statement(amount: 1000, date: .now, status: .expired),
-                ],
-                startDate: .now,
-                endDate: .now,
-                productList: [
-                    Product(
-                        productName: "30x20x1.5 Profil",
-                        quantity: 10,
-                        unitPrice: 300,
-                        suggestion: "Arıkan Metal",
-                        purchased: .now),
-                    Product(
-                        productName: "30x20x1.5 Profil",
-                        quantity: 10,
-                        unitPrice: 300,
-                        suggestion: "Arıkan Metal",
-                        purchased: .now),
-                    Product(
-                        productName: "30x20x1.5 Profil",
-                        quantity: 10,
-                        unitPrice: 300,
-                        suggestion: "Arıkan Metal",
-                        purchased: .now),
-                    Product(
-                        productName: "30x20x1.5 Profil",
-                        quantity: 10,
-                        unitPrice: 300,
-                        suggestion: "Arıkan Metal",
-                        purchased: .now),
-                    Product(
-                        productName: "30x20x1.5 Profil",
-                        quantity: 10,
-                        unitPrice: 300,
-                        suggestion: "Arıkan Metal",
-                        purchased: .now),
-                ])
-        ]),
-    work: Work(
-        id: "0000",
-        workName: "Sıcak Press",
-        workDescription: "Sıcak press yapılacak",
-        totalCost: 20000,
-        approve: .approved,
-        remainingBalance: 1000,
-        statements: [
-            Statement(amount: 1000, date: .now, status: .received),
-            Statement(amount: 1000, date: .now, status: .received),
-            Statement(amount: 1000, date: .now, status: .received),
-            Statement(amount: 1000, date: .now, status: .received),
-            Statement(amount: 1000, date: .now, status: .received),
-            Statement(amount: 1000, date: .now, status: .expired),
-            Statement(amount: 1000, date: .now, status: .expired),
-            Statement(amount: 1000, date: .now, status: .expired),
-            Statement(amount: 1000, date: .now, status: .expired),
-            Statement(amount: 1000, date: .now, status: .expired),
-        ],
-        startDate: .now,
-        endDate: .now,
-        productList: [
-            Product(
-                productName: "30x20x1.5 Profil",
-                quantity: 10,
-                unitPrice: 300,
-                suggestion: "Arıkan Metal",
-                purchased: .now),
-            Product(
-                productName: "30x20x1.5 Profil",
-                quantity: 10,
-                unitPrice: 300,
-                suggestion: "Arıkan Metal",
-                purchased: .now),
-            Product(
-                productName: "30x20x1.5 Profil",
-                quantity: 10,
-                unitPrice: 300,
-                suggestion: "Arıkan Metal",
-                purchased: .now),
-            Product(
-                productName: "30x20x1.5 Profil",
-                quantity: 10,
-                unitPrice: 300,
-                suggestion: "Arıkan Metal",
-                purchased: .now),
-            Product(
-                productName: "30x20x1.5 Profil",
-                quantity: 10,
-                unitPrice: 300,
-                suggestion: "Arıkan Metal",
-                purchased: .now),
-        ])
+    company: example_Company,
+    work: example_Work
 )
+
+var example_Product = Product(
+    id: "0001",
+    productName: "30x20x1.5 Profil",
+    quantity: 10,
+    unitPrice: 300,
+    supplier: "Arıkan Metal",
+    purchased: .now)
+    
 var example_ProductList = [
-    Product(
-        productName: "30x20x1.5 Profil",
-        quantity: 10,
-        unitPrice: 300,
-        suggestion: "Arıkan Metal",
-        purchased: .now),
-    Product(
-        productName: "30x20x1.5 Profil",
-        quantity: 10,
-        unitPrice: 300,
-        suggestion: "Arıkan Metal",
-        purchased: .now),
-    Product(
-        productName: "30x20x1.5 Profil",
-        quantity: 10,
-        unitPrice: 300,
-        suggestion: "Arıkan Metal",
-        purchased: .now),
-    Product(
-        productName: "30x20x1.5 Profil",
-        quantity: 10,
-        unitPrice: 300,
-        suggestion: "Arıkan Metal",
-        purchased: .now),
-    Product(
-        productName: "30x20x1.5 Profil",
-        quantity: 10,
-        unitPrice: 300,
-        suggestion: "Arıkan Metal",
-        purchased: .now),
+    example_Product,
+    example_Product,
+    example_Product,
+    example_Product,
+    example_Product,
 ]
 var example_StatementList = [
     Statement(amount: 1000, date: .now, status: .received),

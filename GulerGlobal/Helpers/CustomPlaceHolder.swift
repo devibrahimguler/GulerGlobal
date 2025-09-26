@@ -11,7 +11,7 @@ struct CustomPlaceHolder: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var isAnimating = false
     
-    var distance: CGFloat = 3.5
+    var distance: CGFloat = 2.5
     
     var body: some View {
         ZStack(alignment: .center) {
@@ -19,7 +19,7 @@ struct CustomPlaceHolder: View {
             Image("icon")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 200 / distance, height: 200 / distance)
+                .frame(width: 150 / distance, height: 150 / distance)
                 .clipShape(Circle())
                 .shadow(radius: 1)
                 .zIndex(1)
@@ -27,8 +27,8 @@ struct CustomPlaceHolder: View {
             // Rotating Circles
             ForEach(0...3, id: \.self) { index in
                 Circle()
-                    .fill(Color.star)
-                    .frame(width: 50 / distance, height: 50 / distance)
+                    .fill(Color.isYellow)
+                    .frame(width: 40 / distance, height: 40 / distance)
                     .offset(y: -(160 / distance) - CGFloat(index) * (60 / distance))
                     .rotationEffect(.degrees(isAnimating ? 360 : 0))
                     .animation(
@@ -37,7 +37,7 @@ struct CustomPlaceHolder: View {
                         value: isAnimating
                     )
                     .shadow(radius: 1)
-                    .blur(radius: distance == 1 ? 5 : 2)
+                    .blur(radius: distance == 1 ? 2 : 1)
             }
             .zIndex(0)
         }
@@ -49,4 +49,5 @@ struct CustomPlaceHolder: View {
 
 #Preview {
     CustomPlaceHolder()
+        .preferredColorScheme(.dark)
 }

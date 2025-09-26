@@ -12,7 +12,7 @@ struct Product: Codable, Hashable, Identifiable {
     var productName: String
     var quantity: Int
     var unitPrice: Double
-    var suggestion: String
+    var supplier: String
     var purchased: Date
     var isBought: Bool = false
 }
