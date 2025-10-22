@@ -21,8 +21,8 @@ struct Work: Identifiable, Codable, Hashable {
 
 enum ApprovalStatus: String, Codable {
     case none = ""
-    case pending = "Pending"
     case approved = "Approved"
+    case pending = "Pending"
     case rejected = "Rejected"
     case finished = "Finished"
 }

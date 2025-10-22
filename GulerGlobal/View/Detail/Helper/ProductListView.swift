@@ -84,9 +84,6 @@ struct ProductListView: View {
                             }
                             .padding(5)
                         }
-                        .foregroundStyle(.white)
-                        
-                        
                     }
                 }
                 .padding(10)

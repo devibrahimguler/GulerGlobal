@@ -51,12 +51,13 @@ struct WorkCard: View {
                 .foregroundStyle(.isText)
             
             Label {
-                Text("\(work.totalCost.customDouble())")
+                Text(work.approve == .approved ? "\(work.remainingBalance.customDouble())" : "\(work.totalCost.customDouble())")
             } icon: {
                 Image(systemName: "turkishlirasign")
             }
             .font(.headline)
             .fontWeight(.black)
+            .foregroundStyle(work.approve == .approved ? .red.opacity(0.7) : .blue.opacity(0.7))
         }
     }
 }

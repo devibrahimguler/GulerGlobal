@@ -21,7 +21,6 @@ final class MainViewModel: ObservableObject {
     @Published var isLoadingPlaceholder: Bool = false
     @Published var isUserConnected: Bool = false
     
-    @Published var companyTotalMoney = 0.0
     @Published var companyList: [Company] = []
     
     @Published var allTasks: [TupleModel] = []
@@ -30,12 +29,9 @@ final class MainViewModel: ObservableObject {
     @Published var rejectedTasks: [TupleModel] = []
     @Published var completedTasks: [TupleModel] = []
     
-    @Published var statementTasks: [StatementTupleModel] = []
 
     @Published var allProducts: [Product] = []
     @Published var pendingProducts: [TupleModel] = []
-    
-    @Published var allStatements: [Statement] = []
     
     @Published var totalRevenue: Double = 0
     @Published var remainingRevenue: Double = 0
@@ -223,9 +219,9 @@ final class MainViewModel: ObservableObject {
         approvedTasks.removeAll()
         rejectedTasks.removeAll()
         completedTasks.removeAll()
-        statementTasks.removeAll()
+
         allProducts.removeAll()
-        allStatements.removeAll()
+        
         pendingProducts.removeAll()
         totalRevenue = 0
         remainingRevenue = 0
@@ -235,21 +231,42 @@ final class MainViewModel: ObservableObject {
         self.companyList = companies.sorted(by: { $0.id > $1.id })
         
         for company in companies {
-            let statementTupleModel = StatementTupleModel(companyId: company.id, statement: company.statements)
-            statementTasks.append(statementTupleModel)
-            
-            for work in company.workList {
-                categorizeWork(work, for: company)
-            }
+            var companyTotalMoney = 0.0
+            var haveMoney = true
             
             for statement in company.statements {
                 if statement.status == .input || statement.status == .lend {
-                    companyTotalMoney += statement.amount
-                }
-                else if statement.status == .output || statement.status == .debt {
-                    companyTotalMoney -= statement.amount
+                    companyTotalMoney = companyTotalMoney + statement.amount
+                } else if statement.status == .output || statement.status == .debt {
+                    companyTotalMoney = companyTotalMoney - statement.amount
                 }
             }
+            let workList = company.workList.sorted(by: { $0.id < $1.id })
+            let finishedWorkList = company.workList.filter { $0.approve == .finished  }
+            
+            for work in finishedWorkList {
+                companyTotalMoney = companyTotalMoney - work.totalCost
+            }
+            
+            for work in workList {
+            
+                if work.approve == .approved {
+                    if companyTotalMoney > 0 && haveMoney {
+                        companyTotalMoney = companyTotalMoney - work.totalCost
+                       
+                    } else {
+                        companyTotalMoney = work.totalCost
+                        haveMoney = false
+                    }
+                }
+                
+                categorizeWork(work, company, companyTotalMoney: companyTotalMoney)
+            }
+            
+            for product in company.productList {
+                allProducts.append(product)
+            }
+            
         }
         
         pendingTasks.sort { $0.work.id > $1.work.id }
@@ -265,33 +282,35 @@ final class MainViewModel: ObservableObject {
         isLoadingPlaceholder = false
     }
     
-    private func categorizeWork(_ work: Work, for company: Company) {
-        let tuple = TupleModel(company: company, work: work)
+    private func categorizeWork(_ work: Work, _ company: Company, companyTotalMoney: Double) {
+        var tuple = TupleModel(company: company, work: work)
+  
         
         switch work.approve {
         case .none:
-             print("none")
+            return
         case .pending:
             pendingTasks.append(tuple)
         case .approved:
-            approvedTasks.append(tuple)
+            var newWork = work
+
+            if companyTotalMoney < 0 {
+                newWork.remainingBalance = -companyTotalMoney
+            } else {
+                newWork.remainingBalance = companyTotalMoney
+            }
+
+            tuple = TupleModel(company: company, work: newWork)
+            
             totalRevenue += work.totalCost
+            remainingRevenue += newWork.remainingBalance
+            
+            approvedTasks.append(tuple)
         case .rejected:
             rejectedTasks.append(tuple)
         case .finished:
             completedTasks.append(tuple)
         }
-        
-        for product in company.productList {
-            allProducts.append(product)
-        }
-        
-         for statement in company.statements {
-             if statement.status == .debt || statement.status == .lend {
-                 allStatements.append(statement)
-             }
-         }
-         
         allTasks.append(tuple)
     }
     
@@ -393,6 +412,7 @@ struct WorkDetails {
     var id: String = ""
     var name: String = ""
     var description: String = ""
+    var remainingBalance: String = ""
     var totalCost: String = ""
     var approve: ApprovalStatus = .none
     var productList: [Product] = []
@@ -406,6 +426,7 @@ struct WorkDetails {
         id = work?.id ?? ""
         name = work?.workName ?? ""
         description = work?.workDescription ?? ""
+        remainingBalance = "\(work?.remainingBalance ?? 0)"
         totalCost = "\(work?.totalCost ?? 0)"
         approve = work?.approve ?? .none
         startDate = work?.startDate ?? .now

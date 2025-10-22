@@ -37,7 +37,6 @@ struct CompanyDetailView: View {
                     CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.contactNumber, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    
                 }
                 .scaleEffect(x: isEditCompany ? 0.97 : 1, y: isEditCompany ? 0.97 : 1)
                 .animation(isEditCompany ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditCompany)
@@ -78,7 +77,7 @@ struct CompanyDetailView: View {
                 VStack(spacing: 10) {
                     let workList = company.workList.sorted { $0.id > $1.id }
                     let productList = viewModel.allProducts.filter { $0.supplier == company.companyName }
-                    let statementList = viewModel.statementTasks.first(where: { $0.companyId == company.id })?.statement.sorted { $0.date > $1.date }
+                    let statementList = company.statements.sorted { $0.date > $1.date }
                     
                     if company.workList.count > 1 {
                         WorkListView(
@@ -90,16 +89,14 @@ struct CompanyDetailView: View {
                         .environmentObject(viewModel)
                     }
                     
-                    if let statementList = statementList {
-                        if !statementList.isEmpty {
-                            StatementListView (
-                                title: "Finans Kayıtları",
-                                list: statementList,
-                                company: company,
-                                hiddingAnimation: $hiddingAnimation
-                            )
-                            .environmentObject(viewModel)
-                        }
+                    if !statementList.isEmpty {
+                        StatementListView (
+                            title: "Finans Kayıtları",
+                            list: statementList,
+                            company: company,
+                            hiddingAnimation: $hiddingAnimation
+                        )
+                        .environmentObject(viewModel)
                     }
                     
                     if !productList.isEmpty {

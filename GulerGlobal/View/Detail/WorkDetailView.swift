@@ -214,6 +214,7 @@ struct WorkMenu: View {
                         let updateArea = [
                             "workName": viewModel.workDetails.name.trim(),
                             "workDescription": viewModel.workDetails.description.trim(),
+                            "remainingBalance": viewModel.workDetails.remainingBalance.toDouble(),
                             "totalCost": viewModel.workDetails.totalCost.toDouble(),
                             "startDate": configToDate(startConfig),
                             "endDate": configToDate(endConfig),
@@ -228,6 +229,8 @@ struct WorkMenu: View {
                         formTitle = .none
                         openMenu = false
                         isEdit.toggle()
+                        
+                        dismiss()
                     }
                     
                 } label: {

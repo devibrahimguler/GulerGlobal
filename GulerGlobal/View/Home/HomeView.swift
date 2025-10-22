@@ -16,11 +16,9 @@ struct HomeView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
-                Text("\(viewModel.companyTotalMoney)")
-                    .font(.title)
                 HStack() {
-                    VStack(spacing: 0) {
-                        ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue.customDouble())", color: .isCream)
+                    VStack(alignment: .leading, spacing: 0) {
+                        ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue.customDouble())", color: .blue)
                         
                         ChartCard(title: "Alınan", description: "\((viewModel.totalRevenue - viewModel.remainingRevenue).customDouble())", color: .green)
                         
@@ -48,7 +46,7 @@ struct HomeView: View {
                     .overlay {
                         Circle()
                             .stroke(style: .init(lineWidth: 5))
-                            .fill(Color.isCream.opacity(85))
+                            .fill(Color.blue.opacity(85))
                     }
                     .padding(5)
                 }
