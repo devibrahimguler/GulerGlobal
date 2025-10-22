@@ -9,10 +9,17 @@ import SwiftUI
 
 struct Product: Codable, Hashable, Identifiable {
     var id: String = UUID().uuidString
-    var productName: String
-    var quantity: Int
-    var unitPrice: Double
+    var supplierId: String
     var supplier: String
+    var productName: String
+    var quantity: Double
+    var unitPrice: Double
+    var oldPrices: [OldPrice]
     var purchased: Date
-    var isBought: Bool = false
+}
+
+struct OldPrice: Codable, Hashable, Identifiable {
+    var id: String = UUID().uuidString
+    var price: Double
+    var date: Date
 }

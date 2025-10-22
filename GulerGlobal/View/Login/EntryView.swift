@@ -23,7 +23,7 @@ struct EntryView: View {
                 // loginActionText: "Kayıt olmak için tıkla!",
                 complationText: "Giriş Yap") { dataModel.loginUser() }
                 // isLoginAction: { dataModel.isLogin = false }
-            .offset(x:dataModel.isLogin ? 0 : getRect().width * 2)
+            //.offset(x:dataModel.isLogin ? 0 : getRect().width * 2)
             
             /*
              BasicEntry(

@@ -14,52 +14,59 @@ struct CustomDatePicker: View {
     @Binding var dateConfig: DateConfig
     
     var title: FormTitle
-    @Binding var activeTitle: FormTitle
+    @Binding var formTitle: FormTitle
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            DatePickerHeader(title: title)
-                .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
-                .overlay(borderOverlay(for: [.topLeft, .topRight]))
+        VStack {
+            DatePickerHeader()
+                .zIndex(1)
+                .frame(height: 0)
+           
+            
             Group {
-                if activeTitle == title {
+                if formTitle == title {
                     DatePickerOptionsSection(config: $dateConfig)
+                        .padding(10)
                 } else {
                     CollapsedDateView(config: dateConfig) {
                         withAnimation(.snappy) {
-                            activeTitle = title
+                            formTitle = title
                             hideKeyboard()
                         }
                     }
+                    .padding(10)
                 }
             }
-            .padding(.vertical, 5)
-            .background(.isCream.gradient)
-            .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight, .topRight]))
-            .overlay(borderOverlay(for: [.bottomLeft, .bottomRight, .topRight]))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
         }
-        .frame(height: activeTitle == title ? 150 : 65)
-        .padding(5)
+        .frame(height: formTitle == title ? 150 : 100)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
     }
     
     private func borderOverlay(for corners: UIRectCorner) -> some View {
         RoundedCorner(radius: 10, corners: corners)
             .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            .fill(activeTitle == title ? Color.accentColor.gradient : Color.isSkyBlue.gradient)
+            .fill(formTitle == title ? Color.accentColor.gradient : Color.isSkyBlue.gradient)
     }
-}
-
-// MARK: - HeaderView
-struct DatePickerHeader: View {
-    var title: FormTitle
-    var body: some View {
-        Text(title.rawValue)
-            .font(.callout)
-            .fontWeight(.semibold)
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
-            .background(Color.white)
-            .foregroundStyle(.black)
+    
+    // MARK: - HeaderView
+    @ViewBuilder
+    func DatePickerHeader() -> some View {
+        HStack {
+            Text(title.rawValue)
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 10)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .background(formTitle == title ? .blue.opacity(0.5) : .red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+            
+            Spacer()
+        }
+        .padding(.horizontal, 25)
+        .offset(y: 5)
+        .animation(.easeIn, value: formTitle == title)
     }
 }
 
@@ -89,7 +96,6 @@ struct DatePickerColumn: View {
             Text(title)
                 .font(.caption)
                 .fontWeight(.bold)
-                .foregroundStyle(.black)
                 .padding(.vertical, 5)
             
             Divider().padding(.horizontal)
@@ -107,18 +113,43 @@ struct CollapsedDateView: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Text(config.selectedDay)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                VStack {
+                    Text("Gün")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .padding(.vertical, 5)
+                    
+                    Divider().padding(.horizontal)
+                    
+                    Text(config.selectedDay)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
                 
-                Text("-")
+         
+                VStack {
+                    Text("Ay")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .padding(.vertical, 5)
+                    
+                    Divider().padding(.horizontal)
+                    
+                    Text(config.selectedMonth)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
                 
-                Text(config.selectedMonth)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
-                Text("-")
-                
-                Text(config.selectedYear)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                VStack {
+                    Text("Yıl")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .padding(.vertical, 5)
+                    
+                    Divider().padding(.horizontal)
+                    
+                    Text(config.selectedYear)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+           
             }
             .font(.headline)
             .frame(maxWidth: .infinity, alignment: .center)
@@ -170,7 +201,7 @@ fileprivate struct CustomPicker: View {
             
             Text(value)
                 .fontWeight(.semibold)
-                .foregroundStyle(selectedValue == value ? .accent : .gray)
+                .foregroundStyle(selectedValue == value ? Color.accentColor : Color.gray)
                 .scaleEffect(calculateScale(value), anchor: .center)
                 .animation(.interactiveSpring, value: calculateScale(value))
                 .opacity(calculateOpacity(proxy, size))
@@ -270,16 +301,20 @@ struct TestCustomOption: View {
         selectedDay: "1",
         selectedMonth: getMonthName(for: 1),
         selectedYear: "2020")
-    @State private var formTitle: FormTitle = .none
+    @State private var config2: DateConfig = DateConfig(
+        selectedDay: "1",
+        selectedMonth: getMonthName(for: 1),
+        selectedYear: "2020")
+    @State private var formTitle: FormTitle = .inputDate
     
     var body: some View {
-        CustomDatePicker(dateConfig: $config, title: .expDate, activeTitle: $formTitle)
+        VStack {
+            CustomDatePicker(dateConfig: $config, title: .inputDate, formTitle: $formTitle)
+            CustomDatePicker(dateConfig: $config2, title: .outputDate, formTitle: $formTitle)
+        }
     }
 }
 
 #Preview {
-    VStack {
-        TestCustomOption()
-        TestCustomOption()
-    }
+    TestCustomOption()
 }

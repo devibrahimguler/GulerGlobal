@@ -1,19 +1,19 @@
 //
-//  StatementListView.swift
+//  WorkListView.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 18.01.2025.
+//  Created by ibrahim Güler on 19.10.2025.
 //
 
 import SwiftUI
 
-struct StatementListView: View {
+struct WorkListView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isHidden: Bool = true
     @State private var isReset: Bool = true
     
     var title: String
-    var list: [Statement]
+    var list: [Work]
     var company: Company
     @Binding var hiddingAnimation: Bool
     
@@ -41,18 +41,21 @@ struct StatementListView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0) {
-                     ForEach(list, id: \.self) { statement in
-                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                             StatementCard(statement: statement)
-                         }
-                         actions: {
-                             Action(tint: .red, icon: "trash.fill", iconFont: .title3) {
-                                 withAnimation(.snappy) {
-                                      viewModel.deleteStatement(companyId: company.id, statementId: statement.id)
-                                 }
-                             }
-                         }
-                         .padding(5)
+                    ForEach(list, id: \.self) { work in
+                        if work.id != "0000" {
+                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                            WorkCard(company: company , work: work)
+                                .background(work.approve == .finished ? .green : work.approve == .pending ? .yellow : work.approve == .rejected ? .red : .clear)
+                        }
+                        actions: {
+                            Action(tint: .red, icon: "trash.fill") {
+                                withAnimation(.snappy) {
+                                    viewModel.deleteWork(companyId: company.id, workId: work.id)
+                                }
+                            }
+                        }
+                        .padding(5)
+                    }
                      }
                 }
                 .padding(10)
@@ -67,25 +70,24 @@ struct StatementListView: View {
     }
 }
 
-struct Test_StatementListView: View {
+struct Test_WorkListView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     @State private var hiddingAnimation: Bool = false
     
     var body: some View {
-        VStack {
-            StatementListView(
-                title: "Alınan Paralar",
-                list: example_StatementList,
-                company: example_Company,
-                hiddingAnimation: $hiddingAnimation
-            )
-        }
+        WorkListView(
+            title: "İş Listesi",
+            list: example_WorkList,
+            company: example_Company,
+            hiddingAnimation: $hiddingAnimation
+        )
         .environmentObject(viewModel)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.gray)
+        
     }
 }
 
 #Preview {
-    Test_StatementListView()
+    Test_WorkListView()
 }

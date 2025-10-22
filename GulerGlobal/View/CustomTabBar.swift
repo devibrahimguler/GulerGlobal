@@ -9,88 +9,60 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @EnvironmentObject var viewModel: MainViewModel
+    @State private var searchText = ""
     
     var body: some View {
-        NavigationView {
-            TabView(
-                selection: Binding(
-                    get: { viewModel.activeTab },
-                    set: { handleTabChange(to: $0)}
-                )
-            ) {
+        TabView(selection: $viewModel.activeTab) {
+            Tab(TabValue.Home.rawValue, systemImage: TabValue.Home.symbolImage, value: TabValue.Home) {
                 HomeView()
-                    .tag(TabValue.Home)
-                    .toolbarBackground(.visible, for: .tabBar)
-                
-                BidView()
-                    .tag(TabValue.Bid)
-                    .toolbarBackground(.visible, for: .tabBar)
-                
-                ApprovedView()
-                    .tag(TabValue.Approved)
-                    .toolbarBackground(.visible, for: .tabBar)
-                
-                ProfileView()
-                    .tag(TabValue.Profile)
-                    .toolbarBackground(.visible, for: .tabBar)
-                
             }
-            .navigationBarHidden(true)
-            .environmentObject(viewModel)
-            .overlay(alignment: .bottom) {
-                createAnimatedTabBar()
-                    .opacity(viewModel.isTabBarHidden ? 0 : 1)
-                    .animation(.snappy, value: viewModel.isTabBarHidden)
+           
+            Tab(TabValue.Bid.rawValue, systemImage: TabValue.Bid.symbolImage, value: TabValue.Bid) {
+                NavigationStack {
+                    BidView()
+                        .navigationTitle(TabValue.Bid.rawValue)
+                        .navigationBarTitleDisplayMode(.inline )
+                }
             }
-            .ignoresSafeArea(.keyboard, edges: .all)
-        }
-        .navigationViewStyle(.stack)
-    }
-    
-    // MARK: - Tab Change Handler
-    private func handleTabChange(to newValue: TabValue) {
-        viewModel.activeTab = newValue
-        viewModel.tabAnimationTrigger = newValue
-        
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-            viewModel.tabAnimationTrigger = nil
-        }
-    }
-    
-    // MARK: - Animated Tab Bar
-    @ViewBuilder
-    private func createAnimatedTabBar() -> some View {
-        HStack(spacing: 0) {
-            ForEach(TabValue.allCases, id: \.rawValue) { tab in
-                createTabItem(for: tab)
-            }
-        }
-        .allowsHitTesting(false)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .padding(.horizontal, 30)
-    }
-    
-    // MARK: - Tab Item
-    @ViewBuilder
-    private func createTabItem(for tab: TabValue) -> some View {
-        VStack(spacing: 4) {
-            Image(systemName: tab.symbolImage)
-                .font(.title3)
-                .symbolVariant(.fill)
-                .symbolEffect(
-                    .bounce.byLayer.down,
-                    options: .speed(2),
-                    value: viewModel.tabAnimationTrigger == tab
-                )
             
-            Text(tab.rawValue)
-                .font(.caption2)
+            Tab(TabValue.Approved.rawValue, systemImage: TabValue.Approved.symbolImage, value: TabValue.Approved) {
+                NavigationStack {
+                    ApprovedView()
+                        .navigationTitle(TabValue.Bid.rawValue)
+                }
+            }
+            
+            Tab(TabValue.Profile.rawValue, systemImage: TabValue.Profile.symbolImage, value: TabValue.Profile) {
+                NavigationStack {
+                    ProfileView()
+                }
+            }
+            
+            Tab(TabValue.Search.rawValue, systemImage: TabValue.Search.symbolImage, value: TabValue.Search, role: .search) {
+                NavigationStack {
+                    let list = viewModel.companyList.filter { $0.companyName.hasPrefix(searchText)}
+                    BaseList(isEmpty: list.isEmpty) {
+                        ForEach(list, id: \.self) { company in
+                            LazyVStack(spacing: 0) {
+                                NavigationLink {
+                                    CompanyDetailView(company: company, partnerRole: .supplier)
+                                        .environmentObject(viewModel)
+                                        .toolbar(.hidden, for: .tabBar)
+                                } label: {
+                                    CompanyCard(company: company)
+                                }
+                            }
+                        }
+                    }
+                    .navigationTitle("Firma Ara")
+                    .searchable(text: $searchText, placement: .toolbar, prompt: Text("Ara..."))
+                }
+            }
+            
         }
-        .foregroundColor(viewModel.activeTab == tab ? .accent : .gray)
-        .frame(maxWidth: .infinity)
-        
+        .tabViewSearchActivation(.searchTabSelection)
+        .environmentObject(viewModel)
+        .ignoresSafeArea(.keyboard, edges: .all)
     }
 }
 
@@ -101,8 +73,9 @@ struct CustomTabBar: View {
 enum TabValue: String, CaseIterable {
     case Home = "GulerMetSan"
     case Bid = "Teklifler"
-    case Approved = "Mevcut İşler"
+    case Approved = "İşler"
     case Profile = "Kullanıcı"
+    case Search = "Ara"
     
     var symbolImage: String {
         switch self {
@@ -110,6 +83,7 @@ enum TabValue: String, CaseIterable {
         case .Bid: "rectangle.stack"
         case .Approved: "checkmark.rectangle.stack.fill"
         case .Profile: "person.fill"
+        case .Search: "magnifyingglass"
         }
     }
 }

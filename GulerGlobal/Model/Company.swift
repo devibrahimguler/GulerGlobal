@@ -14,6 +14,8 @@ struct Company: Codable, Hashable, Identifiable {
     var contactNumber: String
     var partnerRole: PartnerRole
     var workList: [Work]
+    var statements: [Statement]
+    var productList: [Product]
 }
 
 enum PartnerRole: String, Codable, CaseIterable {
@@ -21,6 +23,7 @@ enum PartnerRole: String, Codable, CaseIterable {
     case current = "Current"
     case supplier = "Supplier"
     case both = "Both"
+    case debt = "Debt"
 }
 
 struct TupleModel: Hashable, Identifiable {

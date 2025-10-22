@@ -20,16 +20,11 @@ struct CurrentView: View {
                         .environmentObject(viewModel)
                 } label: {
                     SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                        CompanyCard(company: company, color: .isCream)
+                        CompanyCard(company: company)
                     } actions: {
                         Action(tint: .red, icon: "trash.fill") {
                             viewModel.deleteCompany(companyId: company.id)
                         }
-                    }
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .stroke(lineWidth: 1)
-                            .fill(Color.isSkyBlue.gradient)
                     }
                 }
             }
@@ -37,6 +32,8 @@ struct CurrentView: View {
         .toolbar {
             NavigationLink {
                 CompanyEntryView(partnerRole: .current)
+                    .navigationTitle("Cari Ekle")
+                    .navigationBarTitleDisplayMode(.inline)
             } label: {
                 Text("Ekle")
                     .font(.system(size: 14, weight: .black, design: .monospaced))
@@ -44,6 +41,7 @@ struct CurrentView: View {
             }
         }
         .navigationTitle("Cariler")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

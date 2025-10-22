@@ -59,56 +59,61 @@ struct ProfileView: View {
                     }
                     .font(.caption)
                     .fontWeight(.black)
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(Color.accentColor)
                 }
             }
             .padding(10)
-            .glassEffect(in: .rect(cornerRadius: 20))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30))
             
             VStack() {
                 HStack {
-                    
                     NavigationButton(
                         content:
                             FinishedBidView()
-                            .environmentObject(viewModel),
+                            .environmentObject(viewModel)
+                            .toolbar(.hidden, for: .tabBar),
                         buttonType: .finished)
                     
                     NavigationButton(
                         content:
                             RejectedView()
-                            .environmentObject(viewModel),
+                            .environmentObject(viewModel)
+                            .toolbar(.hidden, for: .tabBar),
                         buttonType: .cancel)
                     
                     NavigationButton(
                         content:
                             CurrentView()
-                            .environmentObject(viewModel),
+                            .environmentObject(viewModel)
+                            .toolbar(.hidden, for: .tabBar),
                         buttonType: .currents)
-                    
-                    
-                    
                 }
                 
                 HStack {
-                    
                     NavigationButton(
                         content:
                             SupplierView()
-                            .environmentObject(viewModel),
+                            .environmentObject(viewModel)
+                            .toolbar(.hidden, for: .tabBar),
                         buttonType: .supplier)
                     
                     NavigationButton(
                         content:
-                            VStack { Text("Yakında!") },
+                            DebtView()
+                            .environmentObject(viewModel)
+                            .toolbar(.hidden, for: .tabBar),
+                        buttonType: .debt)
+                    
+                    NavigationButton(
+                        content:
+                            VStack { Text("Yakında!") }
+                            .toolbar(.hidden, for: .tabBar),
                         buttonType: .soon)
-                    
-                    
                 }
             }
             .frame(maxWidth: .infinity, alignment: .center)
             .padding()
-            .glassEffect(in: .rect(cornerRadius: 20))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30))
             
             Spacer()
             

@@ -16,10 +16,10 @@ struct Statement: Codable, Hashable, Identifiable {
 
 enum StatementStatus: String, Codable {
     case none = ""
-    case received = "Received"
-    case expired = "Expired"
-    case debs = "Debs"
-    case hookup = "Hookup"
+    case input = "input"
+    case output = "output"
+    case debt = "debt"
+    case lend = "lend"
 }
 
 struct StatementTupleModel: Hashable, Identifiable {

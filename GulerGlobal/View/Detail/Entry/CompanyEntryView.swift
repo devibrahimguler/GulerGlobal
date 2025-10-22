@@ -13,13 +13,12 @@ struct CompanyEntryView: View {
     @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var viewModel: MainViewModel
-    @State private var isPhonePicker: Bool = false
     @State private var formTitle: FormTitle = .none
 
     var partnerRole: PartnerRole
     
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 0) {
             CustomTextField(title: .companyName, text: $viewModel.companyDetails.name, formTitle: $formTitle)
 
             CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
@@ -29,69 +28,22 @@ struct CompanyEntryView: View {
                 hideKeyboard()
                 
                 CNContactStore().requestAccess(for: .contacts) { (_, _) in
-                    let status = CNContactStore.authorizationStatus(for: .contacts)
-                    
-                    switch status {
-                    case .notDetermined:
-                        print("notDetermined")
-                    case .restricted:
-                        print("restricted")
-                    case .denied:
-                        print("denied")
-                    case .authorized:
-                        isPhonePicker = true
-                    case .limited:
-                        print("limited")
-                    @unknown default:
-                        print("default denied")
+                    Task { @MainActor in
+                        viewModel.openPhonePicker()
                     }
                 }
             }
-            
-            
-            Button("Onayla") {
-                withAnimation(.snappy) {
-                    if viewModel.companyDetails.name != "" {
-                        if viewModel.companyDetails.address != "" {
-                            if viewModel.companyList.first(where: { $0.companyName == viewModel.companyDetails.name }) != nil {
-                                viewModel.hasAlert = true
-                            } else {
-                                
-                                let companyName = viewModel.companyDetails.name.trim()
-                                let companyAddress = viewModel.companyDetails.address.trim()
-                                let contactNumber = viewModel.companyDetails.contactNumber
-                                
-                                let newCompany = Company(
-                                    id: viewModel.generateUniqueID(isWork: false),
-                                    companyName: companyName,
-                                    companyAddress: companyAddress,
-                                    contactNumber: contactNumber,
-                                    partnerRole: partnerRole,
-                                    workList: []
-                                )
-                                
-                                viewModel.createCompany(company: newCompany)
-                                dismiss()
-                                
-                            }
-                        }
-                    }
-                }
-            }
-            .foregroundStyle(.isText)
-            .font(.headline)
-            .fontWeight(.semibold)
-            .padding(10)
-            .background(.isGreen, in: .rect(cornerRadius: 10))
-            .padding(5)
         }
         .padding(10)
-        .background(.background, in: .rect(cornerRadius: 20))
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
         .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
-        .fullScreenCover(isPresented: $isPhonePicker, content: {
+        .fullScreenCover(isPresented: $viewModel.isPhonePicker, content: {
             PhonePickerView(pickerNumber: $viewModel.companyDetails.contactNumber)
+                .onDisappear {
+                    formTitle = .none
+                }
         })
         .onDisappear {
             formTitle = .none
@@ -102,6 +54,18 @@ struct CompanyEntryView: View {
                 title: Text("Cari Mevcut"),
                 message: Text("Bu isime aid bir cari bulunmaktadır!")
             )
+        }
+        .toolbar {
+            ToolbarItem {
+                Button("Onayla") {
+                    withAnimation(.snappy) {
+                        viewModel.companyConfirmation(dismiss: dismiss, partnerRole: partnerRole)
+                    }
+                }
+                .foregroundStyle(.isGreen)
+                .font(.headline)
+                .fontWeight(.semibold)
+            }
         }
     }
 }
@@ -118,3 +82,4 @@ struct TestAddCurrentView: View {
 #Preview {
     TestAddCurrentView()
 }
+

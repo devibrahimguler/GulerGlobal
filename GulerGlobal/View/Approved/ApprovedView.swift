@@ -25,12 +25,10 @@ struct ApprovedView: View {
                             .onAppear {
                                 isReset.toggle()
                             }
-                            .onDisappear {
-                                viewModel.isTabBarHidden = false
-                            }
+                            .toolbar(.hidden, for: .tabBar)
                     } label: {
-                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            WorkCard(companyName: company.companyName, work: work, isApprove: true)
+                        SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
+                            WorkCard(company: company, work: work)
                         }
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
@@ -41,11 +39,8 @@ struct ApprovedView: View {
                                 )
                             }
                         }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .stroke(lineWidth: 1)
-                                .fill(Color.isSkyBlue.gradient)
-                        }
+                        
+                        
                     }
                 }
             }

@@ -9,6 +9,12 @@ import Foundation
 import FirebaseFirestore
 
 final class FirebaseDataModel: ObservableObject {
+    let companyCollectionName: String = "Companies2"
+    let workCollectionName: String = "WorkList"
+    let productCollectionName: String = "ProductList"
+    let statementCollectionName: String = "StatementList"
+    let oldPricesCollectionName: String = "OldPricesList"
+    
     private let database: Firestore = Firestore.firestore()
     
     // Fetch company data from the database
@@ -16,7 +22,7 @@ final class FirebaseDataModel: ObservableObject {
     func fetchCompanies(completion: @escaping (Result<[Company], Error>) -> Void) {
         Task {
             do {
-                let snapshot = try await database.collection("Companies").getDocuments()
+                let snapshot = try await database.collection(companyCollectionName).getDocuments()
                 var companyList: [Company] = []
                 
                 try await withThrowingTaskGroup(of: Company?.self) { group in
@@ -38,24 +44,8 @@ final class FirebaseDataModel: ObservableObject {
         }
     }
 
-    private func parseCompany(from document: DocumentSnapshot) async throws -> Company? {
-        guard let data = document.data() else { return nil }
-        
-        guard
-            let id = data["id"] as? String,
-            let companyName = data["companyName"] as? String,
-            let companyAddress = data["companyAddress"] as? String,
-            let contactNumber = data["contactNumber"] as? String,
-            let partnerRoleRawValue = data["partnerRole"] as? String
-        else { return nil }
-        let partnerRole = PartnerRole(rawValue: partnerRoleRawValue) ?? .none
-        let workList = try await fetchWorkList(for: id)
-        
-        return Company(id: id, companyName: companyName, companyAddress: companyAddress, contactNumber: contactNumber, partnerRole: partnerRole, workList: workList)
-    }
-
     private func fetchWorkList(for companyId: String) async throws -> [Work] {
-        let snapshot = try await database.collection("Companies").document(companyId).collection("WorkList").getDocuments()
+        let snapshot = try await database.collection(companyCollectionName).document(companyId).collection(workCollectionName).getDocuments()
         var workList: [Work] = []
         
         try await withThrowingTaskGroup(of: Work?.self) { group in
@@ -72,7 +62,103 @@ final class FirebaseDataModel: ObservableObject {
         
         return workList
     }
-
+    
+    private func fetchProductCompany(for companyId: String) async throws -> [Product] {
+        let snapshot = try await database
+            .collection(companyCollectionName).document(companyId)
+            .collection(productCollectionName)
+            .getDocuments()
+        
+        var productList: [Product] = []
+        
+        try await withThrowingTaskGroup(of: Product?.self) { group in
+            for document in snapshot.documents {
+                group.addTask { try await self.parseProduct(from: document, companyId: companyId) }
+            }
+            
+            for try await product in group {
+                if let product = product {
+                    productList.append(product)
+                }
+            }
+        }
+        
+        return productList
+    }
+    
+    private func fetchProductWork(workId: String, companyId: String) async throws -> [Product] {
+        let snapshot = try await database
+            .collection(companyCollectionName).document(companyId)
+            .collection(workCollectionName).document(workId)
+            .collection(productCollectionName)
+            .getDocuments()
+        
+        return snapshot.documents.compactMap { parseProduct(from: $0) }
+    }
+    
+    private func fetchStatementList(for companyId: String) async throws -> [Statement] {
+        let snapshot = try await database
+            .collection(companyCollectionName).document(companyId)
+            .collection(statementCollectionName)
+            .getDocuments()
+        
+        var statementList: [Statement] = []
+        
+        try await withThrowingTaskGroup(of: Statement?.self) { group in
+            for document in snapshot.documents {
+                group.addTask { try await self.parseStatement(from: document, companyId: companyId) }
+            }
+            
+            for try await statement in group {
+                if let statement = statement {
+                    statementList.append(statement)
+                }
+            }
+        }
+        
+        return statementList
+    }
+    
+    private func fetchOldPrices(companyId: String, productId: String) async throws -> [OldPrice] {
+        let snapshot = try await database
+            .collection(companyCollectionName).document(companyId)
+            .collection(productCollectionName).document(productId)
+            .collection(oldPricesCollectionName)
+            .getDocuments()
+        
+        return snapshot.documents.compactMap { parseOldPrice(from: $0) }
+    }
+    
+    private func parseCompany(from document: DocumentSnapshot) async throws -> Company? {
+        guard let data = document.data() else { return nil }
+        
+        guard
+            let id = data["id"] as? String,
+            let companyName = data["companyName"] as? String,
+            let companyAddress = data["companyAddress"] as? String,
+            let contactNumber = data["contactNumber"] as? String,
+            let partnerRoleRawValue = data["partnerRole"] as? String
+        else { return nil }
+        
+        let partnerRole = PartnerRole(rawValue: partnerRoleRawValue) ?? .none
+        let workList = try await fetchWorkList(for: id)
+        let statementList = try await fetchStatementList(for: id)
+        let productList = try await fetchProductCompany(for: id)
+        
+        let company = Company(
+            id: id,
+            companyName: companyName,
+            companyAddress: companyAddress,
+            contactNumber: contactNumber,
+            partnerRole: partnerRole,
+            workList: workList,
+            statements: statementList,
+            productList: productList
+        )
+        
+        return company
+    }
+    
     private func parseWork(from document: DocumentSnapshot, companyId: String) async throws -> Work? {
         guard let data = document.data() else { return nil }
         
@@ -80,55 +166,128 @@ final class FirebaseDataModel: ObservableObject {
             let workId = data["id"] as? String,
             let workName = data["workName"] as? String,
             let workDescription = data["workDescription"] as? String,
+            let remainingBalance = data["remainingBalance"] as? Double,
             let totalCost = data["totalCost"] as? Double,
             let approveRawValue = data["approve"] as? String,
-            let remainingBalance = data["remainingBalance"] as? Double,
             let startDate = (data["startDate"] as? Timestamp)?.dateValue(),
             let endDate = (data["endDate"] as? Timestamp)?.dateValue()
         else { return nil }
         
         let approve = ApprovalStatus(rawValue: approveRawValue) ?? .none
-        async let productList = fetchProductList(for: companyId, workId: workId)
-        async let statementList = fetchStatementList(for: companyId, workId: workId)
+        let productList = try await fetchProductWork(workId: workId, companyId: companyId)
         
-        return Work(id: workId, workName: workName, workDescription: workDescription, totalCost: totalCost, approve: approve, remainingBalance: remainingBalance, statements: try await statementList, startDate: startDate, endDate: endDate, productList: try await productList)
+        let work = Work(
+            id: workId,
+            workName: workName,
+            workDescription: workDescription,
+            remainingBalance: remainingBalance,
+            totalCost: totalCost,
+            approve: approve,
+            productList: productList,
+            startDate: startDate,
+            endDate: endDate
+        )
+        
+        return work
     }
 
-    private func fetchProductList(for companyId: String, workId: String) async throws -> [Product] {
-        let snapshot = try await database.collection("Companies").document(companyId)
-            .collection("WorkList").document(workId).collection("ProductList").getDocuments()
-        return snapshot.documents.compactMap { parseProduct(from: $0) }
+    private func parseProduct(from document: DocumentSnapshot, companyId: String) async throws -> Product? {
+        guard let data = document.data() else { return nil }
+        
+        guard
+            let id = data["id"] as? String,
+            let supplierId = data["supplierId"] as? String,
+            let supplier = data["supplier"] as? String,
+            let productName = data["productName"] as? String,
+            let quantity = data["quantity"] as? Double,
+            let unitPrice = data["unitPrice"] as? Double,
+            let purchased = (data["purchased"] as? Timestamp)?.dateValue()
+        else { return nil }
+        
+        let oldPrices = try await fetchOldPrices(companyId: companyId, productId: id)
+        
+        let product = Product(
+            id: id,
+            supplierId: supplierId,
+            supplier: supplier,
+            productName: productName,
+            quantity: quantity,
+            unitPrice: unitPrice,
+            oldPrices: oldPrices,
+            purchased: purchased
+        )
+        
+        return product
     }
-
+    
     private func parseProduct(from document: DocumentSnapshot) -> Product? {
         guard let data = document.data() else { return nil }
         
-        return Product(
-            id: data["id"] as? String ?? "",
-            productName: data["productName"] as? String ?? "",
-            quantity: data["quantity"] as? Int ?? 0,
-            unitPrice: data["unitPrice"] as? Double ?? 0.0,
-            supplier: data["supplier"] as? String ?? "",
-            purchased: (data["purchased"] as? Timestamp)?.dateValue() ?? Date(),
-            isBought: data["isBought"] as? Bool ?? false
+        guard
+            let id = data["id"] as? String,
+            let supplierId = data["supplierId"] as? String,
+            let supplier = data["supplier"] as? String,
+            let productName = data["productName"] as? String,
+            let quantity = data["quantity"] as? Double,
+            let unitPrice = data["unitPrice"] as? Double,
+            let purchased = (data["purchased"] as? Timestamp)?.dateValue()
+        else { return nil }
+        
+        let oldPrices = [OldPrice]()
+        
+        let product = Product(
+            id: id,
+            supplierId: supplierId,
+            supplier: supplier,
+            productName: productName,
+            quantity: quantity,
+            unitPrice: unitPrice,
+            oldPrices: oldPrices,
+            purchased: purchased
         )
+        
+        return product
     }
-
-    private func fetchStatementList(for companyId: String, workId: String) async throws -> [Statement] {
-        let snapshot = try await database.collection("Companies").document(companyId)
-            .collection("WorkList").document(workId).collection("StatementList").getDocuments()
-        return snapshot.documents.compactMap { parseStatement(from: $0) }
-    }
-
-    private func parseStatement(from document: DocumentSnapshot) -> Statement? {
+    
+    private func parseOldPrice(from document: DocumentSnapshot) -> OldPrice? {
         guard let data = document.data() else { return nil }
         
-        return Statement(
-            id: data["id"] as? String ?? "",
-            amount: data["amount"] as? Double ?? 0.0,
-            date: (data["date"] as? Timestamp)?.dateValue() ?? Date(),
-            status: StatementStatus(rawValue: data["status"] as? String ?? "") ?? .none
+        guard
+            let id = data["id"] as? String,
+            let price = data["price"] as? Double,
+            let date = (data["date"] as? Timestamp)?.dateValue()
+        else { return nil }
+        
+        let oldPrice = OldPrice(
+            id: id,
+            price: price,
+            date: date
         )
+        
+        return oldPrice
+    }
+
+    private func parseStatement(from document: DocumentSnapshot, companyId: String) async throws -> Statement? {
+        guard let data = document.data() else { return nil }
+        
+        guard
+            let statementId = data["id"] as? String,
+            let statementAmount = data["amount"] as? Double,
+            let statementDate = (data["date"] as? Timestamp)?.dateValue()
+        else { return nil }
+        
+        let statementStatus = StatementStatus(rawValue: data["status"] as? String ?? "") ?? .none
+        
+        return Statement(id: statementId, amount: statementAmount, date: statementDate, status: statementStatus)
+    }
+    
+    // Cast a OldPrice
+    private func castOldPrice(_ oldPrice: OldPrice) -> [String: Any] {
+        return [
+            "id": oldPrice.id,
+            "price": oldPrice.price,
+            "date": oldPrice.date,
+        ]
     }
 
     // Cast a Statement
@@ -145,12 +304,12 @@ final class FirebaseDataModel: ObservableObject {
     private func castProduct(_ product: Product) -> [String: Any] {
         return [
             "id": product.id,
+            "supplierId": product.supplierId,
+            "supplier": product.supplier,
             "productName": product.productName,
             "quantity": product.quantity,
             "unitPrice": product.unitPrice,
-            "supplier": product.supplier,
-            "purchased": product.purchased,
-            "isBought": product.isBought
+            "purchased": product.purchased
         ]
     }
     
@@ -162,7 +321,6 @@ final class FirebaseDataModel: ObservableObject {
             "workDescription": work.workDescription,
             "totalCost": work.totalCost,
             "approve": work.approve.rawValue,
-            "remainingBalance": work.remainingBalance,
             "startDate": work.startDate,
             "endDate": work.endDate
         ]
@@ -175,7 +333,7 @@ final class FirebaseDataModel: ObservableObject {
             "companyName": company.companyName,
             "companyAddress": company.companyAddress,
             "contactNumber": company.contactNumber,
-            "partnerRole": company.partnerRole.rawValue,
+            "partnerRole": company.partnerRole.rawValue
         ]
     }
     
@@ -183,21 +341,21 @@ final class FirebaseDataModel: ObservableObject {
     func saveCompany(_ company: Company) {
         Task {
             let data = castCompany(company)
-            try await database.collection("Companies").document(company.id).setData(data)
+            try await database.collection(companyCollectionName).document(company.id).setData(data)
         }
     }
 
     // Update a Company
     func updateCompany(_ companyId: String, updateArea: [String: Any]) {
         Task {
-            try await database.collection("Companies").document(companyId).updateData(updateArea)
+            try await database.collection(companyCollectionName).document(companyId).updateData(updateArea)
         }
     }
     
     // Delete a Company
     func deleteCompany(_ companyId: String) {
         Task {
-            try await database.collection("Companies").document(companyId).delete()
+            try await database.collection(companyCollectionName).document(companyId).delete()
         }
     }
 
@@ -205,80 +363,139 @@ final class FirebaseDataModel: ObservableObject {
     func saveWork(_ companyId: String, _ work: Work) {
         Task {
             let data = castWork(work)
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(work.id).setData(data)
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(workCollectionName).document(work.id).setData(data)
         }
     }
 
     // Update a Work
     func updateWork(_ companyId: String, _ workId: String, updateArea: [String: Any]) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId).updateData(updateArea)
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(workCollectionName).document(workId).updateData(updateArea)
         }
     }
 
     // Delete a Work
     func deleteWork(_ companyId: String, _ workId: String) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId).delete()
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(workCollectionName).document(workId).delete()
         }
     }
 
     // Create a Product
-    func saveProduct(_ companyId: String, _ workId: String, _ product: Product) {
+    func saveProduct(_ companyId: String, _ workId: String?, _ product: Product) {
         Task {
             let data = castProduct(product)
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("ProductList").document(product.id).setData(data)
+            if let workId = workId {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(workCollectionName).document(workId)
+                    .collection(productCollectionName).document(product.id)
+                    .setData(data)
+            } else {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(productCollectionName).document(product.id)
+                    .setData(data)
+            }
         }
     }
 
     // Update a Product
-    func updateProduct(_ companyId: String, _ workId: String, _ productId: String, updateArea: [String: Any]) {
+    func updateProduct(_ companyId: String, _ workId: String?, _ productId: String, updateArea: [String: Any]) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("ProductList").document(productId).updateData(updateArea)
+            if let workId = workId {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(workCollectionName).document(workId)
+                    .collection(productCollectionName).document(productId)
+                    .updateData(updateArea)
+            } else {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(productCollectionName).document(productId)
+                    .updateData(updateArea)
+            }
         }
     }
 
     // Delete a Product
-    func deleteProduct(_ companyId: String, _ workId: String, _ productId: String) {
+    func deleteProduct(_ companyId: String, _ workId: String?, _ productId: String) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("ProductList").document(productId).delete()
+            if let workId = workId {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(workCollectionName).document(workId)
+                    .collection(productCollectionName).document(productId)
+                    .delete()
+            } else {
+                try await database
+                    .collection(companyCollectionName).document(companyId)
+                    .collection(productCollectionName).document(productId)
+                    .delete()
+            }
+            
         }
     }
 
     // Create a Statement
-    func saveStatement(_ companyId: String, _ workId: String, _ statement: Statement) {
+    func saveStatement(_ companyId: String, _ statement: Statement) {
         Task {
             let data = castStatement(statement)
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("StatementList").document(statement.id).setData(data)
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(statementCollectionName).document(statement.id).setData(data)
         }
     }
 
     // Update a Statement
-    func updateStatement(_ companyId: String, _ workId: String, _ statementId: String, updateArea: [String: Any]) {
+    func updateStatement(_ companyId: String, _ statementId: String, updateArea: [String: Any]) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("StatementList").document(statementId).updateData(updateArea)
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(statementCollectionName).document(statementId).updateData(updateArea)
         }
     }
 
     // Delete a Statement
-    func deleteStatement(_ companyId: String, _ workId: String, _ statementId: String) {
+    func deleteStatement(_ companyId: String, _ statementId: String) {
         Task {
-            try await database.collection("Companies").document(companyId)
-                .collection("WorkList").document(workId)
-                .collection("StatementList").document(statementId).delete()
+            try await database.collection(companyCollectionName).document(companyId)
+                .collection(statementCollectionName).document(statementId).delete()
+        }
+    }
+    
+    // Create a OldPrice
+    func saveOldPrice(_ companyId: String,  _ productId: String,_ oldPrice: OldPrice) {
+        Task {
+            let data = castOldPrice(oldPrice)
+            try await database
+                .collection(companyCollectionName).document(companyId)
+                .collection(productCollectionName).document(productId)
+                .collection(oldPricesCollectionName).document(oldPrice.id)
+                .setData(data)
+        }
+    }
+
+    // Update a OldPrice
+    func updateOldPrice(_ companyId: String, _ productId: String, _ oldPriceId: String, updateArea: [String: Any]) {
+        Task {
+            try await database
+                .collection(companyCollectionName).document(companyId)
+                .collection(productCollectionName).document(productId)
+                .collection(oldPricesCollectionName).document(oldPriceId)
+                .updateData(updateArea)
+        }
+    }
+
+    // Delete a OldPrice
+    func deleteOldPrice(_ companyId: String, _ productId: String, _ oldPriceId: String) {
+        Task {
+            try await database
+                .collection(companyCollectionName).document(companyId)
+                .collection(productCollectionName).document(productId)
+                .collection(oldPricesCollectionName).document(oldPriceId)
+                .delete()
         }
     }
 }

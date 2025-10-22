@@ -23,171 +23,81 @@ struct WorkDetailView: View {
     @State private var isEditWork: Bool = false
     @State private var formTitle: FormTitle = .none
     
-    @State private var addType: ListType = .none
-    @State private var isAdd: Bool = false
     @State private var hiddingAnimation: Bool = false
     @State private var openMenu: Bool = false
     
     var tuple: TupleModel
-    var isBidView: Bool = false
-    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 10) {
                 
-                VStack(spacing: 5) {
+                VStack(spacing: 0) {
                     CustomTextField(title: .workName, text: $viewModel.workDetails.name, formTitle: $formTitle)
                         .disabled(!isEditWork)
                     
                     CustomTextField(title: .workDescription, text: $viewModel.workDetails.description, formTitle: $formTitle)
                         .disabled(!isEditWork)
                     
-                    HStack {
-                        CustomTextField(title: .workPrice, text: $viewModel.workDetails.totalCost, formTitle: $formTitle)
-                            .disabled(!isEditWork)
-                        
-                        if !(tuple.work.approve == .finished) {
-                            if tuple.work.remainingBalance == 0 {
-                                Button {
-                                    withAnimation(.snappy) {
-                                        viewModel.updateWork(
-                                            companyId: tuple.company.id,
-                                            workId: tuple.work.id,
-                                            updateArea: ["approve": ApprovalStatus.finished.rawValue]
-                                        )
-                                        
-                                    }
-                                } label: {
-                                    Text("Bitti")
-                                        .font(.title)
-                                        .foregroundStyle(.white)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                                .padding(10)
-                                .background(.isGreen.gradient)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(lineWidth: 4)
-                                        .fill(Color.isSkyBlue.gradient)
-                                }
-                                .opacity(isEditWork ? 0 : 1)
-                            } else {
-                                CustomTextField(title: .remMoney, text: $viewModel.acceptRem, formTitle: $formTitle, color: .red)
-                                    .disabled(true)
-                            }
-                        }
-                        
-                    }
+                    CustomTextField(title: .workPrice, text: $viewModel.workDetails.totalCost, formTitle: $formTitle)
+                        .disabled(!isEditWork)
                 }
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                 .animation(isEditWork ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditWork)
                 .padding(10)
-                .background(.background, in: .rect(cornerRadius: 20))
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 
-                VStack(spacing: 5) {
-                    CustomDatePicker(dateConfig: $startConfig, title: .startDate, activeTitle: $formTitle)
+                VStack(spacing: 0) {
+                    CustomDatePicker(dateConfig: $startConfig, title: .startDate, formTitle: $formTitle)
                     
-                    CustomDatePicker(dateConfig: $endConfig, title: .finishDate, activeTitle: $formTitle)
+                    CustomDatePicker(dateConfig: $endConfig, title: .finishDate, formTitle: $formTitle)
                 }
                 .foregroundStyle(.isText)
                 .disabled(!isEditWork)
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                 .animation(isEditWork ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditWork)
                 .padding(10)
-                .background(.background, in: .rect(cornerRadius: 20))
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 VStack(spacing: 5) {
-                    
-                    StatementListView(
-                        title: "Alınan Paralar",
-                        status: .received,
-                        list: tuple.work.statements.filter { $0.status == .received },
-                        tuple: tuple,
-                        hiddingAnimation: $hiddingAnimation
-                    )
-                    
-                    StatementListView(
-                        title: "Alınacak Paralar",
-                        status: .expired,
-                        list: tuple.work.statements.filter { $0.status == .expired },
-                        tuple: tuple,
-                        hiddingAnimation: $hiddingAnimation
-                    )
                     
                     ProductListView(
                         title: "Malzeme Listesi",
                         list: tuple.work.productList,
-                        tuple: tuple,
+                        company: tuple.company,
+                        workId: tuple.work.id,
+                        isSupplier: false,
                         hiddingAnimation: $hiddingAnimation
                     )
+                    
                 }
                 .opacity(
+                    tuple.work.productList.isEmpty ||
                     isEditWork ||
                     tuple.work.approve == .pending ? 0 : 1)
                 .animation(.linear, value: hiddingAnimation)
             }
+            .padding(.horizontal, 10)
         }
-        .navigationTitle("Guler Global")
-        .padding(.horizontal, 10)
+        .navigationTitle(tuple.company.companyName)
+        .navigationBarTitleDisplayMode(.inline)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .blur(radius: openMenu ? 5 : 0)
         .disabled(openMenu)
         .overlay(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 20) {
-                Button {
-                    withAnimation(.spring) {
-                        viewModel.updateWorkDetails(with: tuple.work)
-                        formTitle = .none
-                        openMenu = false
-                        isEditWork.toggle()
-                    }
-                } label: {
-                    if isEditWork {
-                        Label("İptal", systemImage: "pencil.slash")
-                    } else {
-                        Label("Düzenle", systemImage: "square.and.pencil")
-                    }
-                }
-                
-                if isEditWork {
-                    Button {
-                        withAnimation(.spring) {
-                            viewModel.acceptRem = "\(viewModel.remMoneySnapping(price: viewModel.workDetails.totalCost.toDouble(), statements: tuple.work.statements))"
-                            
-                            let workName = viewModel.workDetails.name.trim()
-                            let workDescription = viewModel.workDetails.description.trim()
-                            
-                            let updateArea = [
-                                "workName": workName,
-                                "workDescription": workDescription,
-                                "totalCost": viewModel.workDetails.totalCost.toDouble(),
-                                "remainingBalance": viewModel.acceptRem.toDouble(),
-                                "startDate": configToDate(startConfig),
-                                "endDate": configToDate(endConfig),
-                            ]
-                            
-                            viewModel.updateWork(companyId: tuple.company.id, workId: tuple.work.id, updateArea: updateArea)
-                            viewModel.updateWorkDetails(with: nil)
-                            
-                            formTitle = .none
-                            openMenu = false
-                            isEditWork.toggle()
-                        }
-                    } label: {
-                        Label("Kaydet", systemImage: "pencil.line")
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(.ultraThickMaterial)
-            .offset(y: openMenu ? 0 : 300)
-            
+            WorkMenu(
+                isEdit: $isEditWork,
+                formTitle: $formTitle,
+                openMenu: $openMenu,
+                startConfig: $startConfig,
+                endConfig: $endConfig,
+                tuple: tuple
+            )
+            .environmentObject(viewModel)
+            .offset(y: openMenu ? 0 : 500)
         }
         .animation(.linear, value: openMenu)
+        .navigationBarBackButtonHidden(openMenu || isEditWork)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -203,18 +113,9 @@ struct WorkDetailView: View {
             viewModel.updateWorkDetails(with: tuple.work)
             startConfig = dateToConfig(viewModel.workDetails.startDate)
             endConfig = dateToConfig(viewModel.workDetails.endDate)
-            viewModel.acceptRem = "\(viewModel.remMoneySnapping(price: tuple.work.totalCost, statements: tuple.work.statements))"
         }
         .onDisappear {
             viewModel.updateWorkDetails(with: nil)
-        }
-        .onChange(of: isAdd) { oldValue, newValue in
-            addType = addType
-        }
-        .onChange(of: viewModel.workDetails.totalCost) { oldValue, newValue in
-            if newValue != "0" {
-                viewModel.acceptRem = "\(viewModel.remMoneySnapping(price: newValue.toDouble(), statements: tuple.work.statements))"
-            }
         }
     }
 }
@@ -272,5 +173,105 @@ extension Date {
 extension String {
     func trim() -> String {
         return self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+struct WorkMenu: View {
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var viewModel: MainViewModel
+    @Binding var isEdit: Bool
+    @Binding var formTitle: FormTitle
+    @Binding var openMenu: Bool
+    @Binding var startConfig: DateConfig
+    @Binding var endConfig: DateConfig
+    
+    var tuple: TupleModel
+    
+    var body: some View {
+        VStack(alignment: .center, spacing: 5) {
+            Button {
+                withAnimation(.spring) {
+                    viewModel.updateWorkDetails(with: tuple.work)
+                    formTitle = .none
+                    openMenu = false
+                    isEdit.toggle()
+                }
+            } label: {
+                if isEdit {
+                    Label("İptal", systemImage: "pencil.slash")
+                } else {
+                    Label("Düzenle", systemImage: "square.and.pencil")
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 15)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .padding(.horizontal, 20)
+            
+            if isEdit {
+                Button {
+                    withAnimation(.spring) {
+                        let updateArea = [
+                            "workName": viewModel.workDetails.name.trim(),
+                            "workDescription": viewModel.workDetails.description.trim(),
+                            "totalCost": viewModel.workDetails.totalCost.toDouble(),
+                            "startDate": configToDate(startConfig),
+                            "endDate": configToDate(endConfig),
+                        ]
+                        viewModel.updateWork(
+                            companyId: tuple.company.id,
+                            workId: tuple.work.id,
+                            updateArea: updateArea
+                        )
+                        
+                        viewModel.updateWorkDetails(with: nil)
+                        formTitle = .none
+                        openMenu = false
+                        isEdit.toggle()
+                    }
+                    
+                } label: {
+                    Label("Kaydet", systemImage: "pencil.line")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+            }
+            else
+            {
+                if tuple.work.approve == .approved {
+                    Button {
+                        withAnimation(.snappy) {
+                            viewModel.updateWork(
+                                companyId: tuple.company.id,
+                                workId: tuple.work.id,
+                                updateArea: ["approve": ApprovalStatus.finished.rawValue]
+                            )
+                            
+                            dismiss()
+                        }
+                    } label: {
+                        Label("İş Bitti", systemImage: "checkmark.app")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    .padding(.horizontal, 20)
+                    
+                    NavigationLink {
+                        ProductEntryView(companyId: tuple.company.id, workId: tuple.work.id, isSupplier: false)
+                            .environmentObject(viewModel)
+                    } label: {
+                        Label("Malzeme Ekle", systemImage: "plus.viewfinder")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    .padding(.horizontal, 20)
+                }
+            }
+            
+        }
     }
 }

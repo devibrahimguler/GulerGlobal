@@ -18,23 +18,19 @@ struct RejectedView: View {
                         WorkDetailView(tuple: tuple)
                             .environmentObject(viewModel)
                     } label: {
-                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            WorkCard(companyName: tuple.company.companyName, work: tuple.work, isApprove: true)
+                        SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
+                            WorkCard(company: tuple.company, work: tuple.work)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 
                             }
-                        }
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .stroke(lineWidth: 1)
-                                .fill(Color.isSkyBlue.gradient)
                         }
                     }
                 }
             }
         }
         .navigationTitle("İptal Projeler")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

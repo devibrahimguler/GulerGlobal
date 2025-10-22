@@ -9,32 +9,25 @@ import SwiftUI
 
 struct ProductListView: View {
     @EnvironmentObject var viewModel: MainViewModel
+    @Environment(\.dismiss) private var dismiss
     @State private var isHidden: Bool = true
     @State private var isReset: Bool = true
     
-    var isGetHome: Bool = false
     var title: String
     var list: [Product]
-    var tuple: TupleModel
+    var company: Company
+    var workId: String?
+    var isSupplier: Bool
     @Binding var hiddingAnimation: Bool
     
     var body: some View {
         VStack(spacing: 5) {
             HStack(spacing: 20) {
-                if !isGetHome {
-                    NavigationLink {
-                        ProductEntryView(tuple: tuple)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Image(systemName: "plus.viewfinder")
-                    }
-                }
-                
-                Spacer()
-                
                 Text(title)
                     .font(.headline)
                     .fontWeight(.bold)
+                    .padding()
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 Spacer()
                 
@@ -44,42 +37,62 @@ struct ProductListView: View {
                         isHidden.toggle()
                         hiddingAnimation.toggle()
                     }
+                    .padding()
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .circular))
             }
-            .padding()
-            .background(.background, in: .rect(cornerRadius: 20))
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0) {
                     ForEach(list, id: \.self) { product in
-                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            ProductCard(product: product)
-                        }
-                        actions: {
-                            Action(tint: .red, icon: "trash.fill") {
-                                viewModel.deleteProduct(
-                                    companyId: tuple.company.id,
-                                    workId: tuple.work.id,
-                                    productId: product.id
-                                )
+                        NavigationLink {
+                            ProductDetailView(product: product, companyId: company.id, isSupplier: isSupplier)
+                                .onAppear {
+                                    isReset.toggle()
+                                }
+                                .navigationTitle(company.companyName)
+                                .environmentObject(viewModel)
+                        } label: {
+                            SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                                ProductCard(product: product, isSupplier: isSupplier)
                             }
-                            
-                            Action(tint: .isGreen, icon: "checkmark.square", isEnabled: !product.isBought) {
-                                withAnimation(.snappy) {
-                                    viewModel.updateProduct(
-                                        companyId: tuple.company.id,
-                                        workId: tuple.work.id,
-                                        productId: product.id,
-                                        updateArea: ["isBought": true]
-                                    )
+                            actions: {
+                                Action(tint: .red, icon: "trash.fill") {
+                                    withAnimation(.snappy) {
+                                        if isSupplier {
+                                            viewModel.deleteProduct(
+                                                companyId: company.id,
+                                                productId: product.id
+                                            )
+                                        } else {
+                                            if let workId = workId,
+                                               let companyProduct = viewModel.allProducts.first(where: { $0.supplierId == product.supplierId }) {
+                                                
+                                                let quantity = companyProduct.quantity + product.quantity
+                                                let updateArea = [
+                                                    "quantity": quantity,
+                                                ]
+                                                
+                                                viewModel.updateProductForCompany(companyId: product.supplierId, productId: product.id, updateArea: updateArea)
+                                                viewModel.deleteProductForWork(companyId: company.id, workId: workId, productId: product.id)
+                                                
+                                                dismiss()
+                                            }
+                                        }
+                                        
+                                    }
                                 }
                             }
+                            .padding(5)
                         }
-                        .padding(5)
+                        .foregroundStyle(.white)
+                        
+                        
                     }
                 }
+                .padding(10)
             }
-            .background(.background)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .clipShape(.rect(cornerRadius: 30, style: .continuous))
             .frame(height: isHidden ? 0 : 400)
         }
         .animation(.linear, value: isHidden)
@@ -94,7 +107,8 @@ struct Test_ProductListView: View {
         ProductListView(
             title: "Malzeme Listesi",
             list: example_ProductList,
-            tuple: example_TupleModel,
+            company: example_Company,
+            isSupplier: false,
             hiddingAnimation: $hiddingAnimation
         )
         .environmentObject(viewModel)
@@ -107,17 +121,17 @@ struct Test_ProductListView: View {
 #Preview {
     Test_ProductListView()
 }
+
 var example_Work = Work(
     id: "0000",
     workName: "Company Work",
     workDescription: "Company Work",
+    remainingBalance: 0,
     totalCost: 0,
     approve: .none,
-    remainingBalance: 0,
-    statements: example_StatementList,
+    productList: example_ProductList,
     startDate: .now,
-    endDate: .now,
-    productList: example_ProductList
+    endDate: .now
 )
 
 var example_WorkList = [
@@ -130,7 +144,9 @@ var example_Company = Company(
     companyAddress: "Burhaniye mahallesi, Ali galip sokak no: 9",
     contactNumber: "(554) 170 16 35",
     partnerRole: .current,
-    workList: example_WorkList
+    workList: example_WorkList,
+    statements: example_StatementList,
+    productList: example_ProductList
 )
 
 var example_TupleModel = TupleModel(
@@ -140,12 +156,14 @@ var example_TupleModel = TupleModel(
 
 var example_Product = Product(
     id: "0001",
-    productName: "30x20x1.5 Profil",
-    quantity: 10,
-    unitPrice: 300,
+    supplierId: "47",
     supplier: "Arıkan Metal",
+    productName: "30x20x1.5 Profil",
+    quantity: 100,
+    unitPrice: 300,
+    oldPrices: example_OldPriceList,
     purchased: .now)
-    
+
 var example_ProductList = [
     example_Product,
     example_Product,
@@ -154,14 +172,23 @@ var example_ProductList = [
     example_Product,
 ]
 var example_StatementList = [
-    Statement(amount: 1000, date: .now, status: .received),
-    Statement(amount: 1000, date: .now, status: .received),
-    Statement(amount: 1000, date: .now, status: .received),
-    Statement(amount: 1000, date: .now, status: .received),
-    Statement(amount: 1000, date: .now, status: .received),
-    Statement(amount: 1000, date: .now, status: .expired),
-    Statement(amount: 1000, date: .now, status: .expired),
-    Statement(amount: 1000, date: .now, status: .expired),
-    Statement(amount: 1000, date: .now, status: .expired),
-    Statement(amount: 1000, date: .now, status: .expired),
+    Statement(amount: 1000, date: .now, status: .input),
+    Statement(amount: 1000, date: .now, status: .input),
+    Statement(amount: 1000, date: .now, status: .input),
+    Statement(amount: 1000, date: .now, status: .input),
+    Statement(amount: 1000, date: .now, status: .input),
+    Statement(amount: 1000, date: .now, status: .output),
+    Statement(amount: 1000, date: .now, status: .output),
+    Statement(amount: 1000, date: .now, status: .output),
+    Statement(amount: 1000, date: .now, status: .output),
+    Statement(amount: 1000, date: .now, status: .output),
+]
+
+var example_OldPriceList = [
+    OldPrice(price: 100, date: .now),
+    OldPrice(price: 100, date: .now),
+    OldPrice(price: 100, date: .now),
+    OldPrice(price: 100, date: .now),
+    OldPrice(price: 100, date: .now),
+    OldPrice(price: 100, date: .now),
 ]

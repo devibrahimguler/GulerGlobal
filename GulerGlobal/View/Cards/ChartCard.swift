@@ -36,7 +36,7 @@ struct ChartCard: View {
             .font(.caption)
             .fontWeight(.semibold)
             .padding(5)
-            .glassEffect(in: RoundedRectangle(cornerRadius: 10))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30))
             
         }
         .padding(.vertical, 5)

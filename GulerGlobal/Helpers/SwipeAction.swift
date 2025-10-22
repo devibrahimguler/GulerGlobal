@@ -31,7 +31,7 @@ struct SwipeAction<Content: View> : View {
                         .background {
                             if let firstAction = filteredActions.first {
                                 Rectangle()
-                                    .fill(firstAction.tint)
+                                    .fill(firstAction.tint.gradient)
                                     .opacity(scrollOffset == .zero ? 0 : 1)
                             }
                         }
@@ -67,12 +67,12 @@ struct SwipeAction<Content: View> : View {
             .background {
                 if let lastAction = filteredActions.last {
                     Rectangle()
-                        .fill(lastAction.tint)
+                        .fill(lastAction.tint.gradient)
                         .opacity(scrollOffset == .zero ? 0 : 1)
                 }
             }
-            .glassEffect(in: .rect(cornerRadius: 30))
             .clipShape(.rect(cornerRadius: cornerRadius))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: cornerRadius))
             .rotationEffect(.init(degrees: direction == .leading ? 180 : 0 ))
         }
         .allowsHitTesting(isEnabled)

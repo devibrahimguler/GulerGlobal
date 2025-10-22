@@ -25,19 +25,16 @@ struct NavigationButton<Content: View>: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
             }
-            .foregroundStyle(.isCream.gradient)
             .frame(width: 75, height: 75)
             .padding(10)
-            .background(Color.accentColor.gradient)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
         }
     }
 }
 
 struct Test_NavigationButton: View {
     var body: some View {
-        NavigationButton(content: Text("deneme"), buttonType: .cancel)
+        NavigationButton(content: Text("deneme"), buttonType: .debt)
     }
 }
 

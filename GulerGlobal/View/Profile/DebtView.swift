@@ -1,18 +1,18 @@
 //
-//  SupplierView.swift
+//  DebtView.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 27.10.2024.
+//  Created by ibrahim Güler on 9.10.2025.
 //
 
 import SwiftUI
 
-struct SupplierView: View {
+struct DebtView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
     
     var body: some View {
-        let list = viewModel.companyList.filter { $0.partnerRole == .supplier || $0.partnerRole == .both}
+        let list = viewModel.companyList.filter { $0.partnerRole == .debt}
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {
@@ -33,8 +33,8 @@ struct SupplierView: View {
         }
         .toolbar {
             NavigationLink {
-                CompanyEntryView(partnerRole: .supplier)
-                    .navigationTitle("Tedarikçi Ekle")
+                CompanyEntryView(partnerRole: .debt)
+                    .navigationTitle("Borç Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
                 Text("Ekle")
@@ -42,11 +42,11 @@ struct SupplierView: View {
                     .foregroundStyle(.green)
             }
         }
-        .navigationTitle("Tedarikçiler")
+        .navigationTitle("Borçlar")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    ContentView()
+    DebtView()
 }

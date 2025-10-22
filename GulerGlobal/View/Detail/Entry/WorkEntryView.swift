@@ -29,8 +29,8 @@ struct WorkEntryView: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 8) {
-                CompanyPickerView(title: .companyName, activeField: $activeField, hiddingAnimation: $hiddingAnimation, company: $company)
+            VStack(spacing: 0) {
+                CompanyPickerView(title: .companyName, filter: .current, formTitle: $activeField, hiddingAnimation: $hiddingAnimation, company: $company)
                 
                 CustomTextField(
                     title: .projeNumber,
@@ -52,22 +52,14 @@ struct WorkEntryView: View {
                 
                 CustomTextField(title: .workPrice, text: $viewModel.workDetails.totalCost, formTitle: $activeField, keyboardType: .numberPad)
                 
-                CustomDatePicker(dateConfig: $startConfig, title: .startDate, activeTitle: $activeField)
+                CustomDatePicker(dateConfig: $startConfig, title: .startDate, formTitle: $activeField)
+                    .foregroundStyle(.isText)
                 
-                CustomDatePicker(dateConfig: $endConfig, title: .finishDate, activeTitle: $activeField)
-                
-                Button("Onayla") {
-                    handleWorkSubmission()
-                }
-                .foregroundColor(.isText)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .padding(10)
-                .background(.isGreen, in: .rect(cornerRadius: 10))
-                .padding(5)
+                CustomDatePicker(dateConfig: $endConfig, title: .finishDate, formTitle: $activeField)
+                    .foregroundStyle(.isText)
             }
             .padding(10)
-            .background(.background, in: .rect(cornerRadius: 20))
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20, style: .continuous))
             .padding(10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
@@ -83,6 +75,16 @@ struct WorkEntryView: View {
             activeField = .none
             company = nil
             viewModel.updateWorkDetails(with: nil)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Onayla") {
+                    handleWorkSubmission()
+                }
+                .foregroundStyle(.isGreen)
+                .font(.headline)
+                .fontWeight(.semibold)
+            }
         }
         
     }
@@ -100,13 +102,13 @@ struct WorkEntryView: View {
             id: viewModel.workDetails.id,
             workName: viewModel.workDetails.name,
             workDescription: viewModel.workDetails.description,
+            remainingBalance: viewModel.workDetails.totalCost.toDouble(),
             totalCost: viewModel.workDetails.totalCost.toDouble(),
             approve: viewModel.workDetails.approve,
-            remainingBalance: viewModel.workDetails.totalCost.toDouble(),
-            statements: [],
+            productList: viewModel.workDetails.productList,
             startDate: configToDate(startConfig),
-            endDate: configToDate(endConfig),
-            productList: [])
+            endDate: configToDate(endConfig)
+        )
         
         viewModel.createWork(companyId: company.id, work: newWork)
         dismiss()
@@ -135,37 +137,38 @@ struct CompanyPickerView: View {
     @State private var companies: [Company] = []
     
     var title: FormTitle
-    @Binding var activeField: FormTitle
+    var filter: PartnerRole
+    @Binding var formTitle: FormTitle
     @Binding var hiddingAnimation: Bool
     @Binding var company: Company?
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 0){
+            HStack(spacing: 5){
                 TextField("", text: $text)
                     .placeholder(when: text.isEmpty, padding: 0) {
                         Text("Firma Girin")
                             .foregroundColor(.gray)
                     }
                     .disabled(isHidden)
-                
-                // Spacer()
+                    .padding(20)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 Image(systemName: "chevron.down")
                     .rotationEffect(.init(degrees: isHidden ? 180 : 0))
                     .onTapGesture {
                         selectedCompany()
                     }
+                    .padding(10)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .circular))
             }
             .foregroundStyle(Color.accentColor)
             .font(.title3)
             .padding(10)
             
-            Divider()
-            
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(companies == [] ? viewModel.companyList.filter { $0.partnerRole == .both || $0.partnerRole == .current} : companies, id: \.self) { c in
+                    ForEach(companies == [] ? viewModel.companyList.filter { $0.partnerRole == .both || $0.partnerRole == filter} : companies, id: \.self) { c in
                         Text("-> \(c.companyName)")
                             .padding(10)
                             .onTapGesture {
@@ -182,6 +185,8 @@ struct CompanyPickerView: View {
             }
             .frame(height: isHidden ? 0 : 500)
             .padding(.leading, 20)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .clipShape(.rect(cornerRadius: 30, style: .continuous))
         }
         .onChange(of: text) { _, newValue in
             searching(value: newValue)
@@ -196,18 +201,6 @@ struct CompanyPickerView: View {
         .frame(maxWidth: .infinity)
         .font(.caption)
         .fontWeight(.semibold)
-        .background(Color.white)
-        .clipShape(RoundedCorner(radius: 10, corners: .allCorners))
-        .overlay {
-            RoundedCorner(radius: 10, corners: .allCorners)
-                .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                .fill(
-                    activeField == title ?
-                    Color.accentColor.gradient :
-                        company != nil ?
-                    Color.isGreen.gradient :
-                        Color.isSkyBlue.gradient)
-        }
         .padding(.horizontal, 5)
         .animation(.linear, value: isHidden)
     }
@@ -224,9 +217,9 @@ struct CompanyPickerView: View {
     
     private func selectedCompany() {
         if isHidden {
-            activeField = title
+            formTitle = title
         } else {
-            activeField = .none
+            formTitle = .none
         }
         
         isHidden.toggle()

@@ -11,13 +11,12 @@ struct Work: Identifiable, Codable, Hashable {
     var id: String
     var workName: String
     var workDescription: String
+    var remainingBalance: Double
     var totalCost: Double
     var approve: ApprovalStatus
-    var remainingBalance: Double
-    var statements: [Statement]
+    var productList: [Product]
     var startDate: Date
     var endDate: Date
-    var productList: [Product]
 }
 
 enum ApprovalStatus: String, Codable {

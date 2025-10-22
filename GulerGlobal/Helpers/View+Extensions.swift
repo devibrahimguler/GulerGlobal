@@ -46,10 +46,6 @@ extension View {
         return locale.currencySymbol ?? ""
     }
     
-    func getRect() -> CGSize {
-        return UIScreen.main.bounds.size
-    }
-    
     @ViewBuilder
     func modifiers<Content: View>(@ViewBuilder content: @escaping (Self) -> Content) -> some View {
         content(self)

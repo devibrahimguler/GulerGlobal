@@ -12,6 +12,7 @@ enum ButtonType: String, CaseIterable {
     case finished = "Bitmiş"
     case currents = "Cariler"
     case supplier = "Tedarikçiler"
+    case debt = "Borçlar"
     case soon = "Yakında!"
     
     var symbolImage: String {
@@ -20,6 +21,7 @@ enum ButtonType: String, CaseIterable {
         case .finished: "text.badge.checkmark"
         case .currents: "house.lodge.fill"
         case .supplier: "list.bullet.rectangle"
+        case .debt: "turkishlirasign.bank.building"
         case .soon: "hourglass"
         }
     }
@@ -27,6 +29,21 @@ enum ButtonType: String, CaseIterable {
 }
 
 enum FormTitle: String {
+    case input = "Alınan Para"
+    case inputDate = "Tahsilat Tarihi"
+    case output = "Ödenen Para"
+    case outputDate = "Ödeme Tarihi"
+    case debt = "Alınan Borç"
+    case debtDate = "Borç Alma Tarihi"
+    case lend = "Verilen Borç"
+    case lendDate = "Borç Verme Tarihi"
+    
+    case productName = "Ürün İsmi"
+    case productQuantity = "Ürün Adedi"
+    case productPrice = "Ürün Fiyatı"
+    case supplier = "Tedarik Noktası"
+    case productPurchased = "Tedarik Tarihi"
+    
     case none = ""
     case companyName = "Firma İsmi"
     case companyAddress = "Addres"
@@ -35,18 +52,15 @@ enum FormTitle: String {
     case workName = "İş İsmi"
     case workDescription = "İş Açıklama"
     case workPrice = "İş Fiyatı"
-    case recMoney = "Alınan Para"
-    case remMoney = "Kalan Para"
+ 
+ 
     case expMoney = "Alınacak Para"
-    case recDate = "Tahsilat Tarihi"
-    case expDate = "Vade Tarihi"
+
+
     case startDate = "Başlama Tarihi"
     case finishDate = "Tahmini Bitiş Tarihi"
-    case productName = "Ürün İsmi"
-    case productQuantity = "Ürün Adedi"
-    case productPrice = "Ürün Fiyatı"
-    case productSuggestion = "Alındığı Yer"
-    case productPurchased = "Alınma Tarihi"
+
+
     case givMoney = "Bağlantı Miktarı"
     case givDate = "Bağlantı Tarihi"
 }

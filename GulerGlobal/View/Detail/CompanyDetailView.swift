@@ -18,6 +18,7 @@ struct CompanyDetailView: View {
     @State private var addType: ListType = .none
     @State private var isReset: Bool = false
     @State private var openMenu: Bool = false
+    @State private var hiddingAnimation: Bool = false
     
     var company: Company
     var partnerRole: PartnerRole
@@ -41,7 +42,7 @@ struct CompanyDetailView: View {
                 .scaleEffect(x: isEditCompany ? 0.97 : 1, y: isEditCompany ? 0.97 : 1)
                 .animation(isEditCompany ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditCompany)
                 .padding(10)
-                .background(.background, in: .rect(cornerRadius: 20))
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 if isEditCompany {
                     VStack {
@@ -53,17 +54,17 @@ struct CompanyDetailView: View {
                             ForEach(PartnerRole.allCases, id: \.self) { i in
                                 let value = cashRoleValue(i)
                                 if value != "" {
-                                    VStack(spacing: 10) {
-                                        Text(value)
-                                    }
-                                    .foregroundStyle(viewModel.companyDetails.partnerRole == i ? .white : .isCream)
-                                    .padding(5)
-                                    .frame(maxWidth: .infinity)
-                                    .background(viewModel.companyDetails.partnerRole == i ? .accent : .isSkyBlue)
-                                    .onTapGesture {
-                                        viewModel.companyDetails.partnerRole = i
-                                    }
-                                    .animation(.bouncy, value: viewModel.companyDetails.partnerRole)
+                                    Text(value)
+                                        .foregroundStyle(.isText)
+                                        .padding(5)
+                                        .frame(maxWidth: .infinity)
+                                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                                        .background(viewModel.companyDetails.partnerRole == i ? Color.blue.opacity(0.5) : Color.red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+                                        .onTapGesture {
+                                            viewModel.companyDetails.partnerRole = i
+                                        }
+                                        .animation(.bouncy, value: viewModel.companyDetails.partnerRole)
+                                    
                                     
                                 }
                                 
@@ -71,177 +72,72 @@ struct CompanyDetailView: View {
                         }
                     }
                     .padding(10)
-                    .background(.background, in: .rect(cornerRadius: 20))
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 }
                 
                 VStack(spacing: 10) {
+                    let workList = company.workList.sorted { $0.id > $1.id }
                     let productList = viewModel.allProducts.filter { $0.supplier == company.companyName }
-                    let statementList = viewModel.statementTasks.first(where: { $0.companyId == company.id })?.statement
+                    let statementList = viewModel.statementTasks.first(where: { $0.companyId == company.id })?.statement.sorted { $0.date > $1.date }
                     
-                    Text("Durum Raporu")
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .background(.background, in: .rect(cornerRadius: 20))
-                        .opacity(company.workList.isEmpty ? productList.isEmpty ? 0 : 1 : 1)
+                    if company.workList.count > 1 {
+                        WorkListView(
+                            title: "İş Listesi",
+                            list: workList,
+                            company: company,
+                            hiddingAnimation: $hiddingAnimation
+                        )
+                        .environmentObject(viewModel)
+                    }
                     
-                    if partnerRole == .current {
-                        if !company.workList.isEmpty {
-                            VStack(spacing: 5) {
-                                ForEach(company.workList, id: \.self) { work in
-                                    if work.id != "0000" {
-                                        
-                                        let approved = work.approve == .approved ? true : false
-                                        
-                                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                                            WorkCard(companyName: company.companyName , work: work, isApprove: approved)
-                                        } actions: {
-                                            Action(tint: .isRed, icon: "trash.fill") {
-                                                withAnimation(.snappy) {
-                                                    viewModel.deleteWork(companyId: company.id, workId: work.id)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(10)
-                            .background(.background)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    if let statementList = statementList {
+                        if !statementList.isEmpty {
+                            StatementListView (
+                                title: "Finans Kayıtları",
+                                list: statementList,
+                                company: company,
+                                hiddingAnimation: $hiddingAnimation
+                            )
+                            .environmentObject(viewModel)
                         }
                     }
-                    else if partnerRole == .supplier {
-                        
-                        if !productList.isEmpty {
-                            VStack(spacing: 5) {
-                                ForEach(productList, id: \.self) { product in
-                                    SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                                        ProductCard(product: product)
-                                    } actions: {
-                                        
-                                    }
-                                    
-                                }
-                            }
-                            .padding(10)
-                            .background(.background)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                        }
-                        
-                        if let statementList = statementList {
-                            if !statementList.isEmpty {
-                                VStack(spacing: 5) {
-                                    ForEach(statementList, id: \.self) { statement in
-                                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                                            StatementCard(statement: statement)
-                                        } actions: {
-                                            Action(tint: .isRed, icon: "trash.fill") {
-                                                withAnimation(.snappy) {
-                                                    viewModel.deleteStatement(companyId: company.id, workId: "0000", statementId: statement.id)
-                                                    viewModel.fetchData()
-                                                }
-                                            }
-                                        }
-                                        
-                                    }
-                                }
-                                .padding(10)
-                                .background(.background)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                            }
-                        }
+                    
+                    if !productList.isEmpty {
+                        ProductListView(
+                            title: "Malzeme Listesi",
+                            list: productList,
+                            company: company,
+                            isSupplier: true,
+                            hiddingAnimation: $hiddingAnimation
+                        )
+                        .environmentObject(viewModel)
                     }
                     
                 }
                 .opacity(isEditCompany ? 0 : 1)
                 
             }
-            .navigationTitle("Guler Global")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal, 10)
+            
         }
-        .padding(.horizontal, 10)
+        .navigationTitle("Guler Global")
+        .navigationBarTitleDisplayMode(.inline)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .blur(radius: openMenu ? 5 : 0)
         .disabled(openMenu)
         .overlay(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 20) {
-                Button {
-                    withAnimation(.spring) {
-                        formTitle = .none
-                        openMenu = false
-                        isEditCompany.toggle()
-                    }
-                } label: {
-                    if isEditCompany {
-                        Label("İptal", systemImage: "pencil.slash")
-                    } else {
-                        Label("Düzenle", systemImage: "square.and.pencil")
-                    }
-                }
-                
-                if isEditCompany {
-                    Button {
-                        withAnimation(.spring) {
-                            if viewModel.companyDetails.name != company.companyName {
-                                if viewModel.companyList.first(where: { $0.companyName == viewModel.companyDetails.name }) != nil {
-                                    return
-                                }
-                            }
-                            
-                            let companyName = viewModel.companyDetails.name.trim()
-                            let companyAddress = viewModel.companyDetails.address.trim()
-                            let contactNumber = viewModel.companyDetails.contactNumber
-                            let partnerRoleRawValue = viewModel.companyDetails.partnerRole.rawValue
-                            
-                            let updateArea = [
-                                "companyName": companyName,
-                                "companyAddress": companyAddress,
-                                "contactNumber": contactNumber,
-                                "partnerRole": partnerRoleRawValue
-                            ]
-                            
-                            viewModel.updateCompany(companyId: company.id, updateArea: updateArea)
-                            
-                            formTitle = .none
-                            openMenu = false
-                            isEditCompany.toggle()
-                        }
-                    } label: {
-                        Label("Kaydet", systemImage: "pencil.line")
-                    }
-                } else {
-                    if partnerRole == .supplier {
-                        let tuple = TupleModel(company: company, work: example_Work)
-                        
-                        NavigationLink {
-                            StatementEntryView(status: .debs, tuple: tuple)
-                                .environmentObject(viewModel)
-                                .onAppear {
-                                    openMenu = false
-                                }
-                        } label: {
-                            Label("Borç Ekle", systemImage: "square.badge.plus")
-                        }
-                        
-                        NavigationLink {
-                            StatementEntryView(status: .hookup, tuple: tuple)
-                                .environmentObject(viewModel)
-                                .onAppear {
-                                    openMenu = false
-                                }
-                        } label: {
-                            Label("Bağlantı Ekle", systemImage: "bag.badge.plus")
-                        }
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(.ultraThickMaterial)
-            .offset(y: openMenu ? 0 : 300)
+            
+            CompanyMenu(
+                isEdit: $isEditCompany,
+                formTitle: $formTitle,
+                openMenu: $openMenu,
+                company: company
+            )
+            .environmentObject(viewModel)
+            .offset(y: openMenu ? 0 : 500)
             
         }
+        .navigationBarBackButtonHidden(openMenu || isEditCompany)
         .animation(.linear, value: openMenu)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -273,6 +169,8 @@ struct CompanyDetailView: View {
             return "Tedarikçi"
         case .both:
             return "Birleşik"
+        case .debt:
+            return "Borç"
         }
     }
 }
@@ -288,4 +186,109 @@ struct TestDetailView: View {
 
 #Preview {
     TestDetailView()
+}
+
+struct CompanyMenu: View {
+    @EnvironmentObject var viewModel: MainViewModel
+    @Binding var isEdit: Bool
+    @Binding var formTitle: FormTitle
+    @Binding var openMenu: Bool
+    
+    var company: Company
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Button {
+                withAnimation(.spring) {
+                    formTitle = .none
+                    openMenu = false
+                    isEdit.toggle()
+                }
+            } label: {
+                if isEdit {
+                    Label("İptal", systemImage: "pencil.slash")
+                } else {
+                    Label("Düzenle", systemImage: "square.and.pencil")
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 15)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .padding(.horizontal, 20)
+            
+            if isEdit {
+                Button {
+                    withAnimation(.spring) {
+                        viewModel.saveUpdates(company: company)
+                        
+                        formTitle = .none
+                        openMenu = false
+                        isEdit.toggle()
+                    }
+                } label: {
+                    Label("Kaydet", systemImage: "pencil.line")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+            } else {
+                if company.partnerRole == .supplier || company.partnerRole == .both {
+                    NavigationLink {
+                        ProductEntryView(company: company, workId: nil, isSupplier: true)
+                            .environmentObject(viewModel)
+                    } label: {
+                        Label("Malzeme Ekle", systemImage: "plus.viewfinder")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    .padding(.horizontal, 20)
+                }
+                NavigationLink {
+                    StatementEntryView(status: .input, company: company)
+                        .environmentObject(viewModel)
+                } label: {
+                    Label("Alınan Para", systemImage: "square.badge.plus")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+                
+                NavigationLink {
+                    StatementEntryView(status: .output, company: company)
+                        .environmentObject(viewModel)
+                } label: {
+                    Label("Ödenen Para", systemImage: "bag.badge.plus")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+                
+                NavigationLink {
+                    StatementEntryView(status: .debt, company: company)
+                        .environmentObject(viewModel)
+                } label: {
+                    Label("Alınan Borç", systemImage: "bag.badge.plus")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+                
+                NavigationLink {
+                    StatementEntryView(status: .lend, company: company)
+                        .environmentObject(viewModel)
+                } label: {
+                    Label("Verilen Borç", systemImage: "bag.badge.plus")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(.horizontal, 20)
+            }
+        }
+    }
 }

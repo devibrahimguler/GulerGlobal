@@ -13,27 +13,24 @@ struct CustomTextField: View {
 
     var title: FormTitle
     @Binding var text: String
-    // formTitle -> activeField
     @Binding var formTitle: FormTitle
 
     var keyboardType: UIKeyboardType = .default
-    // color -> accentColor
     var color: Color = .isText
     var actionContent: (() -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(spacing: 0) {
             headerView
+                .zIndex(1)
+                .frame(height: 0)
 
             TextField("", text: $text, axis: .vertical)
                 .lineLimit(nil)
                 .font(.caption)
                 .fontWeight(.semibold)
                 .focused($isFocused)
-                .padding(10)
-                .background(Color.isCream.gradient)
-                .clipShape(RoundedCorner(radius: 10, corners: textFieldCorners))
-                .overlay(borderOverlay(for: textFieldCorners))
+                .padding(15)
                 .keyboardType(keyboardType)
                 .onChange(of: text) { _, _ in
                     handleTextChange()
@@ -42,39 +39,40 @@ struct CustomTextField: View {
                     if isFocused { formTitle = title }
                 }
                 .multilineTextAlignment(.leading)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
         }
-        .padding(5)
-        .foregroundStyle(color)
+        .padding(10)
     }
 
     private var headerView: some View {
         HStack(spacing: 0) {
+            
             Text(title.rawValue)
-                .font(.callout)
+                .font(.caption2)
                 .fontWeight(.semibold)
                 .padding(.vertical, 5)
                 .padding(.horizontal, 10)
-                .background(Color.white)
-                .foregroundStyle(color)
-                .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
-                .overlay(borderOverlay(for: [.topLeft, .topRight]))
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .background(formTitle == title ? .blue.opacity(0.5) : .red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+            
+            Spacer()
 
             if keyboardType == .phonePad, let action = actionContent {
-                Spacer()
 
                 Button(action: action) {
                     Text("Seç")
-                        .font(.headline)
+                        .font(.caption2)
                         .fontWeight(.semibold)
                         .padding(.vertical, 5)
-                        .padding(.horizontal)
-                        .background(Color.isGreen)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight]))
-                        .overlay(borderOverlay(for: [.topLeft, .topRight]))
+                        .padding(.horizontal, 10)
+                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                        .background(formTitle == title ? .blue.opacity(0.5) : .red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
                 }
             }
         }
+        .padding(.horizontal, formTitle == title || !text.isEmpty ? 25 : 5)
+        .offset(y:formTitle == title || !text.isEmpty ? -3 : 23)
+        .animation(.easeIn, value: formTitle == title)
     }
 
     private func borderOverlay(for corners: UIRectCorner) -> some View {
@@ -96,9 +94,13 @@ struct CustomTextField: View {
 
 struct Test_CustomTextField: View {
     @State private var text: String = ""
+    @State private var text2: String = ""
     @State private var formTitle: FormTitle = .workName
     var body: some View {
-        CustomTextField(title: .workName, text: $text, formTitle: $formTitle, keyboardType: .default)
+        VStack(spacing: 0) {
+            CustomTextField(title: .workName, text: $text, formTitle: $formTitle, keyboardType: .default)
+            CustomTextField(title: .companyName, text: $text2, formTitle: $formTitle, keyboardType: .default)
+        }
     }
 }
 
