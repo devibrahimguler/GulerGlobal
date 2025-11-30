@@ -637,7 +637,7 @@
 					"-Xlinker",
 					"-no_warn_duplicate_libraries",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = devibrahimglr.GulerGlobal;
+				PRODUCT_BUNDLE_IDENTIFIER = "devibrahimglr.GulerGlobal-q";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -679,7 +679,7 @@
 					"-Xlinker",
 					"-no_warn_duplicate_libraries",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = devibrahimglr.GulerGlobal;
+				PRODUCT_BUNDLE_IDENTIFIER = "devibrahimglr.GulerGlobal-q";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

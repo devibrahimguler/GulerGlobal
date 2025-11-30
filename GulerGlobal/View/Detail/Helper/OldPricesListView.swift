@@ -48,11 +48,13 @@ struct OldPricesListView: View {
                         actions: {
                              Action(tint: .red, icon: "trash.fill") {
                                  withAnimation(.snappy) {
-                                     viewModel.deleteOldPrice(
-                                        companyId: companyId,
-                                        productId: productId,
-                                        oldPriceAId: oldPrice.id
-                                     )
+                                     /*
+                                      viewModel.deleteOldPrice(
+                                         companyId: companyId,
+                                         productId: productId,
+                                         oldPriceAId: oldPrice.id
+                                      )
+                                      */
                                  }
                              }
                         }

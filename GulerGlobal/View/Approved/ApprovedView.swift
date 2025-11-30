@@ -33,9 +33,8 @@ struct ApprovedView: View {
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
                                 viewModel.updateWork(
-                                    companyId: company.id,
                                     workId: work.id,
-                                    updateArea: ["approve": ApprovalStatus.rejected.rawValue,]
+                                    updateArea: ["status": ApprovalStatus.rejected]
                                 )
                             }
                         }

@@ -38,7 +38,7 @@ struct WorkDetailView: View {
                     CustomTextField(title: .workDescription, text: $viewModel.workDetails.description, formTitle: $formTitle)
                         .disabled(!isEditWork)
                     
-                    CustomTextField(title: .workPrice, text: $viewModel.workDetails.totalCost, formTitle: $formTitle)
+                    CustomTextField(title: .workPrice, text: $viewModel.workDetails.cost, formTitle: $formTitle)
                         .disabled(!isEditWork)
                 }
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
@@ -63,7 +63,8 @@ struct WorkDetailView: View {
                     
                     ProductListView(
                         title: "Malzeme Listesi",
-                        list: tuple.work.productList,
+                        //// hata
+                        list: example_ProductList,
                         company: tuple.company,
                         workId: tuple.work.id,
                         isSupplier: false,
@@ -72,14 +73,14 @@ struct WorkDetailView: View {
                     
                 }
                 .opacity(
-                    tuple.work.productList.isEmpty ||
+                    // tuple.work.productList.isEmpty ||
                     isEditWork ||
-                    tuple.work.approve == .pending ? 0 : 1)
+                    tuple.work.status == .pending ? 0 : 1)
                 .animation(.linear, value: hiddingAnimation)
             }
             .padding(.horizontal, 10)
         }
-        .navigationTitle(tuple.company.companyName)
+        .navigationTitle(tuple.company.name)
         .navigationBarTitleDisplayMode(.inline)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .blur(radius: openMenu ? 5 : 0)
@@ -212,15 +213,13 @@ struct WorkMenu: View {
                 Button {
                     withAnimation(.spring) {
                         let updateArea = [
-                            "workName": viewModel.workDetails.name.trim(),
-                            "workDescription": viewModel.workDetails.description.trim(),
-                            "remainingBalance": viewModel.workDetails.remainingBalance.toDouble(),
-                            "totalCost": viewModel.workDetails.totalCost.toDouble(),
+                            "name": viewModel.workDetails.name.trim(),
+                            "description": viewModel.workDetails.description.trim(),
+                            "cost": viewModel.workDetails.cost.toDouble(),
                             "startDate": configToDate(startConfig),
                             "endDate": configToDate(endConfig),
                         ]
                         viewModel.updateWork(
-                            companyId: tuple.company.id,
                             workId: tuple.work.id,
                             updateArea: updateArea
                         )
@@ -243,13 +242,12 @@ struct WorkMenu: View {
             }
             else
             {
-                if tuple.work.approve == .approved {
+                if tuple.work.status == .approved {
                     Button {
                         withAnimation(.snappy) {
                             viewModel.updateWork(
-                                companyId: tuple.company.id,
                                 workId: tuple.work.id,
-                                updateArea: ["approve": ApprovalStatus.finished.rawValue]
+                                updateArea: ["status": ApprovalStatus.finished.rawValue]
                             )
                             
                             dismiss()

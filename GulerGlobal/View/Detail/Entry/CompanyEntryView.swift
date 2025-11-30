@@ -15,7 +15,7 @@ struct CompanyEntryView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var formTitle: FormTitle = .none
 
-    var partnerRole: PartnerRole
+    var companyStatus: CompanyStatus
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +23,7 @@ struct CompanyEntryView: View {
 
             CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
             
-            CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.contactNumber, formTitle: $formTitle, keyboardType: .phonePad) {
+            CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.phone, formTitle: $formTitle, keyboardType: .phonePad) {
                 
                 hideKeyboard()
                 
@@ -40,7 +40,7 @@ struct CompanyEntryView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .fullScreenCover(isPresented: $viewModel.isPhonePicker, content: {
-            PhonePickerView(pickerNumber: $viewModel.companyDetails.contactNumber)
+            PhonePickerView(pickerNumber: $viewModel.companyDetails.phone)
                 .onDisappear {
                     formTitle = .none
                 }
@@ -59,7 +59,7 @@ struct CompanyEntryView: View {
             ToolbarItem {
                 Button("Onayla") {
                     withAnimation(.snappy) {
-                        viewModel.companyConfirmation(dismiss: dismiss, partnerRole: partnerRole)
+                        viewModel.companyConfirmation(dismiss: dismiss, companyStatus: companyStatus)
                     }
                 }
                 .foregroundStyle(.isGreen)
@@ -74,7 +74,7 @@ struct TestAddCurrentView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        CompanyEntryView(partnerRole: .current)
+        CompanyEntryView(companyStatus: .current)
             .environmentObject(viewModel)
     }
 }

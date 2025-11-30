@@ -50,7 +50,7 @@ struct WorkEntryView: View {
                 
                 CustomTextField(title: .workDescription, text: $viewModel.workDetails.description, formTitle: $activeField)
                 
-                CustomTextField(title: .workPrice, text: $viewModel.workDetails.totalCost, formTitle: $activeField, keyboardType: .numberPad)
+                CustomTextField(title: .workPrice, text: $viewModel.workDetails.cost, formTitle: $activeField, keyboardType: .numberPad)
                 
                 CustomDatePicker(dateConfig: $startConfig, title: .startDate, formTitle: $activeField)
                     .foregroundStyle(.isText)
@@ -94,23 +94,22 @@ struct WorkEntryView: View {
               !viewModel.workDetails.id.isEmpty,
               !viewModel.workDetails.name.isEmpty,
               !viewModel.workDetails.description.isEmpty,
-              !viewModel.workDetails.totalCost.isEmpty else { return }
+              !viewModel.workDetails.cost.isEmpty else { return }
         
-        viewModel.workDetails.approve = .pending
+        viewModel.workDetails.status = .pending
         
         let newWork = Work(
             id: viewModel.workDetails.id,
-            workName: viewModel.workDetails.name,
-            workDescription: viewModel.workDetails.description,
-            remainingBalance: viewModel.workDetails.totalCost.toDouble(),
-            totalCost: viewModel.workDetails.totalCost.toDouble(),
-            approve: viewModel.workDetails.approve,
-            productList: viewModel.workDetails.productList,
+            companyId: company.id,
+            name: viewModel.workDetails.name,
+            description: viewModel.workDetails.description,
+            cost: viewModel.workDetails.cost.toDouble(),
+            status: viewModel.workDetails.status,
             startDate: configToDate(startConfig),
             endDate: configToDate(endConfig)
         )
         
-        viewModel.createWork(companyId: company.id, work: newWork)
+        viewModel.createWork(work: newWork)
         dismiss()
     }
 }
@@ -137,7 +136,7 @@ struct CompanyPickerView: View {
     @State private var companies: [Company] = []
     
     var title: FormTitle
-    var filter: PartnerRole
+    var filter: CompanyStatus
     @Binding var formTitle: FormTitle
     @Binding var hiddingAnimation: Bool
     @Binding var company: Company?
@@ -168,11 +167,11 @@ struct CompanyPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(companies == [] ? viewModel.companyList.filter { $0.partnerRole == .both || $0.partnerRole == filter} : companies, id: \.self) { c in
-                        Text("-> \(c.companyName)")
+                    ForEach(companies == [] ? viewModel.companyList.filter { $0.status == .both || $0.status == filter} : companies, id: \.self) { c in
+                        Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {
-                                text = c.companyName
+                                text = c.name
                                 company = c
                                 selectedCompany()
                             }
@@ -193,7 +192,7 @@ struct CompanyPickerView: View {
         }
         .onChange(of: isHidden) { _, _ in
             if let company = company {
-                self.text = company.companyName
+                self.text = company.name
             } else {
                 self.text = ""
             }
@@ -210,7 +209,7 @@ struct CompanyPickerView: View {
             self.companies = []
         } else {
             if let searchCompany = viewModel.searchCompanies(by: text) {
-                self.companies = searchCompany.filter { $0.partnerRole == .both || $0.partnerRole == .current}
+                self.companies = searchCompany.filter { $0.status == .both || $0.status == .current}
             }
         }
     }

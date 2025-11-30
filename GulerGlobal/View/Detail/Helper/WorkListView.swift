@@ -45,12 +45,12 @@ struct WorkListView: View {
                         if work.id != "0000" {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
                             WorkCard(company: company , work: work)
-                                .background(work.approve == .finished ? .green : work.approve == .pending ? .yellow : work.approve == .rejected ? .red : .clear)
+                                .background(work.status == .finished ? .green : work.status == .pending ? .yellow : work.status == .rejected ? .red : .clear)
                         }
                         actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 withAnimation(.snappy) {
-                                    viewModel.deleteWork(companyId: company.id, workId: work.id)
+                                    viewModel.deleteWork(workId: work.id)
                                 }
                             }
                         }

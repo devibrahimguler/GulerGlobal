@@ -38,7 +38,7 @@ struct ProductDetailView: View {
                     CustomTextField(title: .productQuantity, text: $viewModel.productDetails.quantity, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                     
-                    CustomTextField(title: .productPrice, text: $viewModel.productDetails.unitPrice, formTitle: $formTitle)
+                    CustomTextField(title: .productPrice, text: $viewModel.productDetails.price, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                 }
                 .scaleEffect(x: isEditProduct ? 0.97 : 1, y: isEditProduct ? 0.97 : 1)
@@ -110,7 +110,7 @@ struct ProductDetailView: View {
         }
         .onAppear {
             viewModel.updateProductDetails(with: product)
-            dateConfig = dateToConfig(viewModel.productDetails.purchased)
+            dateConfig = dateToConfig(viewModel.productDetails.date)
         }
         .onDisappear {
             viewModel.updateProductDetails(with: nil)
@@ -169,12 +169,12 @@ struct ProductMenu: View {
                 Button {
                     withAnimation(.spring) {
                         let updateArea = [
-                            "productName": viewModel.productDetails.name.trim(),
+                            "name": viewModel.productDetails.name.trim(),
                             "quantity": viewModel.productDetails.quantity.toDouble(),
-                            "unitPrice": viewModel.productDetails.unitPrice.toDouble(),
-                            "purchased": configToDate(dateConfig)
+                            "price": viewModel.productDetails.price.toDouble(),
+                            "date": configToDate(dateConfig)
                         ]
-                        viewModel.updateProduct(companyId: companyId, productId: product.id, updateArea: updateArea)
+                        viewModel.updateCompanyProduct(productId: product.id, updateArea: updateArea)
                         
                         formTitle = .none
                         openMenu = false

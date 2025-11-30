@@ -22,6 +22,7 @@ final class MainViewModel: ObservableObject {
     @Published var isUserConnected: Bool = false
     
     @Published var companyList: [Company] = []
+    @Published var works: [Work] = []
     
     @Published var allTasks: [TupleModel] = []
     @Published var pendingTasks: [TupleModel] = []
@@ -52,7 +53,7 @@ final class MainViewModel: ObservableObject {
     // MARK: - Initializer
     init() {
         connectionControl()
-        fetchData()
+        fetchCompanyData()
     }
     
     // MARK: - Public Methods
@@ -60,7 +61,7 @@ final class MainViewModel: ObservableObject {
         isUserConnected = authService.getUid != nil
     }
     
-    func fetchData() {
+    func fetchCompanyData() {
         isLoadingPlaceholder = true
         resetData()
         
@@ -80,6 +81,26 @@ final class MainViewModel: ObservableObject {
         }
     }
     
+    func fetchWorkData() {
+        isLoadingPlaceholder = true
+        resetData()
+        
+        DispatchQueue.main.async {
+            self.firebaseDataService.fetchWorks { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .failure(let error):
+                    print("Fetch error: \(error.localizedDescription)")
+                    self.isLoadingPlaceholder = false
+                    
+                case .success(let works):
+                    self.works = works.sorted(by: { $0.id > $1.id })
+                }
+            }
+        }
+    }
+    
     func generateUniqueID(isWork: Bool = true) -> String {
         let highestID = isWork
         ? allTasks.compactMap {  Int($0.work.id) }.max() ?? 0
@@ -89,12 +110,12 @@ final class MainViewModel: ObservableObject {
     
     func searchCompanies(by name: String) -> [Company]? {
         guard !name.isEmpty else { return nil }
-        return companyList.filter { $0.companyName.lowercased().hasPrefix(name.lowercased()) }
+        return companyList.filter { $0.name.lowercased().hasPrefix(name.lowercased()) }
     }
     
     func searchProducts(by name: String) -> [Product]? {
         guard !name.isEmpty else { return nil }
-        return allProducts.filter { $0.productName.lowercased().hasPrefix(name.lowercased()) }
+        return allProducts.filter { $0.name.lowercased().hasPrefix(name.lowercased()) }
     }
     
     func updateCompanyDetails(with company: Company?) {
@@ -110,104 +131,102 @@ final class MainViewModel: ObservableObject {
     }
     
     func createCompany(company: Company) {
-        guard !companyDetails.name.isEmpty else { return }
         isLoadingPlaceholder = true
         firebaseDataService.saveCompany(company)
-        createWork(companyId: company.id, work: example_Work)
+        fetchCompanyData()
     }
     func updateCompany(companyId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
         firebaseDataService.updateCompany(companyId, updateArea: updateArea)
-        fetchData()
+        fetchCompanyData()
     }
     func deleteCompany(companyId: String) {
         isLoadingPlaceholder = true
         firebaseDataService.deleteCompany(companyId)
-        fetchData()
+        fetchCompanyData()
     }
-    func createWork(companyId: String, work: Work) {
+    func createWork(work: Work) {
         isLoadingPlaceholder = true
-        firebaseDataService.saveWork(companyId, work)
-        fetchData()
+        firebaseDataService.saveWork(work)
+        fetchWorkData()
     }
-    func updateWork(companyId: String, workId: String, updateArea: [String: Any]) {
+    func updateWork(workId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        firebaseDataService.updateWork(companyId, workId, updateArea: updateArea)
-        fetchData()
+        firebaseDataService.updateWork(workId, updateArea: updateArea)
+        fetchWorkData()
     }
-    func deleteWork(companyId: String, workId: String) {
+    func deleteWork(workId: String) {
         isLoadingPlaceholder = true
-        firebaseDataService.deleteWork(companyId, workId)
-        fetchData()
-    }
-    
-    func createProductForWork(companyId: String, workId: String, product: Product) {
-        isLoadingPlaceholder = true
-        firebaseDataService.saveProduct(companyId, workId, product)
-        fetchData()
+        firebaseDataService.deleteWork(workId)
+        fetchWorkData()
     }
     
-    func updateProductForCompany(companyId: String, productId: String, updateArea: [String: Any]) {
+    func createWorkProduct(product: WorkProduct) {
         isLoadingPlaceholder = true
-        firebaseDataService.updateProduct(companyId, nil, productId, updateArea: updateArea)
+        firebaseDataService.saveWorkProduct(product)
+        fetchCompanyData()
     }
     
-    func deleteProductForWork(companyId: String, workId: String, productId: String) {
+    /*
+     func updateCompanyProduct(productId: String, updateArea: [String: Any]) {
+         isLoadingPlaceholder = true
+         firebaseDataService.updateCompanyProduct(productId, updateArea: updateArea)
+     }
+     */
+    
+    func deleteWorkProduct(productId: String) {
         isLoadingPlaceholder = true
-        firebaseDataService.deleteProduct(companyId, workId, productId)
-        fetchData()
+        firebaseDataService.deleteWorkProduct(productId)
+        fetchCompanyData()
     }
-    func createProduct(companyId: String, product: Product) {
+    func createCompanyProduct(product: Product) {
         isLoadingPlaceholder = true
-        firebaseDataService.saveProduct(companyId, nil, product)
+        firebaseDataService.saveCompanyProduct(product)
         
-        let oldPrice = OldPrice(price: product.unitPrice, date: product.purchased)
-        firebaseDataService.saveOldPrice(companyId, product.id, oldPrice)
+         // let _ = OldPrice(price: product.price, date: product.date)
+        // firebaseDataService.saveOldPrice(companyId, product.id, oldPrice)
         
-        fetchData()
+        fetchCompanyData()
     }
-    func updateProduct(companyId: String, productId: String, updateArea: [String: Any]) {
+    func updateCompanyProduct(productId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        firebaseDataService.updateProduct(companyId, nil, productId, updateArea: updateArea)
-        var price: Double?
-        var date: Date?
-        updateArea.forEach {
-            if $0.key == "unitPrice" {
-                price = $0.value as? Double
-            }
-            
-            if $0.key == "purchased" {
-                date = $0.value as? Date
-            }
-        }
-        
-        if let price = price {
-            let oldPrice = OldPrice(price: price, date: date ?? .now)
-            firebaseDataService.saveOldPrice(companyId, productId, oldPrice)
-        }
-        fetchData()
+        firebaseDataService.updateCompanyProduct(productId, updateArea: updateArea)
+        /*
+         var price: Double?
+         var date: Date?
+         updateArea.forEach {
+             if $0.key == "price" {
+                 price = $0.value as? Double
+             }
+             
+             if $0.key == "date" {
+                 date = $0.value as? Date
+             }
+         }
+         
+         if let price = price {
+             let _ = OldPrice(price: price, date: date ?? .now)
+             // firebaseDataService.saveOldPrice(companyId, productId, oldPrice)
+         }
+         */
+        fetchCompanyData()
     }
-    func deleteProduct(companyId: String, productId: String) {
+    func deleteCompanyProduct(productId: String) {
         isLoadingPlaceholder = true
-        firebaseDataService.deleteProduct(companyId,nil , productId)
-        fetchData()
+        firebaseDataService.deleteCompanyProduct(productId)
+        fetchCompanyData()
     }
-    func createStatement(companyId: String, statement: Statement) {
+    func createStatement(statement: Statement) {
         isLoadingPlaceholder = true
-        firebaseDataService.saveStatement(companyId, statement)
+        firebaseDataService.saveStatement(statement)
     }
-    func updateStatement(companyId: String, statementId: String, updateArea: [String: Any]) {
+    func updateStatement(statementId: String, updateArea: [String: Any]) {
         isLoadingPlaceholder = true
-        firebaseDataService.updateStatement(companyId, statementId, updateArea: updateArea)
+        firebaseDataService.updateStatement(statementId, updateArea: updateArea)
     }
-    func deleteStatement(companyId: String, statementId: String) {
+    func deleteStatement(statementId: String) {
         isLoadingPlaceholder = true
-        firebaseDataService.deleteStatement(companyId, statementId)
-    }
-    func deleteOldPrice(companyId: String, productId: String, oldPriceAId: String) {
-        isLoadingPlaceholder = true
-        firebaseDataService.deleteOldPrice(companyId, productId, oldPriceAId)
-        fetchData()
+        firebaseDataService.deleteStatement(statementId)
     }
     
     // MARK: - Private Methods
@@ -230,80 +249,94 @@ final class MainViewModel: ObservableObject {
     private func processCompanies(_ companies: [Company]) {
         self.companyList = companies.sorted(by: { $0.id > $1.id })
         
-        for company in companies {
-            var companyTotalMoney = 0.0
-            var haveMoney = true
-            
-            for statement in company.statements {
-                if statement.status == .input || statement.status == .lend {
-                    companyTotalMoney = companyTotalMoney + statement.amount
-                } else if statement.status == .output || statement.status == .debt {
-                    companyTotalMoney = companyTotalMoney - statement.amount
-                }
-            }
-            let workList = company.workList.sorted(by: { $0.id < $1.id })
-            let finishedWorkList = company.workList.filter { $0.approve == .finished  }
-            
-            for work in finishedWorkList {
-                companyTotalMoney = companyTotalMoney - work.totalCost
-            }
-            
-            for work in workList {
-            
-                if work.approve == .approved {
-                    if companyTotalMoney > 0 && haveMoney {
-                        companyTotalMoney = companyTotalMoney - work.totalCost
-                       
-                    } else {
-                        companyTotalMoney = work.totalCost
-                        haveMoney = false
-                    }
-                }
-                
-                categorizeWork(work, company, companyTotalMoney: companyTotalMoney)
-            }
-            
-            for product in company.productList {
-                allProducts.append(product)
-            }
-            
-        }
+        /*
+         for _ in companies {
         
-        pendingTasks.sort { $0.work.id > $1.work.id }
-        approvedTasks.sort { $0.work.id > $1.work.id }
-        rejectedTasks.sort { $0.work.id > $1.work.id }
-        completedTasks.sort { $0.work.id > $1.work.id }
-        
-        traking = [
-            Tracking(color: .green.opacity(0.85), value: totalRevenue - remainingRevenue),
-            Tracking(color: .red.opacity(0.85), value: remainingRevenue)
-        ]
-        
+             
+             /*
+              
+              var companyTotalMoney = 0.0
+              var haveMoney = true
+              
+              for statement in company.statements {
+                  if statement.status == .input || statement.status == .lend {
+                      companyTotalMoney = companyTotalMoney + statement.amount
+                  } else if statement.status == .output || statement.status == .debt {
+                      companyTotalMoney = companyTotalMoney - statement.amount
+                  }
+              }
+              */
+             /*
+              let workList = company.workList.sorted(by: { $0.id < $1.id })
+              let finishedWorkList = company.workList.filter { $0.approve == .finished  }
+              
+              */
+             /*
+              for work in finishedWorkList {
+                  companyTotalMoney = companyTotalMoney - work.totalCost
+              }
+              
+              for work in workList {
+              
+                  if work.approve == .approved {
+                      if companyTotalMoney > 0 && haveMoney {
+                          companyTotalMoney = companyTotalMoney - work.totalCost
+                         
+                      } else {
+                          companyTotalMoney = work.totalCost
+                          haveMoney = false
+                      }
+                  }
+                  
+                  categorizeWork(work, company, companyTotalMoney: companyTotalMoney)
+              }
+              
+              for product in company.productList {
+                  allProducts.append(product)
+              }
+              */
+             
+         }
+         
+         pendingTasks.sort { $0.work.id > $1.work.id }
+         approvedTasks.sort { $0.work.id > $1.work.id }
+         rejectedTasks.sort { $0.work.id > $1.work.id }
+         completedTasks.sort { $0.work.id > $1.work.id }
+         
+         traking = [
+             Tracking(color: .green.opacity(0.85), value: totalRevenue - remainingRevenue),
+             Tracking(color: .red.opacity(0.85), value: remainingRevenue)
+         ]
+         
+         */
         isLoadingPlaceholder = false
     }
     
     private func categorizeWork(_ work: Work, _ company: Company, companyTotalMoney: Double) {
-        var tuple = TupleModel(company: company, work: work)
+        let tuple = TupleModel(company: company, work: work)
   
         
-        switch work.approve {
-        case .none:
-            return
+        switch work.status {
         case .pending:
             pendingTasks.append(tuple)
         case .approved:
-            var newWork = work
+          
+            /*
+             var newWork = work
 
-            if companyTotalMoney < 0 {
-                newWork.remainingBalance = -companyTotalMoney
-            } else {
-                newWork.remainingBalance = companyTotalMoney
-            }
+             if companyTotalMoney < 0 {
+                 newWork.remainingBalance = -companyTotalMoney
+             } else {
+                 newWork.remainingBalance = companyTotalMoney
+             }
+             
+             tuple = TupleModel(company: company, work: newWork)
+             
+             totalRevenue += work.totalCost
+             remainingRevenue += newWork.remainingBalance
 
-            tuple = TupleModel(company: company, work: newWork)
-            
-            totalRevenue += work.totalCost
-            remainingRevenue += newWork.remainingBalance
+             */
+       
             
             approvedTasks.append(tuple)
         case .rejected:
@@ -335,54 +368,51 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func companyConfirmation(dismiss: DismissAction, partnerRole: PartnerRole) {
+    func companyConfirmation(dismiss: DismissAction, companyStatus: CompanyStatus) {
         guard
             companyDetails.name != "",
             companyDetails.address != ""
         else { return }
         
-        if companyList.first(where: { $0.companyName == companyDetails.name }) != nil {
-            hasAlert = true
-        } else {
-            
-            let companyName = companyDetails.name.trim()
-            let companyAddress = companyDetails.address.trim()
-            let contactNumber = companyDetails.contactNumber
-            
-            let newCompany = Company(
-                id: generateUniqueID(isWork: false),
-                companyName: companyName,
-                companyAddress: companyAddress,
-                contactNumber: contactNumber,
-                partnerRole: partnerRole,
-                workList: [],
-                statements: [],
-                productList: []
-            )
-            
-            createCompany(company: newCompany)
-            dismiss()
-            
-        }
+         if companyList.first(where: { $0.name == companyDetails.name }) != nil {
+             hasAlert = true
+         } else {
+             
+             let name = companyDetails.name.trim()
+             let address = companyDetails.address.trim()
+             let phone = companyDetails.phone
+             
+             let newCompany = Company(
+                 id: generateUniqueID(isWork: false),
+                 name: name,
+                 address: address,
+                 phone: phone,
+                 status: companyStatus,
+             )
+             
+             createCompany(company: newCompany)
+             dismiss()
+             
+         }
     }
     
     func saveUpdates(company: Company) {
-        if companyDetails.name != company.companyName {
-            if companyList.first(where: { $0.companyName == companyDetails.name }) != nil {
+        if companyDetails.name != company.name {
+            if companyList.first(where: { $0.name == companyDetails.name }) != nil {
                 return
             }
         }
         
-        let companyName = companyDetails.name.trim()
-        let companyAddress = companyDetails.address.trim()
-        let contactNumber = companyDetails.contactNumber
-        let partnerRoleRawValue = companyDetails.partnerRole.rawValue
+        let name = companyDetails.name.trim()
+        let address = companyDetails.address.trim()
+        let phone = companyDetails.phone
+        let status = companyDetails.status
         
-        let updateArea = [
-            "companyName": companyName,
-            "companyAddress": companyAddress,
-            "contactNumber": contactNumber,
-            "partnerRole": partnerRoleRawValue
+        let updateArea: [String : Any] = [
+            "name": name,
+            "address": address,
+            "phone": phone,
+            "status": status
         ]
         
         updateCompany(companyId: company.id, updateArea: updateArea)
@@ -395,16 +425,16 @@ final class MainViewModel: ObservableObject {
 struct CompanyDetails {
     var name: String = ""
     var address: String = ""
-    var contactNumber: String = ""
-    var partnerRole: PartnerRole = .none
+    var phone: String = ""
+    var status: CompanyStatus = .current
     
     init() {}
     
     init(from company: Company?) {
-        name = company?.companyName ?? ""
-        address = company?.companyAddress ?? ""
-        contactNumber = company?.contactNumber ?? ""
-        partnerRole = company?.partnerRole ?? .none
+        name = company?.name ?? ""
+        address = company?.address ?? ""
+        phone = company?.phone ?? ""
+        status = company?.status ?? .current
     }
 }
 
@@ -412,9 +442,8 @@ struct WorkDetails {
     var id: String = ""
     var name: String = ""
     var description: String = ""
-    var remainingBalance: String = ""
-    var totalCost: String = ""
-    var approve: ApprovalStatus = .none
+    var cost: String = ""
+    var status: ApprovalStatus = .pending
     var productList: [Product] = []
     var startDate: Date = .now
     var endDate: Date = .now
@@ -424,11 +453,10 @@ struct WorkDetails {
     
     init(from work: Work?) {
         id = work?.id ?? ""
-        name = work?.workName ?? ""
-        description = work?.workDescription ?? ""
-        remainingBalance = "\(work?.remainingBalance ?? 0)"
-        totalCost = "\(work?.totalCost ?? 0)"
-        approve = work?.approve ?? .none
+        name = work?.name ?? ""
+        description = work?.description ?? ""
+        cost = "\(work?.cost ?? 0)"
+        status = work?.status ?? .pending
         startDate = work?.startDate ?? .now
         endDate = work?.endDate ?? .now
     }
@@ -449,19 +477,19 @@ struct StatementDetails {
 struct ProductDetails {
     var supplier: String = ""
     var name: String = ""
-    var unitPrice: String = ""
+    var price: String = ""
     var quantity: String = ""
-    var purchased: Date = .now
+    var date: Date = .now
     var oldPrices: [OldPrice] = []
     
     init() {}
     
     init(from product: Product?) {
-        supplier = product?.supplier ?? ""
-        name = product?.productName ?? ""
+        name = product?.name ?? ""
         quantity = "\(product?.quantity ?? 0)"
-        unitPrice = "\(product?.unitPrice ?? 0)"
-        purchased = product?.purchased ?? .now
+        price = "\(product?.price ?? 0)"
+        date = product?.date ?? .now
+        oldPrices = product?.oldPrices ?? []
     }
 }
 

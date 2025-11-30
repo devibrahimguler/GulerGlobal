@@ -17,7 +17,7 @@ struct CompanyCard: View {
             VStack(alignment: .leading, spacing: 5) {
                 
                 Label {
-                    Text("\(company.companyName)")
+                    Text("\(company.name)")
                         .font(.headline)
                         .fontWeight(.bold)
                 } icon: {
@@ -27,7 +27,7 @@ struct CompanyCard: View {
                 .lineLimit(1)
                 
                 Label {
-                    Text("\(company.companyAddress)")
+                    Text("\(company.address)")
                         .font(.caption)
                         .fontWeight(.bold)
                 } icon: {
@@ -48,7 +48,7 @@ struct CompanyCard: View {
     }
     
     private var companyInitials: some View {
-        Text(String(company.companyName.prefix(1)))
+        Text(String(company.name.prefix(1)))
             .font(.title)
             .foregroundStyle(.black.gradient)
             .frame(width: 45, height: 45)

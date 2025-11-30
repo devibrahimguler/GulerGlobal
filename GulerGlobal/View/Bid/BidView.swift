@@ -33,18 +33,16 @@ struct BidView: View {
                     actions: {
                         Action(tint: .red, icon: "xmark.bin") {
                             viewModel.updateWork(
-                                companyId: company.id,
                                 workId: work.id,
-                                updateArea: ["approve": ApprovalStatus.rejected.rawValue,]
+                                updateArea: ["approve": ApprovalStatus.rejected]
                             )
                         }
                         
                         Action(tint: .green, icon: "checkmark.square") {
                             withAnimation(.snappy) {
                                 viewModel.updateWork(
-                                    companyId: company.id,
                                     workId: work.id,
-                                    updateArea: ["approve": ApprovalStatus.approved.rawValue]
+                                    updateArea: ["approve": ApprovalStatus.approved]
                                 )
                             }
                         }

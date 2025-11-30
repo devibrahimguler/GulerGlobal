@@ -21,7 +21,7 @@ struct CompanyDetailView: View {
     @State private var hiddingAnimation: Bool = false
     
     var company: Company
-    var partnerRole: PartnerRole
+    var companyStatus: CompanyStatus
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -34,7 +34,7 @@ struct CompanyDetailView: View {
                     CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.contactNumber, formTitle: $formTitle)
+                    CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.phone, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
                 }
@@ -50,19 +50,19 @@ struct CompanyDetailView: View {
                             .fontWeight(.semibold)
                         
                         HStack {
-                            ForEach(PartnerRole.allCases, id: \.self) { i in
+                            ForEach(CompanyStatus.allCases, id: \.self) { i in
                                 let value = cashRoleValue(i)
                                 if value != "" {
                                     Text(value)
-                                        .foregroundStyle(.isText)
+                                        .foregroundStyle(.white)
                                         .padding(5)
                                         .frame(maxWidth: .infinity)
                                         .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                                        .background(viewModel.companyDetails.partnerRole == i ? Color.blue.opacity(0.5) : Color.red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+                                        .background(viewModel.companyDetails.status == i ? Color.blue.opacity(0.5) : Color.red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
                                         .onTapGesture {
-                                            viewModel.companyDetails.partnerRole = i
+                                            viewModel.companyDetails.status = i
                                         }
-                                        .animation(.bouncy, value: viewModel.companyDetails.partnerRole)
+                                        .animation(.bouncy, value: viewModel.companyDetails.status)
                                     
                                     
                                 }
@@ -74,44 +74,46 @@ struct CompanyDetailView: View {
                     .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 }
                 
-                VStack(spacing: 10) {
-                    let workList = company.workList.sorted { $0.id > $1.id }
-                    let productList = viewModel.allProducts.filter { $0.supplier == company.companyName }
-                    let statementList = company.statements.sorted { $0.date > $1.date }
-                    
-                    if company.workList.count > 1 {
-                        WorkListView(
-                            title: "İş Listesi",
-                            list: workList,
-                            company: company,
-                            hiddingAnimation: $hiddingAnimation
-                        )
-                        .environmentObject(viewModel)
-                    }
-                    
-                    if !statementList.isEmpty {
-                        StatementListView (
-                            title: "Finans Kayıtları",
-                            list: statementList,
-                            company: company,
-                            hiddingAnimation: $hiddingAnimation
-                        )
-                        .environmentObject(viewModel)
-                    }
-                    
-                    if !productList.isEmpty {
-                        ProductListView(
-                            title: "Malzeme Listesi",
-                            list: productList,
-                            company: company,
-                            isSupplier: true,
-                            hiddingAnimation: $hiddingAnimation
-                        )
-                        .environmentObject(viewModel)
-                    }
-                    
-                }
-                .opacity(isEditCompany ? 0 : 1)
+                /*
+                 VStack(spacing: 10) {
+                     let workList = company.workList.sorted { $0.id > $1.id }
+                     let productList = viewModel.allProducts.filter { $0.id == company.id }
+                     let statementList = company.statements.sorted { $0.date > $1.date }
+                     
+                     if company.workList.count > 1 {
+                         WorkListView(
+                             title: "İş Listesi",
+                             list: workList,
+                             company: company,
+                             hiddingAnimation: $hiddingAnimation
+                         )
+                         .environmentObject(viewModel)
+                     }
+                     
+                     if !statementList.isEmpty {
+                         StatementListView (
+                             title: "Finans Kayıtları",
+                             list: statementList,
+                             company: company,
+                             hiddingAnimation: $hiddingAnimation
+                         )
+                         .environmentObject(viewModel)
+                     }
+                     
+                     if !productList.isEmpty {
+                         ProductListView(
+                             title: "Malzeme Listesi",
+                             list: productList,
+                             company: company,
+                             isSupplier: true,
+                             hiddingAnimation: $hiddingAnimation
+                         )
+                         .environmentObject(viewModel)
+                     }
+                     
+                 }
+                 .opacity(isEditCompany ? 0 : 1)
+                 */
                 
             }
             .padding(.horizontal, 10)
@@ -156,10 +158,8 @@ struct CompanyDetailView: View {
         
     }
     
-    func cashRoleValue(_ value: PartnerRole) -> String {
+    func cashRoleValue(_ value: CompanyStatus) -> String {
         switch value {
-        case .none:
-            return ""
         case .current:
             return "Cari"
         case .supplier:
@@ -176,7 +176,7 @@ struct TestDetailView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        CompanyDetailView(company: example_TupleModel.company, partnerRole: .supplier)
+        CompanyDetailView(company: example_TupleModel.company, companyStatus: .supplier)
             .environmentObject(viewModel)
     }
 }
@@ -230,7 +230,7 @@ struct CompanyMenu: View {
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 .padding(.horizontal, 20)
             } else {
-                if company.partnerRole == .supplier || company.partnerRole == .both {
+                if company.status == .supplier || company.status == .both {
                     NavigationLink {
                         ProductEntryView(company: company, workId: nil, isSupplier: true)
                             .environmentObject(viewModel)

@@ -40,12 +40,12 @@ struct CustomTabBar: View {
             
             Tab(TabValue.Search.rawValue, systemImage: TabValue.Search.symbolImage, value: TabValue.Search, role: .search) {
                 NavigationStack {
-                    let list = viewModel.companyList.filter { $0.companyName.hasPrefix(searchText)}
+                    let list = viewModel.companyList.filter { $0.name.hasPrefix(searchText)}
                     BaseList(isEmpty: list.isEmpty) {
                         ForEach(list, id: \.self) { company in
                             LazyVStack(spacing: 0) {
                                 NavigationLink {
-                                    CompanyDetailView(company: company, partnerRole: .supplier)
+                                    CompanyDetailView(company: company, companyStatus: .supplier)
                                         .environmentObject(viewModel)
                                         .toolbar(.hidden, for: .tabBar)
                                 } label: {

@@ -41,7 +41,7 @@ struct ProductEntryView: View {
                 if workId != nil {
                     if let company = company {
                         ProductPickerView(
-                            supplier: company.companyName,
+                            companyId: company.id,
                             title: .productName,
                             formTitle: $activeField,
                             hiddingAnimation: $hiddingAnimation,
@@ -55,7 +55,7 @@ struct ProductEntryView: View {
                 CustomTextField(title: .productQuantity, text: $viewModel.productDetails.quantity, formTitle: $activeField, keyboardType: .numberPad)
                 
                 if isSupplier {
-                    CustomTextField(title: .productPrice, text: $viewModel.productDetails.unitPrice, formTitle: $activeField, keyboardType: .numberPad)
+                    CustomTextField(title: .productPrice, text: $viewModel.productDetails.price, formTitle: $activeField, keyboardType: .numberPad)
                 }
                 
                 CustomDatePicker(dateConfig: $config, title: .productPurchased, formTitle: $activeField)
@@ -70,7 +70,7 @@ struct ProductEntryView: View {
         .background(colorScheme == .light ? Color.gray.opacity(0.2) : Color.white.opacity(0.2))
         .animation(.snappy, value: activeField)
         .onAppear {
-            config = dateToConfig(viewModel.productDetails.purchased)
+            config = dateToConfig(viewModel.productDetails.date)
         }
         .onDisappear {
             viewModel.updateProductDetails(with: nil)
@@ -92,26 +92,23 @@ struct ProductEntryView: View {
         guard !viewModel.productDetails.quantity.isEmpty,
               let workId = workId,
               let product = product,
-              let company = company,
-        let companyId = companyId else { return }
+              let _ = company,
+        let _ = companyId else { return }
         
-        let newProduct = Product(
-            id: product.id,
-            supplierId: company.id,
-            supplier: company.companyName,
-            productName: product.productName,
+        let workProduct = WorkProduct(
+            workId: workId,
+            productId: product.id,
             quantity: viewModel.productDetails.quantity.toDouble(),
-            unitPrice: product.unitPrice,
-            oldPrices: viewModel.productDetails.oldPrices,
-            purchased: configToDate(config)
+            date: .now
         )
         let quantity = product.quantity - viewModel.productDetails.quantity.toDouble()
+        // let oldPrices = viewModel.productDetails.oldPrices
         let updateArea = [
             "quantity": quantity,
         ]
         
-        viewModel.updateProductForCompany(companyId: company.id, productId: product.id, updateArea: updateArea)
-        viewModel.createProductForWork(companyId: companyId, workId: workId, product: newProduct)
+        viewModel.updateCompanyProduct(productId: product.id, updateArea: updateArea)
+        viewModel.createWorkProduct(product: workProduct)
         
         dismiss()
     }
@@ -119,20 +116,19 @@ struct ProductEntryView: View {
     private func companySubmission() {
         guard !viewModel.productDetails.name.isEmpty,
               !viewModel.productDetails.quantity.isEmpty,
-              !viewModel.productDetails.unitPrice.isEmpty,
+              !viewModel.productDetails.price.isEmpty,
               let company = company else { return }
         
         let newProduct = Product(
-            supplierId: company.id,
-            supplier: company.companyName,
-            productName: viewModel.productDetails.name,
+            companyId: company.id,
+            name: viewModel.productDetails.name,
             quantity: viewModel.productDetails.quantity.toDouble(),
-            unitPrice: viewModel.productDetails.unitPrice.toDouble(),
+            price: viewModel.productDetails.price.toDouble(),
+            date: configToDate(config),
             oldPrices: viewModel.productDetails.oldPrices,
-            purchased: configToDate(config)
         )
         
-        viewModel.createProduct(companyId: company.id, product: newProduct)
+        viewModel.createCompanyProduct(product: newProduct)
         
         dismiss()
     }
@@ -165,7 +161,7 @@ struct ProductPickerView: View {
     @State private var text: String = ""
     @State private var products: [Product] = []
     
-    var supplier: String
+    var companyId: String
     var title: FormTitle
     @Binding var formTitle: FormTitle
     @Binding var hiddingAnimation: Bool
@@ -197,11 +193,11 @@ struct ProductPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.allProducts.filter { $0.supplier == supplier }, id: \.self) { c in
-                        Text("-> \(c.productName)")
+                    ForEach(viewModel.allProducts.filter { $0.companyId == companyId }, id: \.self) { c in
+                        Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {
-                                text = c.productName
+                                text = c.name
                                 product = c
                                 selectedCompany()
                             }
@@ -222,7 +218,7 @@ struct ProductPickerView: View {
         }
         .onChange(of: isHidden) { _, _ in
             if let product = product {
-                self.text = product.productName
+                self.text = product.name
             } else {
                 self.text = ""
             }
@@ -239,7 +235,7 @@ struct ProductPickerView: View {
             self.products = []
         } else {
             if let searchProduct = viewModel.searchProducts(by: text) {
-                self.products = searchProduct.filter { $0.supplier == supplier }
+                self.products = searchProduct.filter { $0.companyId == companyId }
             }
         }
     }

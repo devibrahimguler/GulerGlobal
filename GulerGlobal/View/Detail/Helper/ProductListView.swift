@@ -49,7 +49,7 @@ struct ProductListView: View {
                                 .onAppear {
                                     isReset.toggle()
                                 }
-                                .navigationTitle(company.companyName)
+                                .navigationTitle(company.name)
                                 .environmentObject(viewModel)
                         } label: {
                             SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
@@ -59,21 +59,20 @@ struct ProductListView: View {
                                 Action(tint: .red, icon: "trash.fill") {
                                     withAnimation(.snappy) {
                                         if isSupplier {
-                                            viewModel.deleteProduct(
-                                                companyId: company.id,
+                                            viewModel.deleteCompanyProduct(
                                                 productId: product.id
                                             )
                                         } else {
-                                            if let workId = workId,
-                                               let companyProduct = viewModel.allProducts.first(where: { $0.supplierId == product.supplierId }) {
+                                            if let _ = workId,
+                                               let companyProduct = viewModel.allProducts.first(where: { $0.companyId == product.companyId }) {
                                                 
                                                 let quantity = companyProduct.quantity + product.quantity
                                                 let updateArea = [
                                                     "quantity": quantity,
                                                 ]
                                                 
-                                                viewModel.updateProductForCompany(companyId: product.supplierId, productId: product.id, updateArea: updateArea)
-                                                viewModel.deleteProductForWork(companyId: company.id, workId: workId, productId: product.id)
+                                                viewModel.updateCompanyProduct(productId: product.id, updateArea: updateArea)
+                                                viewModel.deleteWorkProduct(productId: product.id)
                                                 
                                                 dismiss()
                                             }
@@ -121,14 +120,14 @@ struct Test_ProductListView: View {
 
 var example_Work = Work(
     id: "0000",
-    workName: "Company Work",
-    workDescription: "Company Work",
-    remainingBalance: 0,
-    totalCost: 0,
-    approve: .none,
-    productList: example_ProductList,
+    companyId: "1",
+    name: "Company Work",
+    description: "Company Work",
+    cost: 0,
+    status: .pending,
     startDate: .now,
-    endDate: .now
+    endDate: .now,
+    products: example_WorkProductList,
 )
 
 var example_WorkList = [
@@ -137,13 +136,10 @@ var example_WorkList = [
 
 var example_Company = Company(
     id: "0",
-    companyName: "GulerGlobal",
-    companyAddress: "Burhaniye mahallesi, Ali galip sokak no: 9",
-    contactNumber: "(554) 170 16 35",
-    partnerRole: .current,
-    workList: example_WorkList,
-    statements: example_StatementList,
-    productList: example_ProductList
+    name: "GulerGlobal",
+    address: "Burhaniye mahallesi, Ali galip sokak no: 9",
+    phone: "(554) 170 16 35",
+    status: .current
 )
 
 var example_TupleModel = TupleModel(
@@ -153,13 +149,13 @@ var example_TupleModel = TupleModel(
 
 var example_Product = Product(
     id: "0001",
-    supplierId: "47",
-    supplier: "Arıkan Metal",
-    productName: "30x20x1.5 Profil",
+    companyId: "47",
+    name: "30x20x1.5 Profil",
     quantity: 100,
-    unitPrice: 300,
-    oldPrices: example_OldPriceList,
-    purchased: .now)
+    price: 300,
+    date: .now,
+    oldPrices: example_OldPriceList
+)
 
 var example_ProductList = [
     example_Product,
@@ -168,17 +164,36 @@ var example_ProductList = [
     example_Product,
     example_Product,
 ]
+
+var example_WorkProduct = WorkProduct(
+    id: "0001",
+    workId: "47",
+    productId: "47",
+    quantity: 100,
+    date: .now
+)
+
+var example_WorkProductList = [
+    example_WorkProduct,
+    example_WorkProduct,
+    example_WorkProduct,
+    example_WorkProduct,
+    example_WorkProduct,
+]
+
+
 var example_StatementList = [
-    Statement(amount: 1000, date: .now, status: .input),
-    Statement(amount: 1000, date: .now, status: .input),
-    Statement(amount: 1000, date: .now, status: .input),
-    Statement(amount: 1000, date: .now, status: .input),
-    Statement(amount: 1000, date: .now, status: .input),
-    Statement(amount: 1000, date: .now, status: .output),
-    Statement(amount: 1000, date: .now, status: .output),
-    Statement(amount: 1000, date: .now, status: .output),
-    Statement(amount: 1000, date: .now, status: .output),
-    Statement(amount: 1000, date: .now, status: .output),
+    Statement(id: "1", companyId: "1", amount: 1000, date: .now, status: .input),
+    Statement(id: "2", companyId: "1", amount: 1000, date: .now, status: .input),
+    Statement(id: "3", companyId: "1", amount: 1000, date: .now, status: .input),
+    Statement(id: "4", companyId: "1", amount: 1000, date: .now, status: .input),
+    Statement(id: "5", companyId: "1", amount: 1000, date: .now, status: .input),
+    Statement(id: "6", companyId: "1", amount: 1000, date: .now, status: .output),
+    Statement(id: "7", companyId: "1", amount: 1000, date: .now, status: .output),
+    Statement(id: "8", companyId: "1", amount: 1000, date: .now, status: .output),
+    Statement(id: "9", companyId: "1", amount: 1000, date: .now, status: .output),
+    Statement(id: "10", companyId: "1", amount: 1000, date: .now, status: .output)
+    
 ]
 
 var example_OldPriceList = [

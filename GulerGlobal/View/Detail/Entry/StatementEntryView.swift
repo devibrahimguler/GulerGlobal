@@ -82,13 +82,14 @@ struct StatementEntryView: View {
             !viewModel.statementDetails.amount.isEmpty
         else { return }
         let statement = Statement(
+            companyId: company.id,
             amount: viewModel.statementDetails.amount.toDouble(),
             date: configToDate(config),
             status: status
         )
         
-        viewModel.createStatement(companyId: company.id, statement: statement)
-        viewModel.fetchData()
+        viewModel.createStatement(statement: statement)
+        viewModel.fetchCompanyData()
         
         dismiss()
 

@@ -24,7 +24,7 @@ struct WorkCard: View {
     }
     
     private var companyInitials: some View {
-        Text(String(company.companyName.prefix(1)))
+        Text(String(company.name.prefix(1)))
             .font(.title)
             .foregroundStyle(.black.gradient)
             .frame(width: 45, height: 45)
@@ -33,11 +33,11 @@ struct WorkCard: View {
     
     private var companyDetails: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(company.companyName)
+            Text(company.name)
                 .fontWeight(.bold)
                 .foregroundStyle(.isText)
             
-            Text(work.workName)
+            Text(work.name)
                 .font(.caption)
                 .foregroundStyle(.gray)
         }
@@ -51,13 +51,13 @@ struct WorkCard: View {
                 .foregroundStyle(.isText)
             
             Label {
-                Text(work.approve == .approved ? "\(work.remainingBalance.customDouble())" : "\(work.totalCost.customDouble())")
+                Text(work.status == .approved ? /* "\(work.remainingBalance.customDouble())" */ "" : "\(work.cost.customDouble())")
             } icon: {
                 Image(systemName: "turkishlirasign")
             }
             .font(.headline)
             .fontWeight(.black)
-            .foregroundStyle(work.approve == .approved ? .red.opacity(0.7) : .blue.opacity(0.7))
+            .foregroundStyle(work.status == .approved ? .red.opacity(0.7) : .blue.opacity(0.7))
         }
     }
 }

@@ -12,11 +12,11 @@ struct CurrentView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        let list = viewModel.companyList.filter { $0.partnerRole == .current || $0.partnerRole == .both }
+        let list = viewModel.companyList.filter { $0.status == .current || $0.status == .both }
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 NavigationLink {
-                    CompanyDetailView(company: company, partnerRole: .current)
+                    CompanyDetailView(company: company, companyStatus: .current)
                         .environmentObject(viewModel)
                 } label: {
                     SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
@@ -31,7 +31,7 @@ struct CurrentView: View {
         }
         .toolbar {
             NavigationLink {
-                CompanyEntryView(partnerRole: .current)
+                CompanyEntryView(companyStatus: .current)
                     .navigationTitle("Cari Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {

@@ -14,12 +14,12 @@ struct ProductCard: View {
     var isSupplier: Bool
     
     var body: some View {
-        let totalPrice = Double(product.quantity) * Double(product.unitPrice)
+        let totalPrice = Double(product.quantity) * Double(product.price)
         
         VStack(spacing: 0) {
             // Suggestion Title
             if !isSupplier {
-                Text(product.supplier)
+                Text(product.companyId)
                     .padding(5)
                     .frame(maxWidth: .infinity)
                     .font(.callout)
@@ -31,11 +31,11 @@ struct ProductCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     productInfoLabel(
-                        title: product.productName,
+                        title: product.name,
                         icon: Image(systemName: "character.textbox"))
                     
                     productInfoLabel(
-                        title: product.purchased.getStringDate(.short),
+                        title: product.date.getStringDate(.short),
                         fontSize: .caption2,
                         icon: Image(systemName: "calendar"))
                 }
@@ -48,7 +48,7 @@ struct ProductCard: View {
                         icon: Image(systemName: "shippingbox.fill"))
                     
                     productInfoLabel(
-                        title: product.unitPrice.customDouble(),
+                        title: product.price.customDouble(),
                         icon:Image(systemName: "turkishlirasign"))
                     
                     if !isSupplier {

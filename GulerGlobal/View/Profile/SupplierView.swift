@@ -12,12 +12,12 @@ struct SupplierView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        let list = viewModel.companyList.filter { $0.partnerRole == .supplier || $0.partnerRole == .both}
+        let list = viewModel.companyList.filter { $0.status == .supplier || $0.status == .both}
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        CompanyDetailView(company: company, partnerRole: .supplier)
+                        CompanyDetailView(company: company, companyStatus: .supplier)
                             .environmentObject(viewModel)
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
@@ -33,7 +33,7 @@ struct SupplierView: View {
         }
         .toolbar {
             NavigationLink {
-                CompanyEntryView(partnerRole: .supplier)
+                CompanyEntryView(companyStatus: .supplier)
                     .navigationTitle("Tedarikçi Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
