@@ -14,13 +14,13 @@ struct ApprovedView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        BaseList(isEmpty: viewModel.approvedTasks.isEmpty) {
-            ForEach(viewModel.approvedTasks, id: \.self) { tuple in
-                let company = tuple.company
-                let work = tuple.work
+        let approvedes = viewModel.works.filter({ $0.status == .approved })
+        BaseList(isEmpty: approvedes.isEmpty) {
+            ForEach(approvedes, id: \.self) { work in
+                let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        WorkDetailView(tuple: tuple)
+                        WorkDetail(work: work, company: company)
                             .environmentObject(viewModel)
                             .onAppear {
                                 isReset.toggle()
@@ -32,9 +32,9 @@ struct ApprovedView: View {
                         }
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
-                                viewModel.updateWork(
+                                viewModel.workUpdate(
                                     workId: work.id,
-                                    updateArea: ["status": ApprovalStatus.rejected]
+                                    updateArea: ["status": ApprovalStatus.rejected.rawValue]
                                 )
                             }
                         }

@@ -12,15 +12,15 @@ struct BidView: View {
     
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
-    @State private var company: Company?
+    var company: Company?
     
     var body: some View {
-        BaseList(isEmpty: viewModel.pendingTasks.isEmpty) {
-            ForEach(viewModel.pendingTasks, id: \.self) { tuple in
-                let company = tuple.company
-                let work = tuple.work
+        let pendinges = viewModel.works.filter({ $0.status == .pending })
+        BaseList(isEmpty: pendinges.isEmpty) {
+            ForEach(pendinges, id: \.self) { work in
+                let company = viewModel.getCompanyById(work.companyId)
                 NavigationLink {
-                    WorkDetailView(tuple: tuple)
+                    WorkDetail(work: work, company: company)
                         .environmentObject(viewModel)
                         .onAppear {
                             isReset.toggle()
@@ -32,35 +32,21 @@ struct BidView: View {
                     }
                     actions: {
                         Action(tint: .red, icon: "xmark.bin") {
-                            viewModel.updateWork(
+                            viewModel.workUpdate(
                                 workId: work.id,
-                                updateArea: ["approve": ApprovalStatus.rejected]
+                                updateArea: ["status": ApprovalStatus.rejected.rawValue]
                             )
                         }
                         
                         Action(tint: .green, icon: "checkmark.square") {
                             withAnimation(.snappy) {
-                                viewModel.updateWork(
+                                viewModel.workUpdate(
                                     workId: work.id,
-                                    updateArea: ["approve": ApprovalStatus.approved]
+                                    updateArea: ["status": ApprovalStatus.approved.rawValue]
                                 )
                             }
                         }
                     }
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    WorkEntryView(company: $company)
-                        .environmentObject(viewModel)
-                        .navigationTitle("Teklif Ekle")
-                        .toolbar(.hidden, for: .tabBar)
-                } label: {
-                    Text("Ekle")
-                        .foregroundStyle(.isGreen)
-                        .font(.system(size: 14, weight: .black, design: .monospaced))
                 }
             }
         }
@@ -74,15 +60,13 @@ struct TestBidView: View {
         BidView()
             .environmentObject(viewModel)
             .onAppear {
-                viewModel.companyList = [
+                viewModel.companies = [
                     example_TupleModel.company
                 ]
-                viewModel.allTasks = [
-                    example_TupleModel
+                viewModel.works = [
+                    example_Work
                 ]
-                viewModel.pendingTasks = [
-                    example_TupleModel
-                ]
+
             }
     }
 }

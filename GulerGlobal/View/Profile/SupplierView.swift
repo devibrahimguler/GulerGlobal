@@ -12,19 +12,29 @@ struct SupplierView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        let list = viewModel.companyList.filter { $0.status == .supplier || $0.status == .both}
+        let list = viewModel.companies.filter { $0.status == .supplier || $0.status == .both}
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        CompanyDetailView(company: company, companyStatus: .supplier)
+                        CompanyDetail(company: company, companyStatus: .supplier)
                             .environmentObject(viewModel)
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
                             CompanyCard(company: company)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {
-                                viewModel.deleteCompany(companyId: company.id)
+                                let statementIds = viewModel.statements.filter { $0.companyId == company.id }.map { $0.id }
+                                if statementIds.count > 0 {
+                                    viewModel.multipleStatementDelete(statementIds: statementIds)
+                                }
+                                
+                                let productIds = viewModel.companyProducts.filter { $0.companyId == company.id }.map { $0.id }
+                                if productIds.count > 0 {
+                                    viewModel.multipleCompanyProductDelete(productIds: productIds)
+                                }
+                                
+                                viewModel.companyDelete(companyId: company.id)
                             }
                         }
                     }
@@ -33,7 +43,7 @@ struct SupplierView: View {
         }
         .toolbar {
             NavigationLink {
-                CompanyEntryView(companyStatus: .supplier)
+                CompanyEntry(companyStatus: .supplier)
                     .navigationTitle("Tedarikçi Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {

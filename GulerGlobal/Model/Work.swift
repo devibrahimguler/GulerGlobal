@@ -7,24 +7,14 @@
 
 import SwiftUI
 
-/*
- struct Work: Identifiable, Codable, Hashable {
-     var id: String
-     var workName: String
-     var workDescription: String
-     var remainingBalance: Double
-     var totalCost: Double
-     var approve: ApprovalStatus
-     var productList: [Product]
-     var startDate: Date
-     var endDate: Date
- }
-
- enum ApprovalStatus: String, Codable {
-     case none = ""
-     case approved = "Approved"
-     case pending = "Pending"
-     case rejected = "Rejected"
-     case finished = "Finished"
- }
- */
+struct Work: Identifiable, Codable, Hashable {
+    var id: String
+    var companyId: String
+    var name: String
+    var description: String
+    var cost: Double
+    var left: Double
+    var status: ApprovalStatus
+    var startDate: Date
+    var endDate: Date
+}

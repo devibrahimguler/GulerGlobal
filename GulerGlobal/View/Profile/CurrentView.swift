@@ -12,18 +12,28 @@ struct CurrentView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        let list = viewModel.companyList.filter { $0.status == .current || $0.status == .both }
+        let list = viewModel.companies.filter { $0.status == .current || $0.status == .both }
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 NavigationLink {
-                    CompanyDetailView(company: company, companyStatus: .current)
+                    CompanyDetail(company: company, companyStatus: .current)
                         .environmentObject(viewModel)
                 } label: {
                     SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
                         CompanyCard(company: company)
                     } actions: {
                         Action(tint: .red, icon: "trash.fill") {
-                            viewModel.deleteCompany(companyId: company.id)
+                            let statementIds = viewModel.statements.filter { $0.companyId == company.id }.map { $0.id }
+                            if statementIds.count > 0 {
+                                viewModel.multipleStatementDelete(statementIds: statementIds)
+                            }
+                            
+                            let workIds = viewModel.works.filter { $0.companyId == company.id }.map { $0.id }
+                            if workIds.count > 0 {
+                                viewModel.multipleWorkDelete(workIds: workIds)
+                            }
+                            
+                            viewModel.companyDelete(companyId: company.id)
                         }
                     }
                 }
@@ -31,7 +41,7 @@ struct CurrentView: View {
         }
         .toolbar {
             NavigationLink {
-                CompanyEntryView(companyStatus: .current)
+                CompanyEntry(companyStatus: .current)
                     .navigationTitle("Cari Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {

@@ -40,5 +40,5 @@ struct StatementCard: View {
 }
 
 #Preview {
-    StatementCard(statement: example_StatementList[0])
+    StatementCard(statement: example_Statement)
 }

@@ -2,13 +2,12 @@
 //  StatementStatus.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 22.10.2025.
+//  Created by ibrahim on 7.12.2025.
 //
 
 import SwiftUI
 
 enum StatementStatus: String, Codable {
-    case none = ""
     case input = "input"
     case output = "output"
     case debt = "debt"

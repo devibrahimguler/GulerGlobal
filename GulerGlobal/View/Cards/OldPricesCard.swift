@@ -39,5 +39,5 @@ struct OldPricesCard: View {
 }
 
 #Preview {
-    OldPricesCard(oldPrice: example_OldPriceList[0])
+    OldPricesCard(oldPrice: example_OldPrice)
 }

@@ -51,7 +51,7 @@ struct WorkCard: View {
                 .foregroundStyle(.isText)
             
             Label {
-                Text(work.status == .approved ? /* "\(work.remainingBalance.customDouble())" */ "" : "\(work.cost.customDouble())")
+                Text(work.status == .approved ? "\(work.left.customDouble())" : "\(work.cost.customDouble())")
             } icon: {
                 Image(systemName: "turkishlirasign")
             }
@@ -62,7 +62,7 @@ struct WorkCard: View {
     }
 }
 
-struct TestCard: View {
+struct Test_WorkCard: View {
     let tuple = example_TupleModel
     
     var body: some View {
@@ -73,5 +73,5 @@ struct TestCard: View {
 }
 
 #Preview {
-    TestCard()
+    Test_WorkCard()
 }

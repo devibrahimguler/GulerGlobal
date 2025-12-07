@@ -56,7 +56,7 @@ struct CompanyCard: View {
     }
 }
 
-struct TestCompanyCard: View {
+struct Test_CompanyCard: View {
     var body: some View {
         CompanyCard (
             company: example_TupleModel.company
@@ -65,5 +65,5 @@ struct TestCompanyCard: View {
 }
 
 #Preview {
-    TestCompanyCard()
+    Test_CompanyCard()
 }

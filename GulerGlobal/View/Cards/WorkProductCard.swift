@@ -1,41 +1,48 @@
 //
-//  ProductCard.swift
+//  WorkProductCard.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 10.08.2024.
+//  Created by ibrahim on 7.12.2025.
 //
 
 import SwiftUI
 
-struct ProductCard: View {
+struct WorkProductCard: View {
+    @EnvironmentObject var viewModel: MainViewModel
     @Environment(\.colorScheme) private var colorScheme
     
-    var product: Product
-    var isSupplier: Bool
+    var workProduct: WorkProduct
+    
+    var companyProduct: CompanyProduct {
+        viewModel.getCompanyProductById(self.workProduct.productId)
+    }
+    var companyName: String {
+        viewModel.getCompanyById(companyProduct.companyId).name
+    }
+    var totalPrice: Double {
+        Double(workProduct.quantity) * Double(companyProduct.price)
+    }
     
     var body: some View {
-        let totalPrice = Double(product.quantity) * Double(product.price)
         
         VStack(spacing: 0) {
             // Suggestion Title
-            if !isSupplier {
-                Text(product.companyId)
-                    .padding(5)
-                    .frame(maxWidth: .infinity)
-                    .font(.callout)
-                    .fontWeight(.bold)
-            }
+            Text(companyName)
+                .padding(5)
+                .frame(maxWidth: .infinity)
+                .font(.callout)
+                .fontWeight(.bold)
              
             
             // Product Details
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     productInfoLabel(
-                        title: product.name,
+                        title: companyProduct.name,
                         icon: Image(systemName: "character.textbox"))
                     
                     productInfoLabel(
-                        title: product.date.getStringDate(.short),
+                        title: companyProduct.date.getStringDate(.short),
                         fontSize: .caption2,
                         icon: Image(systemName: "calendar"))
                 }
@@ -44,22 +51,20 @@ struct ProductCard: View {
                 
                 VStack(alignment: .trailing, spacing: 4) {
                     productInfoLabel(
-                        title: "\(Int(product.quantity))",
+                        title: "\(Int(workProduct.quantity))",
                         icon: Image(systemName: "shippingbox.fill"))
                     
                     productInfoLabel(
-                        title: product.price.customDouble(),
+                        title: companyProduct.price.customDouble(),
                         icon:Image(systemName: "turkishlirasign"))
                     
-                    if !isSupplier {
-                        productInfoLabel(
-                            title: totalPrice.customDouble(),
-                            icon: HStack(spacing: 2) {
-                                Image(systemName: "shippingbox.fill")
-                                Image(systemName: "plus")
-                                Image(systemName: "turkishlirasign")
-                            })
-                    }
+                    productInfoLabel(
+                        title: totalPrice.customDouble(),
+                        icon: HStack(spacing: 2) {
+                            Image(systemName: "shippingbox.fill")
+                            Image(systemName: "plus")
+                            Image(systemName: "turkishlirasign")
+                        })
                 }
             }
             .padding(.vertical, 5)
@@ -82,15 +87,15 @@ struct ProductCard: View {
     }
 }
 
-
-struct TestProductCard: View {
-    var pro: Product = example_Product
+struct Test_WorkProductCard: View {
+    @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        ProductCard(product: pro, isSupplier: false)
+        WorkProductCard(workProduct: example_WorkProduct)
+            .environmentObject(viewModel)
     }
 }
 
 #Preview {
-    TestProductCard()
+    Test_WorkProductCard()
 }

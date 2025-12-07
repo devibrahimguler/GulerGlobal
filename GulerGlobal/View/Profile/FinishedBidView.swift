@@ -12,15 +12,17 @@ struct FinishedBidView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        BaseList(isEmpty: viewModel.completedTasks.isEmpty) {
-            ForEach(viewModel.completedTasks, id: \.self) { tuple in
+        let finishedes = viewModel.works.filter({ $0.status == .finished })
+        BaseList(isEmpty: finishedes.isEmpty) {
+            ForEach(finishedes, id: \.self) { work in
+                let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        WorkDetailView(tuple: tuple)
+                        WorkDetail(work: work, company: company)
                             .environmentObject(viewModel)
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
-                            WorkCard(company: tuple.company, work: tuple.work)
+                            WorkCard(company: company, work: work)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 

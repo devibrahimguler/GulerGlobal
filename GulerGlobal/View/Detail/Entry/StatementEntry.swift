@@ -1,5 +1,5 @@
 //
-//  StatementEntry.swift
+//  StatementEntryView.swift
 //  GulerGlobal
 //
 //  Created by ibrahim Güler on 1.02.2025.
@@ -13,6 +13,8 @@ struct StatementEntry: View {
     
     @EnvironmentObject var viewModel: MainViewModel
     @State private var formTitle: FormTitle = .none
+    @State private var isClicked: Bool = false
+    
     @State private var config: DateConfig = DateConfig(
         selectedDay: "1",
         selectedMonth: getMonthName(for: 1),
@@ -67,35 +69,43 @@ struct StatementEntry: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Onayla") {
-                    handleStatementSubmission(status: status)
+                    withAnimation(.snappy) {
+                        submission()
+                    }
                 }
                 .foregroundColor(.isGreen)
                 .font(.headline)
                 .fontWeight(.semibold)
+                .disabled(isClicked)
             }
         }
     }
     
-    private func handleStatementSubmission(status: StatementStatus) {
+    private func submission() {
+        isClicked = true
         
         guard
             !viewModel.statementDetails.amount.isEmpty
-        else { return }
+        else {
+            isClicked = false
+            return
+        }
         let statement = Statement(
+            companyId: company.id,
             amount: viewModel.statementDetails.amount.toDouble(),
             date: configToDate(config),
             status: status
         )
         
-        viewModel.createStatement(companyId: company.id, statement: statement)
-        viewModel.fetch()
+        viewModel.statementCreate(statement: statement)
         
+        isClicked = false
         dismiss()
 
     }
 }
 
-struct Test_StatementEntryView: View {
+struct Test_StatementEntry: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
@@ -105,5 +115,5 @@ struct Test_StatementEntryView: View {
 }
 
 #Preview {
-    Test_StatementEntryView()
+    Test_StatementEntry()
 }

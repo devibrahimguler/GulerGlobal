@@ -1,5 +1,5 @@
 //
-//  CompanyEntry.swift
+//  CompanyEntryView.swift
 //  GulerGlobal
 //
 //  Created by ibrahim Güler on 11/23/24.
@@ -12,42 +12,27 @@ struct CompanyEntry: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     
-    @State var viewModel: ViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     @State private var formTitle: FormTitle = .none
-
-    var partnerRole: PartnerRole
+    @State private var isClicked: Bool = false
     
-    init(
-        fetch: @escaping () -> Void,
-        dataService: FirebaseDataModel,
-        isLoading: Bool,
-        companyList: [Company],
-        allProducts: [Product],
-        allTasks: [TupleModel],
-        partnerRole: PartnerRole
-    ) {
-        _viewModel = State(wrappedValue: ViewModel(
-                fetch: fetch,
-                dataService: dataService,
-                isLoading: isLoading,
-                companyList: companyList,
-                allProducts: allProducts,
-                allTasks: allTasks
-        ))
-        
-        self.partnerRole = partnerRole
-    }
+    var companyStatus: CompanyStatus
+    
     var body: some View {
         VStack(spacing: 0) {
             CustomTextField(title: .companyName, text: $viewModel.companyDetails.name, formTitle: $formTitle)
-
+            
             CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
             
-            CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.number, formTitle: $formTitle, keyboardType: .phonePad) {
+            CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.phone, formTitle: $formTitle, keyboardType: .phonePad) {
                 
                 hideKeyboard()
                 
-                CNContactStore().requestAccess(for: .contacts) { (_, _) in Task { @MainActor in viewModel.openPhonePicker() } }
+                CNContactStore().requestAccess(for: .contacts) { (_, _) in
+                    Task { @MainActor in
+                        viewModel.openPhonePicker()
+                    }
+                }
             }
         }
         .padding(10)
@@ -56,7 +41,7 @@ struct CompanyEntry: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .fullScreenCover(isPresented: $viewModel.isPhonePicker, content: {
-            PhonePickerView(pickerNumber: $viewModel.companyDetails.number)
+            PhonePickerView(pickerNumber: $viewModel.companyDetails.phone)
                 .onDisappear {
                     formTitle = .none
                 }
@@ -72,30 +57,62 @@ struct CompanyEntry: View {
             )
         }
         .toolbar {
-            ToolbarItem {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("Onayla") {
                     withAnimation(.snappy) {
-                        viewModel.companyCreate(partnerRole: partnerRole)
-                        dismiss()
+                        submission()
                     }
                 }
                 .foregroundStyle(.isGreen)
                 .font(.headline)
                 .fontWeight(.semibold)
+                .disabled(isClicked)
             }
+        }
+    }
+    
+    private func submission() {
+        isClicked = true
+        guard
+            viewModel.companyDetails.name != "",
+            viewModel.companyDetails.address != ""
+        else { return }
+        
+        if viewModel.companies.first(where: { $0.name == viewModel.companyDetails.name }) != nil {
+            viewModel.hasAlert = true
+            isClicked = false
+        } else {
+            
+            let name = viewModel.companyDetails.name.trim()
+            let address = viewModel.companyDetails.address.trim()
+            let phone = viewModel.companyDetails.phone
+            
+            let newCompany = Company(
+                id: viewModel.generateUniqueIDforCompany(),
+                name: name,
+                address: address,
+                phone: phone,
+                status: companyStatus,
+            )
+            
+            viewModel.companyCreate(company: newCompany)
+            isClicked = false
+            dismiss()
+            
         }
     }
 }
 
-struct TestAddCurrentView: View {
+struct Test_CompanyEntry: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        CompanyEntry(fetch: viewModel.fetch, dataService: viewModel.dataService, isLoading: viewModel.isLoading, companyList: viewModel.companyList, allProducts: viewModel.allProducts, allTasks: viewModel.allTasks, partnerRole: .current)
+        CompanyEntry(companyStatus: .current)
+            .environmentObject(viewModel)
     }
 }
 
 #Preview {
-    TestAddCurrentView()
+    Test_CompanyEntry()
 }
 

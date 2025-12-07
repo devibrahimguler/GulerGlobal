@@ -9,10 +9,11 @@ import SwiftUI
 
 struct WorkMenu: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var workVM: WorkViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     @Binding var isEdit: Bool
     @Binding var formTitle: FormTitle
     @Binding var openMenu: Bool
+    @Binding var hiddingAnimation: Bool
     @Binding var startConfig: DateConfig
     @Binding var endConfig: DateConfig
     
@@ -22,7 +23,6 @@ struct WorkMenu: View {
         VStack(alignment: .center, spacing: 5) {
             Button {
                 withAnimation(.spring) {
-                    workVM.updateWorkDetails(with: tuple.work)
                     formTitle = .none
                     openMenu = false
                     isEdit.toggle()
@@ -42,26 +42,29 @@ struct WorkMenu: View {
             if isEdit {
                 Button {
                     withAnimation(.spring) {
+                        
+                        guard
+                            viewModel.workDetails.name != "",
+                            viewModel.workDetails.description != "",
+                            viewModel.workDetails.cost != ""
+                        else { return }
+                        
                         let updateArea = [
-                            "workName": workVM.workDetails.name.trim(),
-                            "workDescription": workVM.workDetails.description.trim(),
-                            "remainingBalance": workVM.workDetails.remainingBalance.toDouble(),
-                            "totalCost": workVM.workDetails.totalCost.toDouble(),
+                            "name": viewModel.workDetails.name.trim(),
+                            "description": viewModel.workDetails.description.trim(),
+                            "cost": viewModel.workDetails.cost.toDouble(),
                             "startDate": configToDate(startConfig),
                             "endDate": configToDate(endConfig),
                         ]
-                        workVM.workUpdate(
-                            companyId: tuple.company.id,
+                        
+                        viewModel.workUpdate(
                             workId: tuple.work.id,
                             updateArea: updateArea
                         )
                         
-                        workVM.updateWorkDetails(with: nil)
                         formTitle = .none
                         openMenu = false
                         isEdit.toggle()
-                        
-                        dismiss()
                     }
                     
                 } label: {
@@ -74,13 +77,12 @@ struct WorkMenu: View {
             }
             else
             {
-                if tuple.work.approve == .approved {
+                if tuple.work.status == .approved {
                     Button {
                         withAnimation(.snappy) {
-                            workVM.workUpdate(
-                                companyId: tuple.company.id,
+                            viewModel.workUpdate(
                                 workId: tuple.work.id,
-                                updateArea: ["approve": ApprovalStatus.finished.rawValue]
+                                updateArea: ["status": ApprovalStatus.finished.rawValue]
                             )
                             
                             dismiss()
@@ -94,16 +96,8 @@ struct WorkMenu: View {
                     .padding(.horizontal, 20)
                     
                     NavigationLink {
-                        ProductEntry(
-                            dataService: workVM.dataService,
-                            fetch: workVM.fetch,
-                            isLoading: workVM.isLoading,
-                            allProducts: workVM.allProducts,
-                            companyId: tuple.company.id,
-                            workId: tuple.work.id,
-                            isSupplier: false,
-                            companyList: workVM.companyList
-                        )
+                        WorkProductEntry(workId: tuple.work.id)
+                            .environmentObject(viewModel)
                     } label: {
                         Label("Malzeme Ekle", systemImage: "plus.viewfinder")
                     }

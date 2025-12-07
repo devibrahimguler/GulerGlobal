@@ -1,21 +1,22 @@
 //
-//  OldPricesListView.swift
+//  WorkProductList.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 19.10.2025.
+//  Created by ibrahim on 5.12.2025.
 //
 
 import SwiftUI
 
-struct OldPricesListView: View {
+struct WorkProductList: View {
     @EnvironmentObject var viewModel: MainViewModel
+    @Environment(\.dismiss) private var dismiss
     @State private var isHidden: Bool = true
     @State private var isReset: Bool = true
     
     var title: String
-    var list: [OldPrice]
-    var companyId: String
-    var productId: String
+    var list: [WorkProduct]
+    var workId: String?
+    var isSupplier: Bool
     @Binding var hiddingAnimation: Bool
     
     var body: some View {
@@ -41,22 +42,28 @@ struct OldPricesListView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 0) {
-                    ForEach(list, id: \.self) { oldPrice in
+                    ForEach(list, id: \.self) { product in
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                            OldPricesCard(oldPrice: oldPrice)
+                            WorkProductCard(workProduct: product)
                         }
                         actions: {
-                             Action(tint: .red, icon: "trash.fill") {
-                                 withAnimation(.snappy) {
-                                     /*
-                                      viewModel.deleteOldPrice(
-                                         companyId: companyId,
-                                         productId: productId,
-                                         oldPriceAId: oldPrice.id
-                                      )
-                                      */
-                                 }
-                             }
+                            Action(tint: .red, icon: "trash.fill") {
+                                withAnimation(.snappy) {
+                                    if let companyProduct = viewModel.companyProducts.first(where: { $0.id == product.productId }) {
+                                        
+                                        let quantity = companyProduct.quantity + product.quantity
+                                        let updateArea = [
+                                            "quantity": quantity,
+                                        ]
+                                        
+                                        viewModel.companyProductUpdate(productId: product.productId, updateArea: updateArea)
+                                        viewModel.workProductDelete(productId: product.id)
+                                        
+                                        dismiss()
+                                    }
+                                    
+                                }
+                            }
                         }
                         .padding(5)
                     }
@@ -71,19 +78,24 @@ struct OldPricesListView: View {
     }
 }
 
-struct Test_OldPriceListView: View {
+struct Test_WorkProductList: View {
+    @StateObject private var viewModel: MainViewModel = .init()
     @State private var hiddingAnimation: Bool = false
+    
     var body: some View {
-        OldPricesListView(
-            title: "Eski Birim Fiyatları",
-            list: example_OldPriceList,
-            companyId: example_Company.id,
-            productId: example_CompanyProduct.id,
+        WorkProductList(
+            title: "Malzeme Listesi",
+            list: example_WorkProductList,
+            isSupplier: false,
             hiddingAnimation: $hiddingAnimation
         )
+        .environmentObject(viewModel)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.gray)
+        
     }
 }
 
 #Preview {
-    Test_OldPriceListView()
+    Test_WorkProductList()
 }

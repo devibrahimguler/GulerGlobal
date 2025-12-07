@@ -30,12 +30,19 @@ struct BaseList<Content: View>: View {
             .opacity(isEmpty ? 0 : 1)
             .overlay {
                 if isEmpty {
-                    VStack {
-                        Text("İçerik bulunamadı.")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .padding()
-                            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    VStack(alignment:.center) {
+                        VStack() {
+                            Image("notFound")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 200)
+                            
+                            Text("İçerik bulunamadı.")
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .padding()
+                        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -43,40 +50,39 @@ struct BaseList<Content: View>: View {
             
         }
         .defaultScrollAnchor(isEmpty ? .center : .top, for: .alignment)
-        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
     }
 }
 
-struct BaseListTests: View {
+struct Test_BaseList: View {
     @State private var isReset: Bool = false
     let tuple = example_TupleModel
     
     var body: some View {
-        BaseList(isEmpty: false) {
+        BaseList(isEmpty: true) {
             
-             ForEach(0...10, id: \.self) { id in
-                 SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
-                     WorkCard(company: tuple.company, work: tuple.work)
-                 }
-                 actions: {
-                     Action(tint: .red, icon: "trash.fill") { }
-                     
-                     Action(tint: .green, icon: "checkmark.square") { }
-                 }
-                 .padding(2)
-                 .overlay {
-                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                         .stroke(lineWidth: 2)
-                         .fill(Color.isSkyBlue.gradient)
-                         .padding(2)
-                     
-                 }
-             }
-             
+            ForEach(0...10, id: \.self) { id in
+                SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                    WorkCard(company: tuple.company, work: tuple.work)
+                }
+                actions: {
+                    Action(tint: .red, icon: "trash.fill") { }
+                    
+                    Action(tint: .green, icon: "checkmark.square") { }
+                }
+                .padding(2)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(lineWidth: 2)
+                        .fill(Color.isSkyBlue.gradient)
+                        .padding(2)
+                    
+                }
+            }
+            
         }
     }
 }
 
 #Preview {
-    BaseListTests()
+    Test_BaseList()
 }

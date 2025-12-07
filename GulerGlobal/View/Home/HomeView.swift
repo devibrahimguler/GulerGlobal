@@ -20,12 +20,12 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue.customDouble())", color: .blue)
                         
-                        ChartCard(title: "Alınan", description: "\((viewModel.totalRevenue - viewModel.remainingRevenue).customDouble())", color: .green)
+                        ChartCard(title: "Alınan", description: "\((viewModel.totalRevenue - viewModel.leftRevenue).customDouble())", color: .green)
                         
-                        ChartCard(title: "Kalan", description: "\(viewModel.remainingRevenue.customDouble())", color: .red)
+                        ChartCard(title: "Kalan", description: "\(viewModel.leftRevenue.customDouble())", color: .red)
                         
                     }
-                    .animation(.smooth, value: viewModel.remainingRevenue)
+                    .animation(.smooth, value: viewModel.leftRevenue)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 5)
                     
@@ -59,7 +59,7 @@ struct HomeView: View {
         }
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .onAppear(perform: animateChart)
-        .onReceive(viewModel.$remainingRevenue) { _ in
+        .onReceive(viewModel.$leftRevenue) { _ in
             resetChartAnimation()
             animateChart()
         }

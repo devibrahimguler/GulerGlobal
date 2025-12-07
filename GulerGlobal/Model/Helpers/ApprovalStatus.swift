@@ -2,15 +2,14 @@
 //  ApprovalStatus.swift
 //  GulerGlobal
 //
-//  Created by ibrahim Güler on 22.10.2025.
+//  Created by ibrahim on 7.12.2025.
 //
 
 import SwiftUI
 
 enum ApprovalStatus: String, Codable {
-    case none = ""
-    case approved = "Approved"
-    case pending = "Pending"
-    case rejected = "Rejected"
-    case finished = "Finished"
+    case approved = "approved"
+    case pending = "pending"
+    case rejected = "rejected"
+    case finished = "finished"
 }

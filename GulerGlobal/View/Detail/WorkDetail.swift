@@ -1,5 +1,5 @@
 //
-//  WorkDetailView.swift
+//  WorkDetail.swift
 //  GulerGlobal
 //
 //  Created by ibrahim Güler on 22.09.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WorkDetailView: View {
+struct WorkDetail: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: MainViewModel
     
@@ -26,7 +26,12 @@ struct WorkDetailView: View {
     @State private var hiddingAnimation: Bool = false
     @State private var openMenu: Bool = false
     
-    var tuple: TupleModel
+    let work: Work
+    let company: Company
+    var products: [WorkProduct] {
+        viewModel.getWorkProductsById(work.id)
+    }
+    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 10) {
@@ -61,26 +66,25 @@ struct WorkDetailView: View {
                 
                 VStack(spacing: 5) {
                     
-                    ProductListView(
+                    WorkProductList(
                         title: "Malzeme Listesi",
-                        //// hata
-                        list: example_ProductList,
-                        company: tuple.company,
-                        workId: tuple.work.id,
+                        list: products,
+                        workId: work.id,
                         isSupplier: false,
                         hiddingAnimation: $hiddingAnimation
                     )
                     
                 }
                 .opacity(
-                    // tuple.work.productList.isEmpty ||
+                    products.isEmpty ||
                     isEditWork ||
-                    tuple.work.status == .pending ? 0 : 1)
+                    work.status == .pending ? 0 : 1)
                 .animation(.linear, value: hiddingAnimation)
+                
             }
             .padding(.horizontal, 10)
         }
-        .navigationTitle(tuple.company.name)
+        .navigationTitle(company.name)
         .navigationBarTitleDisplayMode(.inline)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .blur(radius: openMenu ? 5 : 0)
@@ -90,9 +94,10 @@ struct WorkDetailView: View {
                 isEdit: $isEditWork,
                 formTitle: $formTitle,
                 openMenu: $openMenu,
+                hiddingAnimation: $hiddingAnimation,
                 startConfig: $startConfig,
                 endConfig: $endConfig,
-                tuple: tuple
+                tuple: TupleModel(company: company, work: work)
             )
             .environmentObject(viewModel)
             .offset(y: openMenu ? 0 : 500)
@@ -111,7 +116,7 @@ struct WorkDetailView: View {
             }
         }
         .onAppear {
-            viewModel.updateWorkDetails(with: tuple.work)
+            viewModel.updateWorkDetails(with: work)
             startConfig = dateToConfig(viewModel.workDetails.startDate)
             endConfig = dateToConfig(viewModel.workDetails.endDate)
         }
@@ -125,7 +130,7 @@ struct Test_WorkDetailView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        WorkDetailView(tuple: example_TupleModel)
+        WorkDetail(work: example_Work, company: example_Company)
             .environmentObject(viewModel)
     }
 }
@@ -177,102 +182,104 @@ extension String {
     }
 }
 
-struct WorkMenu: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: MainViewModel
-    @Binding var isEdit: Bool
-    @Binding var formTitle: FormTitle
-    @Binding var openMenu: Bool
-    @Binding var startConfig: DateConfig
-    @Binding var endConfig: DateConfig
-    
-    var tuple: TupleModel
-    
-    var body: some View {
-        VStack(alignment: .center, spacing: 5) {
-            Button {
-                withAnimation(.spring) {
-                    viewModel.updateWorkDetails(with: tuple.work)
-                    formTitle = .none
-                    openMenu = false
-                    isEdit.toggle()
-                }
-            } label: {
-                if isEdit {
-                    Label("İptal", systemImage: "pencil.slash")
-                } else {
-                    Label("Düzenle", systemImage: "square.and.pencil")
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 15)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .padding(.horizontal, 20)
-            
-            if isEdit {
-                Button {
-                    withAnimation(.spring) {
-                        let updateArea = [
-                            "name": viewModel.workDetails.name.trim(),
-                            "description": viewModel.workDetails.description.trim(),
-                            "cost": viewModel.workDetails.cost.toDouble(),
-                            "startDate": configToDate(startConfig),
-                            "endDate": configToDate(endConfig),
-                        ]
-                        viewModel.updateWork(
-                            workId: tuple.work.id,
-                            updateArea: updateArea
-                        )
-                        
-                        viewModel.updateWorkDetails(with: nil)
-                        formTitle = .none
-                        openMenu = false
-                        isEdit.toggle()
-                        
-                        dismiss()
-                    }
-                    
-                } label: {
-                    Label("Kaydet", systemImage: "pencil.line")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
-            }
-            else
-            {
-                if tuple.work.status == .approved {
-                    Button {
-                        withAnimation(.snappy) {
-                            viewModel.updateWork(
-                                workId: tuple.work.id,
-                                updateArea: ["status": ApprovalStatus.finished.rawValue]
-                            )
-                            
-                            dismiss()
-                        }
-                    } label: {
-                        Label("İş Bitti", systemImage: "checkmark.app")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
-                    
-                    NavigationLink {
-                        ProductEntryView(companyId: tuple.company.id, workId: tuple.work.id, isSupplier: false)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Label("Malzeme Ekle", systemImage: "plus.viewfinder")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
-                }
-            }
-            
-        }
-    }
-}
+/*
+ struct WorkMenu: View {
+     @Environment(\.dismiss) private var dismiss
+     @EnvironmentObject var viewModel: MainViewModel
+     @Binding var isEdit: Bool
+     @Binding var formTitle: FormTitle
+     @Binding var openMenu: Bool
+     @Binding var startConfig: DateConfig
+     @Binding var endConfig: DateConfig
+     
+     var tuple: TupleModel
+     
+     var body: some View {
+         VStack(alignment: .center, spacing: 5) {
+             Button {
+                 withAnimation(.spring) {
+                     viewModel.updateWorkDetails(with: tuple.work)
+                     formTitle = .none
+                     openMenu = false
+                     isEdit.toggle()
+                 }
+             } label: {
+                 if isEdit {
+                     Label("İptal", systemImage: "pencil.slash")
+                 } else {
+                     Label("Düzenle", systemImage: "square.and.pencil")
+                 }
+             }
+             .frame(maxWidth: .infinity)
+             .padding(.vertical, 15)
+             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+             .padding(.horizontal, 20)
+             
+             if isEdit {
+                 Button {
+                     withAnimation(.spring) {
+                         let updateArea = [
+                             "name": viewModel.workDetails.name.trim(),
+                             "description": viewModel.workDetails.description.trim(),
+                             "cost": viewModel.workDetails.cost.toDouble(),
+                             "startDate": configToDate(startConfig),
+                             "endDate": configToDate(endConfig),
+                         ]
+                         viewModel.updateWork(
+                             workId: tuple.work.id,
+                             updateArea: updateArea
+                         )
+                         
+                         viewModel.updateWorkDetails(with: nil)
+                         formTitle = .none
+                         openMenu = false
+                         isEdit.toggle()
+                         
+                         dismiss()
+                     }
+                     
+                 } label: {
+                     Label("Kaydet", systemImage: "pencil.line")
+                 }
+                 .frame(maxWidth: .infinity)
+                 .padding(.vertical, 15)
+                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                 .padding(.horizontal, 20)
+             }
+             else
+             {
+                 if tuple.work.status == .approved {
+                     Button {
+                         withAnimation(.snappy) {
+                             viewModel.updateWork(
+                                 workId: tuple.work.id,
+                                 updateArea: ["status": ApprovalStatus.finished.rawValue]
+                             )
+                             
+                             dismiss()
+                         }
+                     } label: {
+                         Label("İş Bitti", systemImage: "checkmark.app")
+                     }
+                     .frame(maxWidth: .infinity)
+                     .padding(.vertical, 15)
+                     .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                     .padding(.horizontal, 20)
+                     
+                     NavigationLink {
+                         ProductEntryView(companyId: tuple.company.id, workId: tuple.work.id, isSupplier: false)
+                             .environmentObject(viewModel)
+                     } label: {
+                         Label("Malzeme Ekle", systemImage: "plus.viewfinder")
+                     }
+                     .frame(maxWidth: .infinity)
+                     .padding(.vertical, 15)
+                     .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                     .padding(.horizontal, 20)
+                 }
+             }
+             
+         }
+     }
+ }
+ */
