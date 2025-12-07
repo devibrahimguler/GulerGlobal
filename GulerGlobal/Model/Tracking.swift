@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct Tracking: Identifiable {
-    var id: UUID = .init()
+struct Tracking: Identifiable, Hashable {
+    var id: String = UUID().uuidString
     var color: Color
     var value: Double
     
