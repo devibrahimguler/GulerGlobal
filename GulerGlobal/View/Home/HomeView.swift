@@ -11,18 +11,18 @@ import Charts
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
     
-    @EnvironmentObject var viewModel: MainViewModel
+    @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
                 HStack() {
                     VStack(alignment: .leading, spacing: 0) {
-                        ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue.customDouble())", color: .blue)
+                        ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue)", color: .blue)
                         
-                        ChartCard(title: "Alınan", description: "\((viewModel.totalRevenue - viewModel.leftRevenue).customDouble())", color: .green)
+                        ChartCard(title: "Alınan", description: "\(viewModel.amountRevenue)", color: .green)
                         
-                        ChartCard(title: "Kalan", description: "\(viewModel.leftRevenue.customDouble())", color: .red)
+                        ChartCard(title: "Kalan", description: "\(viewModel.leftRevenue)", color: .red)
                         
                     }
                     .animation(.smooth, value: viewModel.leftRevenue)

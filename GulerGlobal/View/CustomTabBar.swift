@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @StateObject private var viewModel = TabBarViewModel()
-    @State private var searchText = ""
     
     var body: some View {
         TabView(selection: $viewModel.activeTab) {
@@ -40,7 +39,7 @@ struct CustomTabBar: View {
             
             Tab(TabValue.Search.rawValue, systemImage: TabValue.Search.symbolImage, value: TabValue.Search, role: .search) {
                 NavigationStack {
-                    let list = viewModel.companies.filter { $0.name.hasPrefix(searchText)}
+                    let list = viewModel.companies.filter { $0.name.hasPrefix(viewModel.searchText)}
                     BaseList(isEmpty: list.isEmpty) {
                         ForEach(list, id: \.self) { company in
                             LazyVStack(spacing: 0) {
@@ -55,13 +54,12 @@ struct CustomTabBar: View {
                         }
                     }
                     .navigationTitle("Firma Ara")
-                    .searchable(text: $searchText, placement: .toolbar, prompt: Text("Ara..."))
+                    .searchable(text: $viewModel.searchText, placement: .toolbar, prompt: Text("Ara..."))
                 }
             }
             
         }
         .tabViewSearchActivation(.searchTabSelection)
-        .environmentObject(viewModel)
         .ignoresSafeArea(.keyboard, edges: .all)
     }
 }
