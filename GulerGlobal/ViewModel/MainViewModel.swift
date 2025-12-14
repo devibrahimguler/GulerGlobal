@@ -16,7 +16,6 @@ final class MainViewModel: ObservableObject {
     
     // MARK: - Published Properties
     @Published var activeTab: TabValue = .Home
-    @Published var tabAnimationTrigger: TabValue?
     
     @Published var isLoadingPlaceholder: Bool = false
     @Published var isUserConnected: Bool = false
@@ -49,7 +48,7 @@ final class MainViewModel: ObservableObject {
     
     init() {
         connectionControl()
-        fetchData()
+        fetchAllData()
     }
     
     // MARK: - Public Methods
@@ -90,6 +89,34 @@ final class MainViewModel: ObservableObject {
         group.notify(queue: .main) { [weak self] in
             self?.calculateNetBalance()
             self?.isLoadingPlaceholder = false
+        }
+    }
+    
+    private func fetchAllData() {
+        resetAllData()
+        
+        self.firebaseDataService.fetchAllData { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            
+            switch result {
+            case .failure(let error):
+                print("Fetch error: \(error.localizedDescription)")
+                self.isLoadingPlaceholder = false
+                
+            case .success(let datas):
+                self.companies = datas.0.sorted(by: { $0.id > $1.id })
+                self.works = datas.1.sorted(by: { $0.id > $1.id })
+                self.companyProducts = datas.2.sorted(by: { $0.date > $1.date })
+                self.workProducts = datas.3.sorted(by: { $0.date > $1.date })
+                self.statements = datas.4.sorted(by: { $0.date > $1.date })
+                
+                self.calculateNetBalance()
+                self.isLoadingPlaceholder = false
+                
+                
+            }
         }
     }
     
@@ -206,6 +233,14 @@ final class MainViewModel: ObservableObject {
             
             completion?()
         }
+    }
+    
+    private func resetAllData() {
+        resetCompanyData()
+        resetWorkData()
+        resetCompanyProductData()
+        resetWorkProductData()
+        resetStatementData()
     }
     
     private func resetCompanyData() {
@@ -719,91 +754,3 @@ final class MainViewModel: ObservableObject {
     }
     
 }
-
-// MARK: - Supporting Models
-
-struct CompanyDetails {
-    var name: String = ""
-    var address: String = ""
-    var phone: String = ""
-    var status: CompanyStatus = .current
-    
-    init() {}
-    
-    init(from company: Company?) {
-        name = company?.name ?? ""
-        address = company?.address ?? ""
-        phone = company?.phone ?? ""
-        status = company?.status ?? .current
-    }
-}
-
-struct WorkDetails {
-    var id: String = ""
-    var name: String = ""
-    var description: String = ""
-    var cost: String = ""
-    var left: String = ""
-    var status: ApprovalStatus = .pending
-    var productList: [CompanyProduct] = []
-    var startDate: Date = .now
-    var endDate: Date = .now
-    var isChangeProjeNumber: Bool = true
-    
-    init() {}
-    
-    init(from work: Work?) {
-        id = work?.id ?? ""
-        name = work?.name ?? ""
-        description = work?.description ?? ""
-        cost = "\(work?.cost ?? 0)"
-        left = "\(work?.left ?? 0)"
-        status = work?.status ?? .pending
-        startDate = work?.startDate ?? .now
-        endDate = work?.endDate ?? .now
-    }
-}
-
-struct StatementDetails {
-    var amount: String = ""
-    var date: Date = .now
-    
-    init() {}
-    
-    init(from statement: Statement?) {
-        amount = "\(statement?.amount ?? 0)"
-        date = statement?.date ?? .now
-    }
-}
-
-struct CompanyProductDetails {
-    var supplier: String = ""
-    var name: String = ""
-    var price: String = ""
-    var quantity: String = ""
-    var date: Date = .now
-    var oldPrices: [OldPrice] = []
-    
-    init() {}
-    
-    init(from product: CompanyProduct?) {
-        name = product?.name ?? ""
-        quantity = "\(product?.quantity ?? 0)"
-        price = "\(product?.price ?? 0)"
-        date = product?.date ?? .now
-        oldPrices = product?.oldPrices ?? []
-    }
-}
-
-struct WorkProductDetails {
-    var quantity: String = ""
-    var date: Date = .now
-    
-    init() {}
-    
-    init(from product: CompanyProduct?) {
-        quantity = "\(product?.quantity ?? 0)"
-        date = product?.date ?? .now
-    }
-}
-

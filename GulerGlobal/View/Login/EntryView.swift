@@ -9,35 +9,15 @@ import SwiftUI
 
 struct EntryView: View {
     
-    @ObservedObject var dataModel: EntryViewModel
-    
-    init(userConnection : AuthProtocol, isPlaceHolder: Binding<Bool>, isConnected: Binding<Bool>) {
-        self.dataModel = EntryViewModel(userConnection: userConnection, isPlaceHolder: isPlaceHolder, isConnected: isConnected)
-    }
+    // @ObservedObject var viewModel: EntryViewModel
+    @EnvironmentObject var viewModel: EntryViewModel
     
     var body: some View {
         ZStack {
             BasicEntry(
-                username: $dataModel.username,
-                password: $dataModel.password,
-                // loginActionText: "Kayıt olmak için tıkla!",
-                complationText: "Giriş Yap") { dataModel.loginUser() }
-                // isLoginAction: { dataModel.isLogin = false }
-            //.offset(x:dataModel.isLogin ? 0 : getRect().width * 2)
-            
-            /*
-             BasicEntry(
-                 username: $dataModel.username,
-                 password: $dataModel.password,
-                 loginActionText: "Giriş yapmak için tıklayın!",
-                 complationText: "Kayıt Ol") {
-                 dataModel.registerUser()
-             } isLoginAction: {
-                 dataModel.isLogin = true
-             }
-             .offset(x:dataModel.isLogin ? -getRect().width * 2 : 0)
-             */
+                username: $viewModel.username,
+                password: $viewModel.password,
+                complationText: "Giriş Yap") { viewModel.loginUser() }
         }
-        .animation(.easeInOut, value: dataModel.isLogin)
     }
 }

@@ -32,11 +32,12 @@ struct HomeView: View {
                     Chart {
                         ForEach(viewModel.traking, id: \.self) { traking in
                             SectorMark(
-                                angle: .value("Price", traking.value),
+                                angle: .value("Price", traking.isAnimated ? 0.0 : traking.value),
                                 innerRadius: .fixed(15),
                                 angularInset: 1
                             )
                             .foregroundStyle(traking.color)
+                            .opacity(traking.isAnimated ? 0.0 : 1.0)
                         }
                         
                     }

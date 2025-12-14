@@ -17,6 +17,53 @@ final class FirebaseDataModel: ObservableObject {
     
     private let database: Firestore = Firestore.firestore()
     
+    // Fetch all data from the database
+    @MainActor
+    func fetchAllData(completion: @escaping (Result<([Company], [Work], [CompanyProduct], [WorkProduct], [Statement]), Error>) -> Void) {
+        Task {
+            do {
+                let companySnapshot = try await database
+                    .collection(companyCollectionName)
+                    .getDocuments()
+                
+                let workSnapshot = try await database
+                    .collection(workCollectionName)
+                    .getDocuments()
+                
+                let companyProductSnapshot = try await database
+                    .collection(companyProductCollectionName)
+                    .getDocuments()
+                
+                let workProductSnapshot = try await database
+                    .collection(workProductCollectionName)
+                    .getDocuments()
+                
+                let statementSnapshot = try await database
+                    .collection(statementCollectionName)
+                    .getDocuments()
+                
+                let (companyResult, workResult, companyProductResult, workProductResult, statementResult) = (companySnapshot, workSnapshot, companyProductSnapshot, workProductSnapshot, statementSnapshot)
+                
+                var companies: [Company] = []
+                var works: [Work] = []
+                var companyProducts: [CompanyProduct] = []
+                var workProducts: [WorkProduct] = []
+                var statements: [Statement] = []
+                
+                companies = companyResult.documents.compactMap { doc -> Company? in try? doc.data(as: Company.self) }
+                works = workResult.documents.compactMap { doc -> Work? in try? doc.data(as: Work.self) }
+                companyProducts = companyProductResult.documents.compactMap { doc -> CompanyProduct? in try? doc.data(as: CompanyProduct.self) }
+                workProducts = workProductResult.documents.compactMap { doc -> WorkProduct? in try? doc.data(as: WorkProduct.self) }
+                statements = statementResult.documents.compactMap { doc -> Statement? in try? doc.data(as: Statement.self) }
+                
+                
+                completion(.success((companies,works,companyProducts,workProducts,statements)))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+    
     // Fetch company data from the database
     @MainActor
     func fetchCompanies(completion: @escaping (Result<[Company], Error>) -> Void) {

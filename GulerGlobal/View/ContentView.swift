@@ -8,38 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = MainViewModel()
+    @StateObject private var viewModel = EntryViewModel()
     
     var body: some View {
         Group {
-            if viewModel.isLoadingPlaceholder {
-                createPlaceHolderView()
-            } else if viewModel.isUserConnected {
+            if viewModel.isLoading {
+                CustomPlaceHolder()
+                    .viewCenter()
+                    .ignoresSafeArea()
+                    .background(Color.black)
+            } else if viewModel.isConnected {
                 CustomTabBar()
-                    .environmentObject(viewModel)
             } else {
-                createEntryView()
+                EntryView()
+                    .environmentObject(viewModel)
+                
             }
         }
-    }
-    
-    // MARK: - PlaceHolder View
-    @ViewBuilder
-    private func createPlaceHolderView() -> some View {
-        CustomPlaceHolder()
-            .viewCenter()
-            .ignoresSafeArea()
-            .background(Color.black)
-    }
-    
-    // MARK: - Entry View
-    @ViewBuilder
-    private func createEntryView() -> some View {
-        EntryView(
-            userConnection: viewModel.authService,
-            isPlaceHolder: $viewModel.isLoadingPlaceholder,
-            isConnected: $viewModel.isUserConnected
-        )
     }
 }
 

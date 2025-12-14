@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CustomTabBar: View {
-    @EnvironmentObject var viewModel: MainViewModel
+    @StateObject private var viewModel = TabBarViewModel()
     @State private var searchText = ""
     
     var body: some View {
@@ -68,22 +68,4 @@ struct CustomTabBar: View {
 
 #Preview {
     ContentView()
-}
-
-enum TabValue: String, CaseIterable {
-    case Home = "GulerMetSan"
-    case Bid = "Teklifler"
-    case Approved = "İşler"
-    case Profile = "Kullanıcı"
-    case Search = "Ara"
-    
-    var symbolImage: String {
-        switch self {
-        case .Home: "house"
-        case .Bid: "rectangle.stack"
-        case .Approved: "checkmark.rectangle.stack.fill"
-        case .Profile: "person.fill"
-        case .Search: "magnifyingglass"
-        }
-    }
 }
