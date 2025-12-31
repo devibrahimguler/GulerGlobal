@@ -10,11 +10,10 @@ import ContactsUI
 
 @MainActor
 final class MainViewModel: ObservableObject {
-    // MARK: - Dependencies
-    let authService: AuthProtocol = UserConnection()
-    private let firebaseDataService = FirebaseDataModel()
     
-    // MARK: - Published Properties
+    let authService: AuthProtocol = UserConnection()
+    let firebaseDataService = FirebaseDataModel()
+    
     @Published var activeTab: TabValue = .Home
     
     @Published var isLoadingPlaceholder: Bool = false
@@ -27,17 +26,22 @@ final class MainViewModel: ObservableObject {
     @Published var statements: [Statement] = []
     
     
-    @Published var totalRevenue: Double = 0
-    @Published var leftRevenue: Double = 0
+    @Published var leftRevenue: Double = 0.0 {
+        didSet { updateTracking() }
+    }
+    @Published var totalRevenue: Double = 0.0 {
+        didSet { updateTracking() }
+    }
+    @Published var amountRevenue: Double = 0.0
+    @Published var chartData: [ChartData] = []
+    @Published var isAnimated: Bool = false
     
     @Published var companyDetails = CompanyDetails()
     @Published var workDetails = WorkDetails()
     @Published var companyProductDetails = CompanyProductDetails()
     @Published var workProductDetails = WorkProductDetails()
     @Published var statementDetails = StatementDetails()
-    
-    @Published var traking: [Tracking] = []
-    @Published var isAnimated: Bool = false
+
     @Published var hasAlert: Bool = false
     
     @Published var isPhonePicker: Bool = false
@@ -90,6 +94,15 @@ final class MainViewModel: ObservableObject {
             self?.calculateNetBalance()
             self?.isLoadingPlaceholder = false
         }
+    }
+    
+    private func updateTracking() {
+        self.amountRevenue = self.totalRevenue - self.leftRevenue
+        
+        self.chartData = [
+            ChartData(color: .green.opacity(0.85), value: self.amountRevenue),
+            ChartData(color: .red.opacity(0.85), value: self.leftRevenue)
+        ]
     }
     
     private func fetchAllData() {
@@ -714,10 +727,7 @@ final class MainViewModel: ObservableObject {
             
         }
         
-        self.traking = [
-            Tracking(color: .green.opacity(0.85), value: self.totalRevenue - self.leftRevenue),
-            Tracking(color: .red.opacity(0.85), value: self.leftRevenue)
-        ]
+        self.updateTracking()
         
         self.isLoadingPlaceholder = false
     }

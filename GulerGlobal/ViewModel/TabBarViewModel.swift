@@ -5,26 +5,25 @@
 //  Created by ibrahim on 14.12.2025.
 //
 
-import Foundation
+import SwiftUI
 
 @MainActor
 final class TabBarViewModel: ObservableObject {
     
-    private let firebaseDataService = FirebaseDataModel()
-    @Published var isLoading: Bool = false
+    let firebaseDataService = FirebaseDataModel()
     
     @Published var activeTab: TabValue = .Home
     @Published var tabAnimationTrigger: TabValue?
     @Published var searchText = ""
     
-    @Published var companies: [Company] = []
-    @Published var works: [Work] = []
-    @Published var companyProducts: [CompanyProduct] = []
-    @Published var workProducts: [WorkProduct] = []
-    @Published var statements: [Statement] = []
+    @Published var totalRevenue: Double = 0.0
+    @Published var leftRevenue: Double = 0.0
     
+    init() {
+        fetchAllData()
+    }
     private func fetchAllData() {
-        resetAllData()
+        AppState.shared.isLoading = true
         
         self.firebaseDataService.fetchAllData { [weak self] result in
             guard let self = self else {
@@ -34,28 +33,69 @@ final class TabBarViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
+                AppState.shared.isLoading = false
                 
             case .success(let datas):
-                self.companies = datas.0.sorted(by: { $0.id > $1.id })
-                self.works = datas.1.sorted(by: { $0.id > $1.id })
-                self.companyProducts = datas.2.sorted(by: { $0.date > $1.date })
-                self.workProducts = datas.3.sorted(by: { $0.date > $1.date })
-                self.statements = datas.4.sorted(by: { $0.date > $1.date })
+                AppState.shared.companies = datas.0.sorted(by: { $0.id > $1.id })
+                AppState.shared.works = datas.1.sorted(by: { $0.id > $1.id })
+                AppState.shared.companyProducts = datas.2.sorted(by: { $0.date > $1.date })
+                AppState.shared.workProducts = datas.3.sorted(by: { $0.date > $1.date })
+                AppState.shared.statements = datas.4.sorted(by: { $0.date > $1.date })
                 
-                self.isLoading = false
+                self.calculateNetBalance()
+                AppState.shared.isLoading = false
                 
-                
+                self.objectWillChange.send()
             }
         }
     }
     
-    private func resetAllData() {
-        companies.removeAll()
-        works.removeAll()
-        companyProducts.removeAll()
-        workProducts.removeAll()
-        statements.removeAll()
+    private func calculateNetBalance() {
+        for company in AppState.shared.companies {
+            
+            var companyTotalMoney = 0.0
+            var haveMoney = true
+            
+            for statement in AppState.shared.statements.filter({ $0.companyId == company.id }) {
+                if statement.status == .input || statement.status == .lend {
+                    companyTotalMoney = companyTotalMoney + statement.amount
+                } else if statement.status == .output || statement.status == .debt {
+                    companyTotalMoney = companyTotalMoney - statement.amount
+                }
+            }
+            
+            let workList = AppState.shared.works.filter { $0.companyId == company.id }.sorted(by: { $0.id < $1.id })
+            let finishedWorkList = workList.filter { $0.status == .finished }
+            
+            for work in finishedWorkList {
+                companyTotalMoney = companyTotalMoney - work.cost
+            }
+            
+            for work in workList {
+                
+                if work.status == .approved {
+                    if companyTotalMoney > 0 && haveMoney {
+                        companyTotalMoney = companyTotalMoney - work.cost
+                        
+                    } else {
+                        companyTotalMoney = work.cost
+                        haveMoney = false
+                    }
+                    
+                    var left = 0.0
+                    if companyTotalMoney < 0 {
+                        left = -companyTotalMoney
+                    } else {
+                        left = companyTotalMoney
+                    }
+                    
+                    self.totalRevenue += work.cost
+                    self.leftRevenue += left
+                }
+            }
+            
+            
+        }
     }
     
 }

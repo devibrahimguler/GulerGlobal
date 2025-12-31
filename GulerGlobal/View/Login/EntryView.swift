@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct EntryView: View {
-    
-    // @ObservedObject var viewModel: EntryViewModel
-    @EnvironmentObject var viewModel: EntryViewModel
+    @StateObject var viewModel = EntryViewModel()
     
     var body: some View {
         ZStack {

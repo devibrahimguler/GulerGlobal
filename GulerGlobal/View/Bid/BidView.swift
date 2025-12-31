@@ -8,24 +8,24 @@
 import SwiftUI
 
 struct BidView: View {
-    @Environment(\.colorScheme) var colorScheme
-    
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
-    var company: Company?
     
     var body: some View {
-        let pendinges = viewModel.works.filter({ $0.status == .pending })
+        let pendinges = AppState.shared.works.filter({ $0.status == .pending })
         BaseList(isEmpty: pendinges.isEmpty) {
             ForEach(pendinges, id: \.self) { work in
                 let company = viewModel.getCompanyById(work.companyId)
                 NavigationLink {
-                    WorkDetail(work: work, company: company)
-                        .environmentObject(viewModel)
-                        .onAppear {
-                            isReset.toggle()
-                        }
-                        .toolbar(.hidden, for: .tabBar)
+                    WorkDetail(
+                        firebaseDataService: viewModel.firebaseDataService,
+                        work: work,
+                        company: company
+                    )
+                    .onAppear {
+                        isReset.toggle()
+                    }
+                    .toolbar(.hidden, for: .tabBar)
                 } label: {
                     SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                         WorkCard(company: company, work: work)
@@ -59,15 +59,6 @@ struct TestBidView: View {
     var body: some View {
         BidView()
             .environmentObject(viewModel)
-            .onAppear {
-                viewModel.companies = [
-                    example_TupleModel.company
-                ]
-                viewModel.works = [
-                    example_Work
-                ]
-
-            }
     }
 }
 

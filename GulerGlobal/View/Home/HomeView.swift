@@ -10,19 +10,30 @@ import Charts
 
 struct HomeView: View {
     @Environment(\.colorScheme) private var colorScheme
-    
-    @StateObject private var viewModel = HomeViewModel()
+    @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
                 HStack() {
                     VStack(alignment: .leading, spacing: 0) {
-                        ChartCard(title: "Toplam", description: "\(viewModel.totalRevenue)", color: .blue)
+                        InfoBadge(
+                            title: "Toplam",
+                            description: viewModel.totalRevenue.customDouble(),
+                            color: .blue
+                        )
                         
-                        ChartCard(title: "Alınan", description: "\(viewModel.amountRevenue)", color: .green)
+                        InfoBadge(
+                            title: "Alınan",
+                            description: viewModel.amountRevenue.customDouble(),
+                            color: .green
+                        )
                         
-                        ChartCard(title: "Kalan", description: "\(viewModel.leftRevenue)", color: .red)
+                        InfoBadge(
+                            title: "Kalan",
+                            description: viewModel.leftRevenue.customDouble(),
+                            color: .red
+                        )
                         
                     }
                     .animation(.smooth, value: viewModel.leftRevenue)
@@ -30,14 +41,14 @@ struct HomeView: View {
                     .padding(.leading, 5)
                     
                     Chart {
-                        ForEach(viewModel.traking, id: \.self) { traking in
+                        ForEach(viewModel.chartData, id: \.self) { data in
                             SectorMark(
-                                angle: .value("Price", traking.isAnimated ? 0.0 : traking.value),
+                                angle: .value("Price", data.isAnimated ? data.value : 0.0),
                                 innerRadius: .fixed(15),
                                 angularInset: 1
                             )
-                            .foregroundStyle(traking.color)
-                            .opacity(traking.isAnimated ? 0.0 : 1.0)
+                            .foregroundStyle(data.color)
+                            .opacity(data.isAnimated ? 1.0 : 0.0)
                         }
                         
                     }
@@ -70,7 +81,7 @@ struct HomeView: View {
         guard !viewModel.isAnimated else { return }
         viewModel.isAnimated = true
         
-        $viewModel.traking.enumerated().forEach { index, element in
+        $viewModel.chartData.enumerated().forEach { index, element in
             if index > 5 {
                 element.wrappedValue.isAnimated = true
             } else {
@@ -85,7 +96,7 @@ struct HomeView: View {
     }
     
     private func resetChartAnimation() {
-        $viewModel.traking.forEach { traking in
+        $viewModel.chartData.forEach { traking in
             traking.wrappedValue.isAnimated = false
         }
         

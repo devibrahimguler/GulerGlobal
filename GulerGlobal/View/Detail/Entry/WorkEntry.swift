@@ -77,16 +77,8 @@ struct WorkEntry: View {
             viewModel.updateWorkDetails(with: nil)
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Onayla") {
-                    withAnimation(.snappy) {
-                        submission()
-                    }
-                }
-                .foregroundStyle(.isGreen)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .disabled(isClicked)
+            CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
+                submission()
             }
         }
         
@@ -221,6 +213,102 @@ struct CompanyPickerView: View {
         } else {
             if let searchCompany = viewModel.searchCompanies(by: text) {
                 self.companies = searchCompany.filter { $0.status == .both || $0.status == .current}
+            }
+        }
+    }
+    
+    private func selectedCompany() {
+        if isHidden {
+            formTitle = title
+        } else {
+            formTitle = .none
+        }
+        
+        isHidden.toggle()
+        hiddingAnimation.toggle()
+    }
+}
+
+struct SupplierPickerView: View {
+    @EnvironmentObject var viewModel: WorkDetailViewModel
+    @State private var isHidden: Bool = true
+    @State private var text: String = ""
+    @State private var companies: [Company] = []
+    
+    var title: FormTitle
+    @Binding var formTitle: FormTitle
+    @Binding var hiddingAnimation: Bool
+    @Binding var company: Company?
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 5){
+                TextField("", text: $text)
+                    .placeholder(when: text.isEmpty, padding: 0) {
+                        Text("Firma Girin")
+                            .foregroundColor(.gray)
+                    }
+                    .disabled(isHidden)
+                    .padding(20)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                
+                Image(systemName: "chevron.down")
+                    .rotationEffect(.init(degrees: isHidden ? 180 : 0))
+                    .onTapGesture {
+                        selectedCompany()
+                    }
+                    .padding(10)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .circular))
+            }
+            .foregroundStyle(Color.accentColor)
+            .font(.title3)
+            .padding(10)
+            
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(alignment: .leading, spacing: 0) {
+                    ForEach(companies == [] ? AppState.shared.companies.filter { $0.status == .both || $0.status == .supplier} : companies, id: \.self) { c in
+                        Text("-> \(c.name)")
+                            .padding(10)
+                            .onTapGesture {
+                                text = c.name
+                                company = c
+                                selectedCompany()
+                            }
+                            .foregroundStyle(.gray)
+                            .font(.headline)
+                        
+                        Divider()
+                    }
+                }
+            }
+            .frame(height: isHidden ? 0 : 500)
+            .padding(.leading, 20)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .clipShape(.rect(cornerRadius: 30, style: .continuous))
+        }
+        .onChange(of: text) { _, newValue in
+            searching(value: newValue)
+        }
+        .onChange(of: isHidden) { _, _ in
+            if let company = company {
+                self.text = company.name
+            } else {
+                self.text = ""
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .font(.caption)
+        .fontWeight(.semibold)
+        .padding(.horizontal, 5)
+        .animation(.linear, value: isHidden)
+    }
+    
+    func searching(value: String) {
+        if value == "" {
+            self.companies = []
+        } else {
+            if let searchCompany = viewModel.searchCompanies(by: text) {
+                self.companies = searchCompany.filter { $0.status == .both || $0.status == .supplier}
             }
         }
     }

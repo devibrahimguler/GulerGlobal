@@ -10,7 +10,7 @@ import SwiftUI
 struct ApprovedView: View {
     @Environment(\.colorScheme) var colorScheme
     
-    @EnvironmentObject var viewModel: MainViewModel
+    @StateObject private var viewModel = MainViewModel()
     @State private var isReset: Bool = false
     
     var body: some View {
@@ -20,12 +20,15 @@ struct ApprovedView: View {
                 let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        WorkDetail(work: work, company: company)
-                            .environmentObject(viewModel)
-                            .onAppear {
-                                isReset.toggle()
-                            }
-                            .toolbar(.hidden, for: .tabBar)
+                        WorkDetail(
+                            firebaseDataService: viewModel.firebaseDataService,
+                            work: work,
+                            company: company
+                        )
+                        .onAppear {
+                            isReset.toggle()
+                        }
+                        .toolbar(.hidden, for: .tabBar)
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                             WorkCard(company: company, work: work)

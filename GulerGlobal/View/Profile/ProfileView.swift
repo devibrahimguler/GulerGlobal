@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
-    
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {

@@ -10,7 +10,7 @@ import SwiftUI
 struct CompanyDetail: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: MainViewModel
+    @StateObject private var viewModel = MainViewModel()
     
     @State private var isEditCompany: Bool = false
     @State private var formTitle: FormTitle = .none

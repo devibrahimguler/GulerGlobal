@@ -17,8 +17,11 @@ struct RejectedView: View {
                 let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        WorkDetail(work: work, company: company)
-                            .environmentObject(viewModel)
+                        WorkDetail(
+                            firebaseDataService: viewModel.firebaseDataService,
+                            work: work,
+                            company: company
+                        )
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                             WorkCard(company: company, work: work)

@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct CustomTabBar: View {
-    @StateObject private var viewModel = TabBarViewModel()
-    
+    @EnvironmentObject var viewModel: MainViewModel
+    @State var searchText = ""
     var body: some View {
         TabView(selection: $viewModel.activeTab) {
             Tab(TabValue.Home.rawValue, systemImage: TabValue.Home.symbolImage, value: TabValue.Home) {
                 HomeView()
             }
-           
+            
             Tab(TabValue.Bid.rawValue, systemImage: TabValue.Bid.symbolImage, value: TabValue.Bid) {
                 NavigationStack {
                     BidView()
-                        .navigationTitle(TabValue.Bid.rawValue)
-                        .navigationBarTitleDisplayMode(.inline )
+                    .navigationTitle(TabValue.Bid.rawValue)
                 }
             }
             
@@ -39,13 +38,12 @@ struct CustomTabBar: View {
             
             Tab(TabValue.Search.rawValue, systemImage: TabValue.Search.symbolImage, value: TabValue.Search, role: .search) {
                 NavigationStack {
-                    let list = viewModel.companies.filter { $0.name.hasPrefix(viewModel.searchText)}
+                    let list = viewModel.companies.filter { $0.name.hasPrefix(searchText)}
                     BaseList(isEmpty: list.isEmpty) {
                         ForEach(list, id: \.self) { company in
                             LazyVStack(spacing: 0) {
                                 NavigationLink {
                                     CompanyDetail(company: company, companyStatus: .supplier)
-                                        .environmentObject(viewModel)
                                         .toolbar(.hidden, for: .tabBar)
                                 } label: {
                                     CompanyCard(company: company)
@@ -54,13 +52,14 @@ struct CustomTabBar: View {
                         }
                     }
                     .navigationTitle("Firma Ara")
-                    .searchable(text: $viewModel.searchText, placement: .toolbar, prompt: Text("Ara..."))
+                    .searchable(text: $searchText, placement: .toolbar, prompt: Text("Ara..."))
                 }
             }
             
         }
         .tabViewSearchActivation(.searchTabSelection)
         .ignoresSafeArea(.keyboard, edges: .all)
+        
     }
 }
 

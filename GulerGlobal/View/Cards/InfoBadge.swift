@@ -1,5 +1,5 @@
 //
-//  Property.swift
+//  InfoBadge.swift
 //  GulerGlobal
 //
 //  Created by ibrahim Güler on 16.02.2024.
@@ -7,12 +7,11 @@
 
 import SwiftUI
 
-struct ChartCard: View {
+struct InfoBadge: View {
     @Environment(\.colorScheme) var colorScheme
     
     var title: String
     var description: String
-    
     var color: Color
     
     var body: some View {
@@ -44,6 +43,6 @@ struct ChartCard: View {
 }
 
 #Preview {
-    ChartCard(title: "title", description: "27.500", color: .isCream)
+    InfoBadge(title: "title", description: "27.500", color: .isCream)
         .preferredColorScheme(.dark)
 }

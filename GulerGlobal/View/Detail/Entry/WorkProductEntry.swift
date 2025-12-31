@@ -11,7 +11,7 @@ struct WorkProductEntry: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     
-    @EnvironmentObject var viewModel: MainViewModel
+    @EnvironmentObject var viewModel: WorkDetailViewModel
     
     @State private var activeField: FormTitle = .none
     @State private var config: DateConfig = DateConfig(
@@ -28,13 +28,13 @@ struct WorkProductEntry: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 0) {
-                CompanyPickerView(
+                SupplierPickerView(
                     title: .supplier,
-                    filter: .supplier,
                     formTitle: $activeField,
                     hiddingAnimation: $hiddingAnimation,
                     company: $company
                 )
+                .environmentObject(viewModel)
                 
                 if let company = company {
                     ProductPickerView(
@@ -46,11 +46,19 @@ struct WorkProductEntry: View {
                     )
                 }
                 
-                CustomTextField(title: .productQuantity, text: $viewModel.companyProductDetails.quantity, formTitle: $activeField, keyboardType: .numberPad)
+                CustomTextField(
+                    title: .productQuantity,
+                    text: $viewModel.workProductDetails.quantity,
+                    formTitle: $activeField,
+                    keyboardType: .numberPad
+                )
                 
-                
-                CustomDatePicker(dateConfig: $config, title: .productPurchased, formTitle: $activeField)
-                    .foregroundStyle(.isText)
+                CustomDatePicker(
+                    dateConfig: $config,
+                    title: .productPurchased,
+                    formTitle: $activeField
+                )
+                .foregroundStyle(.isText)
                 
             }
             .padding(10)
@@ -69,23 +77,16 @@ struct WorkProductEntry: View {
             activeField = .none
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Onayla") {
-                    withAnimation(.snappy) {
-                        submission()
-                    }
-                }
-                .foregroundStyle(.isGreen)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .disabled(isClicked)
+            CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
+                submission()
             }
         }
     }
     
     private func submission() {
-        guard !viewModel.companyProductDetails.quantity.isEmpty,
-              let product = product
+        guard
+            !viewModel.workProductDetails.quantity.isEmpty,
+            let product = product
         else {
             isClicked = false
             return
@@ -94,19 +95,19 @@ struct WorkProductEntry: View {
         let workProduct = WorkProduct(
             workId: workId,
             productId: product.id,
-            quantity: viewModel.companyProductDetails.quantity.toDouble(),
+            quantity: viewModel.workProductDetails.quantity.toDouble(),
             date: configToDate(config)
         )
         
-        let quantity = product.quantity - viewModel.companyProductDetails.quantity.toDouble()
-
+        let quantity = product.quantity - viewModel.workProductDetails.quantity.toDouble()
+        
         let updateArea: [String: Any] = [
             "quantity": quantity
         ]
         
         viewModel.companyProductUpdate(productId: product.id, updateArea: updateArea)
         viewModel.workProductCreate(product: workProduct)
-
+        
         isClicked = false
         dismiss()
     }

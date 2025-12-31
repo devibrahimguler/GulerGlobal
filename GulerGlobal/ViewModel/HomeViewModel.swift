@@ -9,19 +9,31 @@ import SwiftUI
 
 @MainActor
 final class HomeViewModel: ObservableObject {
-    @Published var leftRevenue: Double = 0.0
+    @Published var leftRevenue: Double = 0.0 {
+        didSet { updateTracking() }
+    }
+    
+    @Published var totalRevenue: Double = 0.0 {
+        didSet { updateTracking() }
+    }
+    
     @Published var amountRevenue: Double = 0.0
-    @Published var totalRevenue: Double = 0.0
-    @Published var traking: [Tracking] = []
+    @Published var chartData: [ChartData] = []
     @Published var isAnimated: Bool = false
     
-    init(totalRevenue: Binding<Double>, leftRevenue: Binding<Double>,) {
-        traking.removeAll()
-        _totalRevenue = totalRevenue
+    init(totalRevenue: Double, leftRevenue: Double) {
+        self.totalRevenue = totalRevenue
+        self.leftRevenue = leftRevenue
+        
+        updateTracking()
+    }
+    
+    private func updateTracking() {
         self.amountRevenue = self.totalRevenue - self.leftRevenue
-        self.traking = [
-            Tracking(color: .green.opacity(0.85), value: self.amountRevenue),
-            Tracking(color: .red.opacity(0.85), value: self.leftRevenue)
+        
+        self.chartData = [
+            ChartData(color: .green.opacity(0.85), value: self.amountRevenue),
+            ChartData(color: .red.opacity(0.85), value: self.leftRevenue)
         ]
     }
 }
