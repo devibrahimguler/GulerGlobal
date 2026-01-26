@@ -230,7 +230,7 @@ struct CompanyPickerView: View {
 }
 
 struct SupplierPickerView: View {
-    @EnvironmentObject var viewModel: WorkDetailViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     @State private var isHidden: Bool = true
     @State private var text: String = ""
     @State private var companies: [Company] = []
@@ -266,7 +266,7 @@ struct SupplierPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(companies == [] ? AppState.shared.companies.filter { $0.status == .both || $0.status == .supplier} : companies, id: \.self) { c in
+                    ForEach(companies == [] ? viewModel.companies.filter { $0.status == .both || $0.status == .supplier} : companies, id: \.self) { c in
                         Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {

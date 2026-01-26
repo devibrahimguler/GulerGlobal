@@ -20,7 +20,7 @@ struct SupplierView: View {
                         CompanyDetail(company: company, companyStatus: .supplier)
                             .environmentObject(viewModel)
                     } label: {
-                        SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
+                        SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                             CompanyCard(company: company)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {

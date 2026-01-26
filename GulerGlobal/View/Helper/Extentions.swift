@@ -8,8 +8,8 @@
 import SwiftUI
 
 enum ButtonType: String, CaseIterable {
-    case cancel = "İptal"
-    case finished = "Bitmiş"
+    case cancel = "İptal Projeler"
+    case finished = "Bitmiş Projeler"
     case currents = "Cariler"
     case supplier = "Tedarikçiler"
     case debt = "Borçlar"

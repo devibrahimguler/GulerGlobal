@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WorkMenu: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: WorkDetailViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     @Binding var isEdit: Bool
     @Binding var formTitle: FormTitle
     @Binding var openMenu: Bool

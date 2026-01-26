@@ -13,46 +13,48 @@ struct CompanyCard: View {
     var body: some View {
         HStack(spacing: 12) {
             companyInitials
+            companyDetails
             
-            VStack(alignment: .leading, spacing: 5) {
-                
-                Label {
-                    Text("\(company.name)")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                } icon: {
-                    Image(systemName: "character.textbox")
-                }
-                .foregroundStyle(.isText)
-                .lineLimit(1)
-                
-                Label {
-                    Text("\(company.address)")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                } icon: {
-                    Image(systemName: "mappin.square")
-                }
-                .foregroundStyle(.isSilver)
-                .lineLimit(1)
-            }
+            Spacer()
         }
-        
-        .frame(maxWidth: .infinity, alignment: .leading)
         .lineLimit(1)
         .fontWeight(.semibold)
-        .padding(15)
-        .background(scheme == .dark ? .black : .white)
-        .clipShape(.rect(cornerRadius: 30, style: .continuous))
-        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+        .padding(13)
     }
     
     private var companyInitials: some View {
         Text(String(company.name.prefix(1)))
             .font(.title)
-            .foregroundStyle(.black.gradient)
-            .frame(width: 45, height: 45)
-            .background(Color.isSkyBlue.gradient, in: Circle())
+            .foregroundStyle(.accent.gradient)
+            .frame(width: 50, height: 50)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 25))
+    }
+    
+    private var companyDetails: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            
+            Label {
+                Text("\(company.name)")
+                    .font(.headline)
+                    .fontWeight(.bold)
+            } icon: {
+                Image(systemName: "character.textbox")
+            }
+            .fontWeight(.bold)
+            .foregroundStyle(.isText)
+            .lineLimit(1)
+            
+            Label {
+                Text("\(company.address)")
+                    .font(.caption)
+                    .fontWeight(.bold)
+            } icon: {
+                Image(systemName: "mappin.square")
+            }
+            .foregroundStyle(.gray)
+            .lineLimit(1)
+        }
+        
     }
 }
 
@@ -67,3 +69,4 @@ struct Test_CompanyCard: View {
 #Preview {
     Test_CompanyCard()
 }
+

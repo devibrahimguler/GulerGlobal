@@ -26,9 +26,9 @@ struct WorkCard: View {
     private var companyInitials: some View {
         Text(String(company.name.prefix(1)))
             .font(.title)
-            .foregroundStyle(.black.gradient)
-            .frame(width: 45, height: 45)
-            .background(Color.isSkyBlue.gradient, in: Circle())
+            .foregroundStyle(.accent.gradient)
+            .frame(width: 50, height: 50)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 25))
     }
     
     private var companyDetails: some View {

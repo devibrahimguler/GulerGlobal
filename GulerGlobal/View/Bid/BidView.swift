@@ -12,16 +12,16 @@ struct BidView: View {
     @State private var isReset: Bool = false
     
     var body: some View {
-        let pendinges = AppState.shared.works.filter({ $0.status == .pending })
+        let pendinges = viewModel.works.filter({ $0.status == .pending })
         BaseList(isEmpty: pendinges.isEmpty) {
             ForEach(pendinges, id: \.self) { work in
                 let company = viewModel.getCompanyById(work.companyId)
                 NavigationLink {
                     WorkDetail(
-                        firebaseDataService: viewModel.firebaseDataService,
                         work: work,
                         company: company
                     )
+                    .environmentObject(viewModel)
                     .onAppear {
                         isReset.toggle()
                     }

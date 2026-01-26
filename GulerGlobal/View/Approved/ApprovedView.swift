@@ -21,10 +21,10 @@ struct ApprovedView: View {
                 LazyVStack(spacing: 0) {
                     NavigationLink {
                         WorkDetail(
-                            firebaseDataService: viewModel.firebaseDataService,
                             work: work,
                             company: company
                         )
+                        .environmentObject(viewModel)
                         .onAppear {
                             isReset.toggle()
                         }

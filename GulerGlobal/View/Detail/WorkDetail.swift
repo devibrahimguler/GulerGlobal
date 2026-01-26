@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WorkDetail: View {
     @Environment(\.colorScheme) var colorScheme
-    @StateObject private var viewModel: WorkDetailViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     
     @State private var startConfig: DateConfig = DateConfig(
         selectedDay: "1",
@@ -32,10 +32,7 @@ struct WorkDetail: View {
         viewModel.getWorkProductsById(work.id)
     }
     
-    init(firebaseDataService: FirebaseDataModel, work: Work, company: Company) {
-        _viewModel = StateObject(wrappedValue: WorkDetailViewModel(
-            firebaseDataService: firebaseDataService
-        ))
+    init(work: Work, company: Company) {
         self.work = work
         self.company = company
     }
@@ -139,10 +136,10 @@ struct Test_WorkDetailView: View {
     
     var body: some View {
         WorkDetail(
-            firebaseDataService: viewModel.firebaseDataService,
             work: example_Work,
             company: example_Company
         )
+        .environmentObject(viewModel)
     }
 }
 

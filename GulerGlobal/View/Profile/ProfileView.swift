@@ -12,114 +12,80 @@ struct ProfileView: View {
     @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
-        VStack(alignment: .leading) {
+        ScrollView(.vertical, showsIndicators: false) {
             
             VStack(alignment: .center) {
-                HStack {
-                    Image("icon")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 50, style: .continuous))
-                    
-                    Spacer()
-                    
-                    VStack {
-                        Text("\(viewModel.authService.getUserName ?? "")")
-                            .font(.headline)
-                            .fontWeight(.black)
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        withAnimation(.smooth) {
-                            viewModel.isLoadingPlaceholder = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                viewModel.authService.logout { result in
-                                    switch result {
-                                    case .success(_):
-                                        viewModel.isUserConnected = false
-                                        viewModel.isLoadingPlaceholder = false
-                                        
-                                    case .failure(_):
-                                        viewModel.isUserConnected = true
-                                        viewModel.isLoadingPlaceholder = false
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    } label: {
-                        VStack {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
-                            Text("Çıkış Yap")
-                        }
-                    }
-                    .font(.caption)
-                    .fontWeight(.black)
-                    .foregroundStyle(Color.accentColor)
-                }
-            }
-            .padding(10)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30))
-            
-            VStack() {
-                HStack {
-                    NavigationButton(
-                        content:
-                            FinishedBidView()
-                            .environmentObject(viewModel)
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .finished)
-                    
-                    NavigationButton(
-                        content:
-                            RejectedView()
-                            .environmentObject(viewModel)
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .cancel)
-                    
-                    NavigationButton(
-                        content:
-                            CurrentView()
-                            .environmentObject(viewModel)
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .currents)
-                }
+                Image("icon")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
                 
-                HStack {
-                    NavigationButton(
-                        content:
-                            SupplierView()
-                            .environmentObject(viewModel)
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .supplier)
-                    
-                    NavigationButton(
-                        content:
-                            DebtView()
-                            .environmentObject(viewModel)
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .debt)
-                    
-                    NavigationButton(
-                        content:
-                            VStack { Text("Yakında!") }
-                            .toolbar(.hidden, for: .tabBar),
-                        buttonType: .soon)
-                }
+                Text("\(viewModel.authService.getUserName ?? "GulerMetSan")")
+                    .font(.headline)
+                    .fontWeight(.black)
             }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding()
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30))
+            .frame(maxWidth: .infinity)
+            .padding(20)
             
-            Spacer()
+            NavigationList()
             
         }
-        .padding(.horizontal, 10)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
         
+    }
+    
+    @ViewBuilder
+    func NavigationList() -> some View {
+        VStack {
+            NavigationButton(
+                content:
+                    FinishedBidView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .finished,
+                description: "\(viewModel.works.filter({ $0.status == .finished }).count ) adet Proje var")
+            
+            NavigationButton(
+                content:
+                    RejectedView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .cancel,
+                description: "\(viewModel.works.filter({ $0.status == .rejected }).count ) adet Proje var")
+            
+            NavigationButton(
+                content:
+                    CurrentView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .currents,
+                description: "\(viewModel.companies.filter({ $0.status == .current }).count ) adet Şirket var")
+            
+            NavigationButton(
+                content:
+                    SupplierView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .supplier,
+                description: "\(viewModel.companies.filter({ $0.status == .supplier }).count ) adet Şirket var")
+            
+            NavigationButton(
+                content:
+                    DebtView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .debt,
+                description: "Borç Sayfası")
+            
+            NavigationButton(
+                content:
+                    VStack { Text("Yakında!") }
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .soon,
+                description: "Yakında")
+        }
+        .padding([.horizontal, .bottom], 20)
     }
 }
 

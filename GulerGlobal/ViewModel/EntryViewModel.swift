@@ -22,7 +22,7 @@ final class EntryViewModel: ObservableObject {
             !password.isEmpty
         else { return }
         
-       isLoading = true
+        self.isLoading = true
         self.authService.loginUser(email: self.username + "@gulermetsan.com", password: self.password) { result in
             switch result {
                 
@@ -30,7 +30,7 @@ final class EntryViewModel: ObservableObject {
                 
                 print("Hata !")
                 self.authService.logout { result in }
-                isLoading = false
+                self.isLoading = false
                 
             case .success(_):
                 self.isConnected = true

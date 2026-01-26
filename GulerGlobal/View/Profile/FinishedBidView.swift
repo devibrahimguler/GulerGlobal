@@ -19,10 +19,10 @@ struct FinishedBidView: View {
                 LazyVStack(spacing: 0) {
                     NavigationLink {
                         WorkDetail(
-                            firebaseDataService: viewModel.firebaseDataService,
                             work: work,
                             company: company
                         )
+                        .environmentObject(viewModel)
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                             WorkCard(company: company, work: work)

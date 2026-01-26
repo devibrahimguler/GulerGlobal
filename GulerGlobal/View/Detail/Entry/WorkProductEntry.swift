@@ -11,7 +11,7 @@ struct WorkProductEntry: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     
-    @EnvironmentObject var viewModel: WorkDetailViewModel
+    @EnvironmentObject var viewModel: MainViewModel
     
     @State private var activeField: FormTitle = .none
     @State private var config: DateConfig = DateConfig(

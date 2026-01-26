@@ -27,7 +27,9 @@ struct CustomTabBar: View {
                 NavigationStack {
                     ApprovedView()
                         .navigationTitle(TabValue.Bid.rawValue)
+                    
                 }
+              
             }
             
             Tab(TabValue.Profile.rawValue, systemImage: TabValue.Profile.symbolImage, value: TabValue.Profile) {
@@ -46,7 +48,11 @@ struct CustomTabBar: View {
                                     CompanyDetail(company: company, companyStatus: .supplier)
                                         .toolbar(.hidden, for: .tabBar)
                                 } label: {
-                                    CompanyCard(company: company)
+                                    SwipeAction(cornerRadius: 30, direction: .trailing, isReset: Binding.constant(false)) {
+                                        CompanyCard(company: company)
+                                    } actions: {
+                                        
+                                    }
                                 }
                             }
                         }
