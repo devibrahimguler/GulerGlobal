@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct CustomTabBar: View {
+    
     @EnvironmentObject var viewModel: MainViewModel
-    @State var searchText = ""
+    
     var body: some View {
         TabView(selection: $viewModel.activeTab) {
             Tab(TabValue.Home.rawValue, systemImage: TabValue.Home.symbolImage, value: TabValue.Home) {
@@ -19,7 +20,7 @@ struct CustomTabBar: View {
             Tab(TabValue.Bid.rawValue, systemImage: TabValue.Bid.symbolImage, value: TabValue.Bid) {
                 NavigationStack {
                     BidView()
-                    .navigationTitle(TabValue.Bid.rawValue)
+                        .navigationTitle(TabValue.Bid.rawValue)
                 }
             }
             
@@ -27,9 +28,7 @@ struct CustomTabBar: View {
                 NavigationStack {
                     ApprovedView()
                         .navigationTitle(TabValue.Bid.rawValue)
-                    
                 }
-              
             }
             
             Tab(TabValue.Profile.rawValue, systemImage: TabValue.Profile.symbolImage, value: TabValue.Profile) {
@@ -40,25 +39,8 @@ struct CustomTabBar: View {
             
             Tab(TabValue.Search.rawValue, systemImage: TabValue.Search.symbolImage, value: TabValue.Search, role: .search) {
                 NavigationStack {
-                    let list = viewModel.companies.filter { $0.name.hasPrefix(searchText)}
-                    BaseList(isEmpty: list.isEmpty) {
-                        ForEach(list, id: \.self) { company in
-                            LazyVStack(spacing: 0) {
-                                NavigationLink {
-                                    CompanyDetail(company: company, companyStatus: .supplier)
-                                        .toolbar(.hidden, for: .tabBar)
-                                } label: {
-                                    SwipeAction(cornerRadius: 30, direction: .trailing, isReset: Binding.constant(false)) {
-                                        CompanyCard(company: company)
-                                    } actions: {
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .navigationTitle("Firma Ara")
-                    .searchable(text: $searchText, placement: .toolbar, prompt: Text("Ara..."))
+                    SearchView()
+                        .environmentObject(viewModel)
                 }
             }
             

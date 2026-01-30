@@ -8,11 +8,95 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @EnvironmentObject var viewModel: MainViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ScrollView(.vertical, showsIndicators: false) {
+            
+            VStack(alignment: .center) {
+                Image("icon")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 100, style: .continuous))
+                
+                Text("\(viewModel.authService.getUserName ?? "GulerMetSan")")
+                    .font(.headline)
+                    .fontWeight(.black)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(20)
+            
+            
+            NavigationList()
+            
+        }
+        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
+        
+    }
+    
+    @ViewBuilder
+    func NavigationList() -> some View {
+        VStack {
+            NavigationButton(
+                content:
+                    FinishedBidView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .finished,
+                description: "\(viewModel.works.filter({ $0.status == .finished }).count ) adet Proje var")
+            
+            NavigationButton(
+                content:
+                    RejectedView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .cancel,
+                description: "\(viewModel.works.filter({ $0.status == .rejected }).count ) adet Proje var")
+            
+            NavigationButton(
+                content:
+                    CurrentView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .currents,
+                description: "\(viewModel.companies.filter({ $0.status == .current }).count ) adet Şirket var")
+            
+            NavigationButton(
+                content:
+                    SupplierView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .supplier,
+                description: "\(viewModel.companies.filter({ $0.status == .supplier }).count ) adet Şirket var")
+            
+            NavigationButton(
+                content:
+                    DebtView()
+                    .environmentObject(viewModel)
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .debt,
+                description: "Borç Sayfası")
+            
+            NavigationButton(
+                content:
+                    VStack { Text("Yakında!") }
+                    .toolbar(.hidden, for: .tabBar),
+                buttonType: .soon,
+                description: "Yakında")
+        }
+        .padding([.horizontal, .bottom], 20)
+    }
+}
+
+struct Test_ProfileView: View {
+    var body: some View {
+        ProfileView()
+            .environmentObject(MainViewModel())
     }
 }
 
 #Preview {
-    ProfileView()
+    Test_ProfileView()
 }

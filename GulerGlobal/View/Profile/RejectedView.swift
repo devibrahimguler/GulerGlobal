@@ -31,6 +31,7 @@ struct RejectedView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

@@ -32,6 +32,7 @@ struct FinishedBidView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

@@ -28,6 +28,7 @@ struct DebtView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

@@ -50,6 +50,7 @@ struct BaseList<Content: View>: View {
             
         }
         .defaultScrollAnchor(isEmpty ? .center : .top, for: .alignment)
+        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2) )
     }
 }
 

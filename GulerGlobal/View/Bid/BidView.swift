@@ -16,37 +16,40 @@ struct BidView: View {
         BaseList(isEmpty: pendinges.isEmpty) {
             ForEach(pendinges, id: \.self) { work in
                 let company = viewModel.getCompanyById(work.companyId)
-                NavigationLink {
-                    WorkDetail(
-                        work: work,
-                        company: company
-                    )
-                    .environmentObject(viewModel)
-                    .onAppear {
-                        isReset.toggle()
-                    }
-                    .toolbar(.hidden, for: .tabBar)
-                } label: {
-                    SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
-                        WorkCard(company: company, work: work)
-                    }
-                    actions: {
-                        Action(tint: .red, icon: "xmark.bin") {
-                            viewModel.workUpdate(
-                                workId: work.id,
-                                updateArea: ["status": ApprovalStatus.rejected.rawValue]
-                            )
+                LazyVStack(spacing: 0) {
+                    NavigationLink {
+                        WorkDetail(
+                            work: work,
+                            company: company
+                        )
+                        .environmentObject(viewModel)
+                        .onAppear {
+                            isReset.toggle()
                         }
-                        
-                        Action(tint: .green, icon: "checkmark.square") {
-                            withAnimation(.snappy) {
+                        .toolbar(.hidden, for: .tabBar)
+                    } label: {
+                        SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
+                            WorkCard(company: company, work: work)
+                        }
+                        actions: {
+                            Action(tint: .red, icon: "xmark.bin") {
                                 viewModel.workUpdate(
                                     workId: work.id,
-                                    updateArea: ["status": ApprovalStatus.approved.rawValue]
+                                    updateArea: ["status": ApprovalStatus.rejected.rawValue]
                                 )
+                            }
+                            
+                            Action(tint: .green, icon: "checkmark.square") {
+                                withAnimation(.snappy) {
+                                    viewModel.workUpdate(
+                                        workId: work.id,
+                                        updateArea: ["status": ApprovalStatus.approved.rawValue]
+                                    )
+                                }
                             }
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

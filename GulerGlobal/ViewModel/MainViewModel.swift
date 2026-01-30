@@ -16,8 +16,8 @@ final class MainViewModel: ObservableObject {
     
     @Published var activeTab: TabValue = .Home
     
-    @Published var isLoadingPlaceholder: Bool = false
-    @Published var isUserConnected: Bool = false
+    @Published var isLoading: Bool = false
+    @Published var isConnected: Bool = false
     
     @Published var companies: [Company] = []
     @Published var works: [Work] = []
@@ -57,11 +57,11 @@ final class MainViewModel: ObservableObject {
     
     // MARK: - Public Methods
     func connectionControl() {
-        isUserConnected = authService.getUid != nil
+        isConnected = authService.getUid != nil
     }
     
     func fetchData() {
-        isLoadingPlaceholder = true
+        isLoading = true
         
         let group = DispatchGroup()
         
@@ -92,7 +92,7 @@ final class MainViewModel: ObservableObject {
         
         group.notify(queue: .main) { [weak self] in
             self?.calculateNetBalance()
-            self?.isLoadingPlaceholder = false
+            self?.isLoading = false
         }
     }
     
@@ -116,7 +116,7 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let datas):
                 self.companies = datas.0.sorted(by: { $0.id > $1.id })
@@ -126,7 +126,7 @@ final class MainViewModel: ObservableObject {
                 self.statements = datas.4.sorted(by: { $0.date > $1.date })
                 
                 self.calculateNetBalance()
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
                 
             }
@@ -145,11 +145,11 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let companies):
                 self.companies = companies.sorted(by: { $0.id > $1.id })
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             }
             
             completion?()
@@ -168,11 +168,11 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let works):
                 self.works = works.sorted(by: { $0.id > $1.id })
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             }
             
             completion?()
@@ -191,11 +191,11 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let companyProducts):
                 self.companyProducts = companyProducts.sorted(by: { $0.date > $1.date })
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             }
             
             completion?()
@@ -214,11 +214,11 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let workProducts):
                 self.workProducts = workProducts.sorted(by: { $0.date > $1.date })
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             }
             
             completion?()
@@ -237,11 +237,11 @@ final class MainViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("Fetch error: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
                 
             case .success(let statements):
                 self.statements = statements.sorted(by: { $0.date > $1.date })
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             }
             
             completion?()
@@ -325,7 +325,7 @@ final class MainViewModel: ObservableObject {
     }
     
     func companyCreate(company: Company) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.saveCompany(company)
@@ -338,14 +338,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func companyUpdate(companyId: String, updateArea: [String: Any]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.updateCompany(companyId, updateArea: updateArea)
@@ -358,14 +358,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func companyDelete(companyId: String) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.deleteCompany(companyId)
@@ -378,14 +378,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func workCreate(work: Work) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.saveWork(work)
@@ -398,14 +398,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func workUpdate(workId: String, updateArea: [String: Any]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.updateWork(workId, updateArea: updateArea)
@@ -418,14 +418,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func workDelete(workId: String) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.deleteWork(workId)
@@ -438,18 +438,18 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func multipleWorkDelete(workIds: [String]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         firebaseDataService.deleteMultipleWork(workIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             } else {
                 self.fetchWorkData()
             }
@@ -457,7 +457,7 @@ final class MainViewModel: ObservableObject {
     }
     
     func workProductCreate(product: WorkProduct) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.saveWorkProduct(product)
@@ -470,14 +470,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func workProductUpdate(productId: String, updateArea: [String: Any]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.updateWorkProduct(productId, updateArea: updateArea)
@@ -490,14 +490,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func workProductDelete(productId: String) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.deleteWorkProduct(productId)
@@ -510,18 +510,18 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func multipleWorkProductDelete(productIds: [String]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         firebaseDataService.deleteMultipleWorkProduct(productIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             } else {
                 self.fetchWorkProductData()
             }
@@ -529,7 +529,7 @@ final class MainViewModel: ObservableObject {
     }
     
     func companyProductCreate(product: CompanyProduct) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.saveCompanyProduct(product)
@@ -542,14 +542,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func companyProductUpdate(productId: String, updateArea: [String: Any]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.updateCompanyProduct(productId, updateArea: updateArea)
@@ -562,14 +562,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func companyProductDelete(productId: String) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.deleteCompanyProduct(productId)
@@ -582,18 +582,18 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func multipleCompanyProductDelete(productIds: [String]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         firebaseDataService.deleteMultipleCompanyProduct(productIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             } else {
                 self.fetchCompanyProductData()
             }
@@ -601,7 +601,7 @@ final class MainViewModel: ObservableObject {
     }
     
     func statementCreate(statement: Statement) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.saveStatement(statement)
@@ -614,14 +614,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func statementUpdate(statementId: String, updateArea: [String: Any]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.updateStatement(statementId, updateArea: updateArea)
@@ -634,14 +634,14 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func statementDelete(statementId: String) {
-        isLoadingPlaceholder = true
+        isLoading = true
         Task {
             do {
                 try await firebaseDataService.deleteStatement(statementId)
@@ -654,18 +654,18 @@ final class MainViewModel: ObservableObject {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
-                    self.isLoadingPlaceholder = false
+                    self.isLoading = false
                 }
             }
         }
     }
     
     func multipleStatementDelete(statementIds: [String]) {
-        isLoadingPlaceholder = true
+        isLoading = true
         firebaseDataService.deleteMultipleStatement(statementIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
-                self.isLoadingPlaceholder = false
+                self.isLoading = false
             } else {
                 self.fetchStatementData()
             }
@@ -675,7 +675,7 @@ final class MainViewModel: ObservableObject {
     // MARK: - Private Methods
     
     private func calculateNetBalance() {
-        isLoadingPlaceholder = true
+        isLoading = true
         for company in self.companies {
             
             var companyTotalMoney = 0.0
@@ -729,7 +729,7 @@ final class MainViewModel: ObservableObject {
         
         self.updateTracking()
         
-        self.isLoadingPlaceholder = false
+        self.isLoading = false
     }
     
     func openPhonePicker() {

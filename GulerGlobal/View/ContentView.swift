@@ -8,23 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = MainViewModel()
+    @StateObject var viewModel = EntryViewModel()
     
     var body: some View {
-        Group {
-            if viewModel.isLoadingPlaceholder {
-                CustomPlaceHolder()
-                    .viewCenter()
-                    .ignoresSafeArea()
-                    .background(Color.black)
-            } else if viewModel.isUserConnected {
-                CustomTabBar()
-            } else {
-                EntryView()
-                
-            }
+        if viewModel.isLoading {
+            CustomPlaceHolder()
+                .viewCenter()
+                .ignoresSafeArea()
+                .background(Color.black)
+        } else if viewModel.isConnected {
+            MainView()
+        } else {
+            EntryView()
+                .environmentObject(viewModel)
         }
-        .environmentObject(viewModel)
     }
 }
 

@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ApprovedView: View {
-    @Environment(\.colorScheme) var colorScheme
     
-    @StateObject private var viewModel = MainViewModel()
+    @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
     
     var body: some View {
@@ -41,16 +40,15 @@ struct ApprovedView: View {
                                 )
                             }
                         }
-                        
-                        
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }
     }
 }
 
-struct TestApprovedView: View {
+struct Test_ApprovedView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
@@ -60,5 +58,5 @@ struct TestApprovedView: View {
 }
 
 #Preview {
-    TestApprovedView()
+    Test_ApprovedView()
 }

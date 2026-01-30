@@ -20,19 +20,19 @@ struct WorkCard: View {
         }
         .lineLimit(1)
         .fontWeight(.semibold)
-        .padding(13)
+        .padding(10)
     }
     
     private var companyInitials: some View {
         Text(String(company.name.prefix(1)))
-            .font(.title)
+            .font(.system(size: 40))
             .foregroundStyle(.accent.gradient)
-            .frame(width: 50, height: 50)
+            .frame(width: 70, height: 70)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 25))
     }
     
     private var companyDetails: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(company.name)
                 .fontWeight(.bold)
                 .foregroundStyle(.isText)

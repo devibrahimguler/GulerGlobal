@@ -15,27 +15,30 @@ struct CurrentView: View {
         let list = viewModel.companies.filter { $0.status == .current || $0.status == .both }
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
-                NavigationLink {
-                    CompanyDetail(company: company, companyStatus: .current)
-                        .environmentObject(viewModel)
-                } label: {
-                    SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
-                        CompanyCard(company: company)
-                    } actions: {
-                        Action(tint: .red, icon: "trash.fill") {
-                            let statementIds = viewModel.statements.filter { $0.companyId == company.id }.map { $0.id }
-                            if statementIds.count > 0 {
-                                viewModel.multipleStatementDelete(statementIds: statementIds)
+                LazyVStack(spacing: 0) {
+                    NavigationLink {
+                        CompanyDetail(company: company, companyStatus: .current)
+                            .environmentObject(viewModel)
+                    } label: {
+                        SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
+                            CompanyCard(company: company)
+                        } actions: {
+                            Action(tint: .red, icon: "trash.fill") {
+                                let statementIds = viewModel.statements.filter { $0.companyId == company.id }.map { $0.id }
+                                if statementIds.count > 0 {
+                                    viewModel.multipleStatementDelete(statementIds: statementIds)
+                                }
+                                
+                                let workIds = viewModel.works.filter { $0.companyId == company.id }.map { $0.id }
+                                if workIds.count > 0 {
+                                    viewModel.multipleWorkDelete(workIds: workIds)
+                                }
+                                
+                                viewModel.companyDelete(companyId: company.id)
                             }
-                            
-                            let workIds = viewModel.works.filter { $0.companyId == company.id }.map { $0.id }
-                            if workIds.count > 0 {
-                                viewModel.multipleWorkDelete(workIds: workIds)
-                            }
-                            
-                            viewModel.companyDelete(companyId: company.id)
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

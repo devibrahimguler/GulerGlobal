@@ -38,6 +38,7 @@ struct SupplierView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
             }
         }

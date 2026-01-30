@@ -15,6 +15,13 @@ final class EntryViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isConnected: Bool = false
 
+    init() {
+        connectionControl()
+    }
+    
+    func connectionControl() {
+        isConnected = authService.getUid != nil
+    }
     
     func loginUser() {
         guard
