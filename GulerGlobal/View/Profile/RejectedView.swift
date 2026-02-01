@@ -10,10 +10,14 @@ import SwiftUI
 struct RejectedView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
+    
+    private var list: [Work] {
+        viewModel.works.filter { $0.status == .rejected }
+    }
+    
     var body: some View {
-        let rejectedes = viewModel.works.filter({ $0.status == .rejected })
-        BaseList(isEmpty: rejectedes.isEmpty) {
-            ForEach(rejectedes, id: \.self) { work in
+        BaseList(isEmpty: list.isEmpty) {
+            ForEach(list) { work in
                 let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {

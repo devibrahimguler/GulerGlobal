@@ -269,13 +269,6 @@ fileprivate struct CustomPicker: View {
     }
 }
 
-// MARK: - DateConfig Yapısı ve Yardımcı Fonksiyonlar
-struct DateConfig {
-    var selectedDay: String
-    var selectedMonth: String
-    var selectedYear: String
-}
-
 /// Verilen ay numarasına göre ay adını döner.
 /// - Parameter month: 1 ile 12 arasında bir ay numarası.
 /// - Returns: Türkçe ay adı veya geçersiz giriş durumunda boş bir string.

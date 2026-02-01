@@ -20,56 +20,30 @@ struct ProductMenu: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 5) {
-            Button {
+            
+            SettingButton(settingType: isEdit ? .cancel : .edit) {
                 withAnimation(.spring) {
                     formTitle = .none
                     openMenu = false
                     isEdit.toggle()
                 }
-            } label: {
-                if isEdit {
-                    Label("İptal", systemImage: "pencil.slash")
-                } else {
-                    Label("Düzenle", systemImage: "square.and.pencil")
-                }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 15)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .padding(.horizontal, 20)
             
             if isEdit {
-                Button {
+                SettingButton(settingType: .save) {
                     withAnimation(.spring) {
-                        guard
-                            viewModel.companyProductDetails.name != "",
-                            viewModel.companyProductDetails.quantity != "",
-                            viewModel.companyProductDetails.price != ""
-                        else { return }
                         
-                        let updateArea = [
-                            "name": viewModel.companyProductDetails.name.trim(),
-                            "quantity": viewModel.companyProductDetails.quantity.toDouble(),
-                            "price": viewModel.companyProductDetails.price.toDouble(),
-                            "date": configToDate(dateConfig)
-                        ]
+                        viewModel.companyProductDetails.date = dateConfig.configToDate()
                         
-                        viewModel.companyProductUpdate(productId: product.id, updateArea: updateArea)
+                        viewModel.companyProductUpdate(productId: product.id, companyProductDetails: viewModel.companyProductDetails)
                         
                         formTitle = .none
                         openMenu = false
                         isEdit.toggle()
                     }
-                    
-                } label: {
-                    Label("Kaydet", systemImage: "pencil.line")
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
             }
-            
         }
+        .padding(20)
     }
 }

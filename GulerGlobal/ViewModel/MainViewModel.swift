@@ -10,7 +10,6 @@ import ContactsUI
 
 @MainActor
 final class MainViewModel: ObservableObject {
-    
     let authService: AuthProtocol = UserConnection()
     let firebaseDataService = FirebaseDataModel()
     
@@ -24,7 +23,6 @@ final class MainViewModel: ObservableObject {
     @Published var companyProducts: [CompanyProduct] = []
     @Published var workProducts: [WorkProduct] = []
     @Published var statements: [Statement] = []
-    
     
     @Published var leftRevenue: Double = 0.0 {
         didSet { updateTracking() }
@@ -41,59 +39,12 @@ final class MainViewModel: ObservableObject {
     @Published var companyProductDetails = CompanyProductDetails()
     @Published var workProductDetails = WorkProductDetails()
     @Published var statementDetails = StatementDetails()
-
-    @Published var hasAlert: Bool = false
     
+    @Published var hasAlert: Bool = false
     @Published var isPhonePicker: Bool = false
     
-    @Published var acceptRem: String = ""
-    
-    // MARK: - Initializer
-    
     init() {
-        connectionControl()
         fetchAllData()
-    }
-    
-    // MARK: - Public Methods
-    func connectionControl() {
-        isConnected = authService.getUid != nil
-    }
-    
-    func fetchData() {
-        isLoading = true
-        
-        let group = DispatchGroup()
-        
-        group.enter()
-        fetchCompanyData {
-            group.leave()
-        }
-        
-        group.enter()
-        fetchWorkData {
-            group.leave()
-        }
-        
-        group.enter()
-        fetchCompanyProductData {
-            group.leave()
-        }
-        
-        group.enter()
-        fetchWorkProductData {
-            group.leave()
-        }
-        
-        group.enter()
-        fetchStatementData {
-            group.leave()
-        }
-        
-        group.notify(queue: .main) { [weak self] in
-            self?.calculateNetBalance()
-            self?.isLoading = false
-        }
     }
     
     private func updateTracking() {
@@ -106,7 +57,7 @@ final class MainViewModel: ObservableObject {
     }
     
     private func fetchAllData() {
-        resetAllData()
+        self.isLoading = true
         
         self.firebaseDataService.fetchAllData { [weak self] result in
             guard let self = self else {
@@ -131,149 +82,6 @@ final class MainViewModel: ObservableObject {
                 
             }
         }
-    }
-    
-    private func fetchCompanyData(completion: (() -> Void)? = nil) {
-        resetCompanyData()
-        
-        self.firebaseDataService.fetchCompanies { [weak self] result in
-            guard let self = self else {
-                completion?()
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
-                
-            case .success(let companies):
-                self.companies = companies.sorted(by: { $0.id > $1.id })
-                self.isLoading = false
-            }
-            
-            completion?()
-        }
-    }
-    
-    private func fetchWorkData(completion: (() -> Void)? = nil) {
-        resetWorkData()
-        
-        self.firebaseDataService.fetchWorks { [weak self] result in
-            guard let self = self else {
-                completion?()
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
-                
-            case .success(let works):
-                self.works = works.sorted(by: { $0.id > $1.id })
-                self.isLoading = false
-            }
-            
-            completion?()
-        }
-    }
-    
-    private func fetchCompanyProductData(completion: (() -> Void)? = nil) {
-        resetCompanyProductData()
-        
-        self.firebaseDataService.fetchCompanyProducts { [weak self] result in
-            guard let self = self else {
-                completion?()
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
-                
-            case .success(let companyProducts):
-                self.companyProducts = companyProducts.sorted(by: { $0.date > $1.date })
-                self.isLoading = false
-            }
-            
-            completion?()
-        }
-    }
-    
-    private func fetchWorkProductData(completion: (() -> Void)? = nil) {
-        resetWorkProductData()
-        
-        self.firebaseDataService.fetchWorkProducts { [weak self] result in
-            guard let self = self else {
-                completion?()
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
-                
-            case .success(let workProducts):
-                self.workProducts = workProducts.sorted(by: { $0.date > $1.date })
-                self.isLoading = false
-            }
-            
-            completion?()
-        }
-    }
-    
-    private func fetchStatementData(completion: (() -> Void)? = nil) {
-        resetStatementData()
-        
-        self.firebaseDataService.fetchStatements { [weak self] result in
-            guard let self = self else {
-                completion?()
-                return
-            }
-            
-            switch result {
-            case .failure(let error):
-                print("Fetch error: \(error.localizedDescription)")
-                self.isLoading = false
-                
-            case .success(let statements):
-                self.statements = statements.sorted(by: { $0.date > $1.date })
-                self.isLoading = false
-            }
-            
-            completion?()
-        }
-    }
-    
-    private func resetAllData() {
-        resetCompanyData()
-        resetWorkData()
-        resetCompanyProductData()
-        resetWorkProductData()
-        resetStatementData()
-    }
-    
-    private func resetCompanyData() {
-        companies.removeAll()
-    }
-    
-    private func resetWorkData() {
-        works.removeAll()
-    }
-    
-    private func resetCompanyProductData() {
-        companyProducts.removeAll()
-    }
-    
-    private func resetWorkProductData() {
-        workProducts.removeAll()
-    }
-    
-    private func resetStatementData() {
-        statements.removeAll()
     }
     
     func getCompanyById(_ companyId: String) -> Company {
@@ -316,22 +124,26 @@ final class MainViewModel: ObservableObject {
         workDetails = WorkDetails(from: work)
     }
     
+    func updateWorkProductDetails(with product: CompanyProduct?) {
+        workProductDetails = WorkProductDetails(from: product)
+    }
+    
     func updateCompanyProductDetails(with product: CompanyProduct?) {
         companyProductDetails = CompanyProductDetails(from: product)
     }
     
-    func updateWorkProductDetails(with product: CompanyProduct?) {
-        workProductDetails = WorkProductDetails(from: product)
+    func updateStatementDetails(with statement: Statement?) {
+        statementDetails = StatementDetails(from: statement)
     }
     
     func companyCreate(company: Company) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.saveCompany(company)
-
+                try await firebaseDataService.companyDataModel.saveCompany(company)
                 await MainActor.run {
-                    self.fetchCompanyData()
+                    self.companies.append(company)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -344,20 +156,48 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func companyUpdate(companyId: String, updateArea: [String: Any]) {
+    func companyUpdate(companyId: String, companyDetails: CompanyDetails) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.updateCompany(companyId, updateArea: updateArea)
-
+                guard
+                    let index = self.companies.firstIndex(where: { $0.id == companyId }),
+                    companyDetails.name != "",
+                    companyDetails.address != ""
+                else { return }
+                
+                let name = companyDetails.name.trim()
+                let address = companyDetails.address.trim()
+                let phone = companyDetails.phone
+                let status = companyDetails.status
+                
+                let updateArea = [
+                    "name": name,
+                    "address": address,
+                    "phone": phone,
+                    "status": status.rawValue
+                ]
+                
+                try await firebaseDataService.companyDataModel.updateCompany(companyId, updateArea: updateArea)
+                
+                
                 await MainActor.run {
-                    self.fetchCompanyData()
+                    self.companies[index] = Company(
+                        id: companyId,
+                        name: name,
+                        address: address,
+                        phone: phone,
+                        status: status
+                    )
+                    updateCompanyDetails(with: nil)
+                    self.isLoading = false
                 }
                 
             } catch {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
+                    updateCompanyDetails(with: nil)
                     self.isLoading = false
                 }
             }
@@ -368,10 +208,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.deleteCompany(companyId)
-
+                try await firebaseDataService.companyDataModel.deleteCompany(companyId)
+                
                 await MainActor.run {
-                    self.fetchCompanyData()
+                    self.companies.removeAll { $0.id == companyId }
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -388,10 +229,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.saveWork(work)
-
+                try await firebaseDataService.workDataModel.saveWork(work)
+                
                 await MainActor.run {
-                    self.fetchWorkData()
+                    self.works.append(work)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -404,20 +246,59 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func workUpdate(workId: String, updateArea: [String: Any]) {
+    func workUpdate(workId: String, workDetails: WorkDetails) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.updateWork(workId, updateArea: updateArea)
-
+                guard
+                    let index = self.works.firstIndex(where: { $0.id == workId }),
+                    workDetails.name != "",
+                    workDetails.description != "",
+                    workDetails.cost != "",
+                    workDetails.left != ""
+                else { return }
+                
+                let name = workDetails.name.trim()
+                let description = workDetails.description.trim()
+                let cost = workDetails.cost.toDouble()
+                let left = workDetails.left.toDouble()
+                let status = workDetails.status
+                let startDate = workDetails.startDate
+                let endDate = workDetails.endDate
+                
+                let updateArea = [
+                    "name": name,
+                    "description": description,
+                    "cost": cost,
+                    "left": left,
+                    "status": status.rawValue,
+                    "startDate": startDate,
+                    "endDate": endDate,
+                ]
+                
+                try await firebaseDataService.workDataModel.updateWork(workId, updateArea: updateArea)
+                
                 await MainActor.run {
-                    self.fetchWorkData()
+                    self.works[index] = Work(
+                        id: workId,
+                        companyId: works[index].companyId,
+                        name: name,
+                        description: description,
+                        cost: cost,
+                        left: left,
+                        status: status,
+                        startDate: startDate,
+                        endDate: endDate
+                    )
+                    updateWorkDetails(with: nil)
+                    self.isLoading = false
                 }
                 
             } catch {
                 print("Kayıt hatası oluştu: \(error.localizedDescription)")
                 
                 await MainActor.run {
+                    updateWorkDetails(with: nil)
                     self.isLoading = false
                 }
             }
@@ -428,10 +309,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.deleteWork(workId)
-
+                try await firebaseDataService.workDataModel.deleteWork(workId)
+                
                 await MainActor.run {
-                    self.fetchWorkData()
+                    self.works.removeAll { $0.id == workId }
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -446,12 +328,13 @@ final class MainViewModel: ObservableObject {
     
     func multipleWorkDelete(workIds: [String]) {
         isLoading = true
-        firebaseDataService.deleteMultipleWork(workIds) { (error) in
+        firebaseDataService.workDataModel.deleteMultipleWork(workIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
                 self.isLoading = false
             } else {
-                self.fetchWorkData()
+                self.works.removeAll { workIds.contains($0.id) }
+                self.isLoading = false
             }
         }
     }
@@ -460,10 +343,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.saveWorkProduct(product)
-
+                try await firebaseDataService.workProductDataModel.saveWorkProduct(product)
+                
                 await MainActor.run {
-                    self.fetchWorkProductData()
+                    self.workProducts.append(product)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -476,14 +360,34 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func workProductUpdate(productId: String, updateArea: [String: Any]) {
+    func workProductUpdate(productId: String, workProductDetails: WorkProductDetails) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.updateWorkProduct(productId, updateArea: updateArea)
-
+                guard
+                    let index = self.workProducts.firstIndex(where: { $0.productId == productId }),
+                    workProductDetails.quantity != ""
+                else { return }
+                
+                let quantity = workProductDetails.quantity.toDouble()
+                
+                let updateArea = [
+                    "quantity": quantity
+                ]
+                
+                try await firebaseDataService.workProductDataModel.updateWorkProduct(productId, updateArea: updateArea)
+                
+                
                 await MainActor.run {
-                    self.fetchWorkProductData()
+                    self.workProducts[index] = WorkProduct(
+                        id: workProducts[index].id,
+                        workId: workProducts[index].workId,
+                        productId: workProducts[index].productId,
+                        quantity: quantity,
+                        date: workProducts[index].date
+                    )
+                    updateWorkProductDetails(with: nil)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -500,10 +404,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.deleteWorkProduct(productId)
-
+                try await firebaseDataService.workProductDataModel.deleteWorkProduct(productId)
+                
                 await MainActor.run {
-                    self.fetchWorkProductData()
+                    self.workProducts.removeAll { $0.productId == productId }
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -518,12 +423,13 @@ final class MainViewModel: ObservableObject {
     
     func multipleWorkProductDelete(productIds: [String]) {
         isLoading = true
-        firebaseDataService.deleteMultipleWorkProduct(productIds) { (error) in
+        firebaseDataService.workProductDataModel.deleteMultipleWorkProduct(productIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
                 self.isLoading = false
             } else {
-                self.fetchWorkProductData()
+                self.workProducts.removeAll { productIds.contains($0.id) }
+                self.isLoading = false
             }
         }
     }
@@ -532,10 +438,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.saveCompanyProduct(product)
-
+                try await firebaseDataService.companyProductDataModel.saveCompanyProduct(product)
+                
                 await MainActor.run {
-                    self.fetchCompanyProductData()
+                    self.companyProducts.append(product)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -548,14 +455,45 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func companyProductUpdate(productId: String, updateArea: [String: Any]) {
+    func companyProductUpdate(productId: String, companyProductDetails: CompanyProductDetails) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.updateCompanyProduct(productId, updateArea: updateArea)
-
+                guard
+                    let index = self.companyProducts.firstIndex(where: { $0.id == productId }),
+                    companyProductDetails.name != "",
+                    companyProductDetails.quantity != "",
+                    companyProductDetails.price != ""
+                else { return }
+                
+                let name = companyProductDetails.name.trim()
+                let quantity = companyProductDetails.quantity.toDouble()
+                let price = companyProductDetails.price.toDouble()
+                let date = companyProductDetails.date
+                let oldPrices = companyProductDetails.oldPrices
+                
+                let updateArea = [
+                    "name": name,
+                    "quantity": quantity,
+                    "price": price,
+                    "date": date,
+                    "oldPrices": oldPrices
+                ]
+                
+                try await firebaseDataService.companyProductDataModel.updateCompanyProduct(productId, updateArea: updateArea)
+                
                 await MainActor.run {
-                    self.fetchCompanyProductData()
+                    self.companyProducts[index] = CompanyProduct(
+                        id: productId,
+                        companyId: companyProducts[index].companyId,
+                        name: name,
+                        quantity: quantity,
+                        price: price,
+                        date: date,
+                        oldPrices: oldPrices
+                    )
+                    updateCompanyProductDetails(with: nil)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -572,10 +510,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.deleteCompanyProduct(productId)
-
+                try await firebaseDataService.companyProductDataModel.deleteCompanyProduct(productId)
+                
                 await MainActor.run {
-                    self.fetchCompanyProductData()
+                    self.companyProducts.removeAll { $0.id == productId }
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -590,12 +529,13 @@ final class MainViewModel: ObservableObject {
     
     func multipleCompanyProductDelete(productIds: [String]) {
         isLoading = true
-        firebaseDataService.deleteMultipleCompanyProduct(productIds) { (error) in
+        firebaseDataService.companyProductDataModel.deleteMultipleCompanyProduct(productIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
                 self.isLoading = false
             } else {
-                self.fetchCompanyProductData()
+                self.companyProducts.removeAll { productIds.contains($0.id) }
+                self.isLoading = false
             }
         }
     }
@@ -604,10 +544,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.saveStatement(statement)
-
+                try await firebaseDataService.statementDataModel.saveStatement(statement)
+                
                 await MainActor.run {
-                    self.fetchStatementData()
+                    self.statements.append(statement)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -620,14 +561,38 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func statementUpdate(statementId: String, updateArea: [String: Any]) {
+    func statementUpdate(statementId: String, statementDetails: StatementDetails) {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.updateStatement(statementId, updateArea: updateArea)
-
+                guard
+                    let index = self.statements.firstIndex(where: { $0.id == statementId }),
+                    statementDetails.amount != ""
+                else { return }
+                
+   
+                let amount = statementDetails.amount.toDouble()
+                let date = statementDetails.date
+                let status = statementDetails.status
+                
+                let updateArea = [
+                    "amount": amount,
+                    "date": date,
+                    "status": status.rawValue
+                ]
+                
+                try await firebaseDataService.statementDataModel.updateStatement(statementId, updateArea: updateArea)
+                
                 await MainActor.run {
-                    self.fetchStatementData()
+                    self.statements[index] = Statement(
+                        id: statements[index].id,
+                        companyId: statements[index].companyId,
+                        amount: amount,
+                        date: date,
+                        status: status
+                    )
+                    updateStatementDetails(with: nil)
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -644,10 +609,11 @@ final class MainViewModel: ObservableObject {
         isLoading = true
         Task {
             do {
-                try await firebaseDataService.deleteStatement(statementId)
-
+                try await firebaseDataService.statementDataModel.deleteStatement(statementId)
+                
                 await MainActor.run {
-                    self.fetchStatementData()
+                    self.statements.removeAll { $0.id == statementId }
+                    self.isLoading = false
                 }
                 
             } catch {
@@ -662,17 +628,16 @@ final class MainViewModel: ObservableObject {
     
     func multipleStatementDelete(statementIds: [String]) {
         isLoading = true
-        firebaseDataService.deleteMultipleStatement(statementIds) { (error) in
+        firebaseDataService.statementDataModel.deleteMultipleStatement(statementIds) { (error) in
             if let error = error {
                 print("Toplu silme hatası: \(error.localizedDescription)")
                 self.isLoading = false
             } else {
-                self.fetchStatementData()
+                self.statements.removeAll { statementIds.contains($0.id) }
+                self.isLoading = false
             }
         }
     }
-    
-    // MARK: - Private Methods
     
     private func calculateNetBalance() {
         isLoading = true
@@ -714,11 +679,15 @@ final class MainViewModel: ObservableObject {
                         left = companyTotalMoney
                     }
                     
-                    let updateArea = [
-                        "left": left
-                    ]
+                    self.workDetails.name = work.name
+                    self.workDetails.description = work.description
+                    self.workDetails.cost = "\(work.cost)"
+                    self.workDetails.left = "\(left)"
+                    self.workDetails.status = work.status
+                    self.workDetails.startDate = work.startDate
+                    self.workDetails.endDate = work.endDate
                     
-                    self.workUpdate(workId: work.id, updateArea: updateArea)
+                    self.workUpdate(workId: work.id, workDetails: workDetails)
                     self.totalRevenue += work.cost
                     self.leftRevenue += left
                 }
@@ -739,28 +708,6 @@ final class MainViewModel: ObservableObject {
                 isPhonePicker = true
             }
         }
-    }
-    
-    func saveUpdates(company: Company) {
-        if companyDetails.name != company.name {
-            if companies.first(where: { $0.name == companyDetails.name }) != nil {
-                return
-            }
-        }
-        
-        let name = companyDetails.name.trim()
-        let address = companyDetails.address.trim()
-        let phone = companyDetails.phone
-        let status = companyDetails.status
-        
-        let updateArea: [String : Any] = [
-            "name": name,
-            "address": address,
-            "phone": phone,
-            "status": status
-        ]
-        
-        companyUpdate(companyId: company.id, updateArea: updateArea)
     }
     
 }

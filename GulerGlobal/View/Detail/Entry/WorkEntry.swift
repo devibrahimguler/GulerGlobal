@@ -68,8 +68,8 @@ struct WorkEntry: View {
         .background(colorScheme == .light ? Color.gray.opacity(0.2) : Color.white.opacity(0.2))
         .onAppear {
             viewModel.workDetails.id = viewModel.generateUniqueIDforWork()
-            startConfig = dateToConfig(viewModel.workDetails.startDate)
-            endConfig = dateToConfig(viewModel.workDetails.endDate)
+            startConfig = viewModel.workDetails.startDate.dateToConfig()
+            endConfig = viewModel.workDetails.endDate.dateToConfig()
         }
         .animation(.snappy, value: activeField)
         .onDisappear {
@@ -106,8 +106,8 @@ struct WorkEntry: View {
             cost: viewModel.workDetails.cost.toDouble(),
             left: viewModel.workDetails.cost.toDouble(),
             status: viewModel.workDetails.status,
-            startDate: configToDate(startConfig),
-            endDate: configToDate(endConfig)
+            startDate: startConfig.configToDate(),
+            endDate: endConfig.configToDate()
         )
         
         viewModel.workCreate(work: newWork)

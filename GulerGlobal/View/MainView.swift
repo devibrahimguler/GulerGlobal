@@ -19,7 +19,7 @@ struct MainView: View {
                     .ignoresSafeArea()
                     .background(Color.black)
             } else {
-                CustomTabBar()
+                CustomTabBar(viewModel: viewModel)
             }
         }
         .environmentObject(viewModel)

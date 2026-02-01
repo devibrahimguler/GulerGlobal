@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CustomTabBar: View {
     
-    @EnvironmentObject var viewModel: MainViewModel
+    @ObservedObject var viewModel: MainViewModel
     
     var body: some View {
         TabView(selection: $viewModel.activeTab) {
@@ -33,7 +33,7 @@ struct CustomTabBar: View {
             
             Tab(TabValue.Profile.rawValue, systemImage: TabValue.Profile.symbolImage, value: TabValue.Profile) {
                 NavigationStack {
-                    ProfileView()
+                    ProfileView(viewModel: viewModel)
                 }
             }
             

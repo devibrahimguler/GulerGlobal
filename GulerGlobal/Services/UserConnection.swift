@@ -7,15 +7,6 @@
 
 import FirebaseAuth
 
-protocol AuthProtocol {
-    var getUserName : String? { get }
-    var getUid : String? { get }
-    
-    func logout(completion : @escaping (Result<Bool, AuthError>) -> ()) 
-    func loginUser(email: String, password: String, completion : @escaping (Result<AuthDataResult, AuthError>) -> ())
-    func registerUser(email: String, password: String, completion : @escaping (Result<AuthDataResult, AuthError>) -> ())
-}
-
 struct UserConnection : AuthProtocol {
     
     private let auth : Auth = Auth.auth()
@@ -75,9 +66,4 @@ struct UserConnection : AuthProtocol {
         }
     }
     
-}
-
-enum AuthError : Error {
-    case haveError
-    case dontHandleData
 }

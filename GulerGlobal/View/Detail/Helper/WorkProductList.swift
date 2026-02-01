@@ -52,11 +52,12 @@ struct WorkProductList: View {
                                     if let companyProduct = viewModel.companyProducts.first(where: { $0.id == product.productId }) {
                                         
                                         let quantity = companyProduct.quantity + product.quantity
-                                        let updateArea = [
-                                            "quantity": quantity,
-                                        ]
                                         
-                                        viewModel.companyProductUpdate(productId: product.productId, updateArea: updateArea)
+                                        viewModel.companyProductDetails.name = companyProduct.name
+                                        viewModel.companyProductDetails.quantity = "\(quantity)"
+                                        viewModel.companyProductDetails.price = "\(companyProduct.price)"
+                                        
+                                        viewModel.companyProductUpdate(productId: product.productId, companyProductDetails: viewModel.companyProductDetails)
                                         viewModel.workProductDelete(productId: product.id)
                                         
                                         dismiss()

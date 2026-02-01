@@ -17,122 +17,73 @@ struct CompanyMenu: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Button {
+            
+            SettingButton(settingType: isEdit ? .cancel : .edit) {
                 withAnimation(.spring) {
                     formTitle = .none
                     openMenu = false
                     isEdit.toggle()
                 }
-            } label: {
-                if isEdit {
-                    Label("İptal", systemImage: "pencil.slash")
-                } else {
-                    Label("Düzenle", systemImage: "square.and.pencil")
-                }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 15)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .padding(.horizontal, 20)
             
             if isEdit {
-                Button {
+                SettingButton(settingType: .save) {
                     withAnimation(.spring) {
-                        
-                        guard
-                            viewModel.companyDetails.name != "",
-                            viewModel.companyDetails.address != ""
-                        else { return }
-                        
-                        let updateArea = [
-                            "name": viewModel.companyDetails.name,
-                            "address": viewModel.companyDetails.address,
-                            "phone": viewModel.companyDetails.phone,
-                            "status": viewModel.companyDetails.status.rawValue
-                        ]
-                        
-                        viewModel.companyUpdate(companyId: company.id, updateArea: updateArea)
+                        viewModel.companyUpdate(companyId: company.id, companyDetails: viewModel.companyDetails)
                         
                         formTitle = .none
                         openMenu = false
                         isEdit.toggle()
                     }
-                } label: {
-                    Label("Kaydet", systemImage: "pencil.line")
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
             } else {
                 if company.status == .supplier || company.status == .both {
-                    NavigationLink {
-                        CompanyProductEntry(company: company)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Label("Malzeme Ekle", systemImage: "plus.viewfinder")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
+                    SettingNavigation(
+                        content:
+                            CompanyProductEntry(company: company)
+                            .environmentObject(viewModel),
+                        settingType: .addProduct
+                    )
+                    
                 } else if company.status == .current || company.status == .both {
-                    NavigationLink {
-                        WorkEntry(company: company)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Label("İş Ekle", systemImage: "rectangle.stack.fill.badge.plus")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
+                    SettingNavigation(
+                        content:
+                            WorkEntry(company: company)
+                                .environmentObject(viewModel),
+                        settingType: .addWork
+                    )
                 }
-                NavigationLink {
-                    StatementEntry(status: .input, company: company)
-                        .environmentObject(viewModel)
-                } label: {
-                    Label("Alınan Para", systemImage: "square.badge.plus")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
                 
-                NavigationLink {
-                    StatementEntry(status: .output, company: company)
-                        .environmentObject(viewModel)
-                } label: {
-                    Label("Ödenen Para", systemImage: "bag.badge.plus")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
+                SettingNavigation(
+                    content:
+                        StatementEntry(status: .input, company: company)
+                            .environmentObject(viewModel),
+                    settingType: .input
+                )
                 
-                NavigationLink {
-                    StatementEntry(status: .debt, company: company)
-                        .environmentObject(viewModel)
-                } label: {
-                    Label("Alınan Borç", systemImage: "bag.badge.plus")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
+                SettingNavigation(
+                    content:
+                        StatementEntry(status: .output, company: company)
+                            .environmentObject(viewModel),
+                    settingType: .output
+                )
                 
-                NavigationLink {
-                    StatementEntry(status: .lend, company: company)
-                        .environmentObject(viewModel)
-                } label: {
-                    Label("Verilen Borç", systemImage: "bag.badge.plus")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
+                SettingNavigation(
+                    content:
+                        StatementEntry(status: .debt, company: company)
+                            .environmentObject(viewModel),
+                    settingType: .debt
+                )
+
+                SettingNavigation(
+                    content:
+                        StatementEntry(status: .lend, company: company)
+                            .environmentObject(viewModel),
+                    settingType: .lend
+                )
             }
         }
+        .padding(20)
     }
 }
 

@@ -11,10 +11,13 @@ struct FinishedBidView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
     
+    private var list: [Work] {
+        viewModel.works.filter { $0.status == .finished }
+    }
+    
     var body: some View {
-        let finishedes = viewModel.works.filter({ $0.status == .finished })
-        BaseList(isEmpty: finishedes.isEmpty) {
-            ForEach(finishedes, id: \.self) { work in
+        BaseList(isEmpty: list.isEmpty) {
+            ForEach(list) { work in
                 let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {

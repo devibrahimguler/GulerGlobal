@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject var viewModel: MainViewModel
+    @ObservedObject var viewModel: MainViewModel
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -57,7 +57,7 @@ struct ProfileView: View {
             
             NavigationButton(
                 content:
-                    CurrentView()
+                    CurrentView(viewModel: viewModel)
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .currents,
@@ -91,8 +91,9 @@ struct ProfileView: View {
 }
 
 struct Test_ProfileView: View {
+    @StateObject private var viewModel = MainViewModel()
     var body: some View {
-        ProfileView()
+        ProfileView(viewModel: viewModel)
             .environmentObject(MainViewModel())
     }
 }

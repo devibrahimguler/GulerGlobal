@@ -21,94 +21,64 @@ struct WorkMenu: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 5) {
-            Button {
+            SettingButton(settingType: isEdit ? .cancel : .edit) {
                 withAnimation(.spring) {
                     formTitle = .none
                     openMenu = false
                     isEdit.toggle()
                 }
-            } label: {
-                if isEdit {
-                    Label("İptal", systemImage: "pencil.slash")
-                } else {
-                    Label("Düzenle", systemImage: "square.and.pencil")
-                }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 15)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .padding(.horizontal, 20)
             
             if isEdit {
-                Button {
+                SettingButton(settingType: .save) {
                     withAnimation(.spring) {
-                        
-                        guard
-                            viewModel.workDetails.name != "",
-                            viewModel.workDetails.description != "",
-                            viewModel.workDetails.cost != ""
-                        else { return }
-                        
-                        let updateArea = [
-                            "name": viewModel.workDetails.name.trim(),
-                            "description": viewModel.workDetails.description.trim(),
-                            "cost": viewModel.workDetails.cost.toDouble(),
-                            "startDate": configToDate(startConfig),
-                            "endDate": configToDate(endConfig),
-                        ]
+                        viewModel.workDetails.companyId = tuple.work.companyId
+                        viewModel.workDetails.left = "\(tuple.work.left)"
+                        viewModel.workDetails.status = tuple.work.status
+                        viewModel.workDetails.startDate = startConfig.configToDate()
+                        viewModel.workDetails.endDate = endConfig.configToDate()
                         
                         viewModel.workUpdate(
                             workId: tuple.work.id,
-                            updateArea: updateArea
+                            workDetails: viewModel.workDetails
                         )
                         
                         formTitle = .none
                         openMenu = false
                         isEdit.toggle()
                     }
-                    
-                } label: {
-                    Label("Kaydet", systemImage: "pencil.line")
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 15)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .padding(.horizontal, 20)
             }
             else
             {
                 if tuple.work.status == .approved {
-                    Button {
+                    SettingButton(settingType: .finishedWork) {
                         withAnimation(.snappy) {
+                            viewModel.workDetails.companyId = tuple.work.companyId
+                            viewModel.workDetails.left = "\(tuple.work.left)"
+                            viewModel.workDetails.status = .finished
+                            viewModel.workDetails.startDate = startConfig.configToDate()
+                            viewModel.workDetails.endDate = endConfig.configToDate()
+                            
                             viewModel.workUpdate(
                                 workId: tuple.work.id,
-                                updateArea: ["status": ApprovalStatus.finished.rawValue]
+                                workDetails: viewModel.workDetails
                             )
                             
                             dismiss()
                         }
-                    } label: {
-                        Label("İş Bitti", systemImage: "checkmark.app")
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
                     
-                    NavigationLink {
-                        WorkProductEntry(workId: tuple.work.id)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Label("Malzeme Ekle", systemImage: "plus.viewfinder")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                    .padding(.horizontal, 20)
+                    SettingNavigation(
+                        content:
+                            WorkProductEntry(workId: tuple.work.id)
+                            .environmentObject(viewModel),
+                        settingType: .addProduct
+                    )
                 }
             }
-            
         }
+        .padding(20)
     }
 }
 

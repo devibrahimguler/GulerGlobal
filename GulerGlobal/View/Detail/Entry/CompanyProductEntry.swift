@@ -47,23 +47,15 @@ struct CompanyProductEntry: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.snappy, value: activeField)
         .onAppear {
-            config = dateToConfig(viewModel.companyProductDetails.date)
+            config = viewModel.companyProductDetails.date.dateToConfig()
         }
         .onDisappear {
             viewModel.updateCompanyProductDetails(with: nil)
             activeField = .none
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Onayla") {
-                    withAnimation(.snappy) {
-                        submission()
-                    }
-                }
-                .foregroundStyle(.isGreen)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .disabled(isClicked)
+            CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
+                submission()
             }
         }
     }
@@ -85,7 +77,7 @@ struct CompanyProductEntry: View {
             name: viewModel.companyProductDetails.name,
             quantity: viewModel.companyProductDetails.quantity.toDouble(),
             price: viewModel.companyProductDetails.price.toDouble(),
-            date: configToDate(config),
+            date: config.configToDate(),
             oldPrices: oldPrices,
         )
         

@@ -28,6 +28,35 @@ enum ButtonType: String, CaseIterable {
     
 }
 
+enum SettingType: String, CaseIterable {
+    case cancel = "İptal"
+    case edit = "Düzenle"
+    case save = "Kaydet"
+    case addProduct = "Malzeme Ekle"
+    case addWork = "İş Ekle"
+    case input = "Alınan Para"
+    case output = "Ödenen Para"
+    case debt = "Alınan Borç"
+    case lend = "Verilen Borç"
+    case finishedWork = "İş Bitti"
+    
+    var symbolImage: String {
+        switch self {
+        case .cancel: "pencil.slash"
+        case .edit: "square.and.pencil"
+        case .save: "pencil.line"
+        case .addProduct: "plus.viewfinder"
+        case .addWork: "rectangle.stack.fill.badge.plus"
+        case .input: "square.badge.plus"
+        case .output: "bag.badge.plus"
+        case .debt: "bag.badge.plus"
+        case .lend: "bag.badge.plus"
+        case .finishedWork: "checkmark.app"
+        }
+    }
+    
+}
+
 enum FormTitle: String {
     case input = "Alınan Para"
     case inputDate = "Tahsilat Tarihi"

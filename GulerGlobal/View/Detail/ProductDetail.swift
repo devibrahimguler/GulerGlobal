@@ -86,7 +86,7 @@ struct ProductDetail: View {
                 companyId: companyId
             )
             .environmentObject(viewModel)
-            .offset(y: openMenu ? 0 : 500)
+            .offset(y: openMenu ? 0 : 1000)
             
         }
         .animation(.linear, value: openMenu)
@@ -104,7 +104,7 @@ struct ProductDetail: View {
         }
         .onAppear {
             viewModel.updateCompanyProductDetails(with: product)
-            dateConfig = dateToConfig(viewModel.companyProductDetails.date)
+            dateConfig = viewModel.companyProductDetails.date.dateToConfig()
         }
         .onDisappear {
             viewModel.updateCompanyProductDetails(with: nil)
@@ -124,70 +124,3 @@ struct Test_ProductDetailView: View {
 #Preview {
     Test_ProductDetailView()
 }
-
-/*
- struct ProductMenu: View {
-     @Environment(\.dismiss) private var dismiss
-     @EnvironmentObject var viewModel: MainViewModel
-     @Binding var isEdit: Bool
-     @Binding var formTitle: FormTitle
-     @Binding var openMenu: Bool
-     
-     var dateConfig: DateConfig
-     var product: Product
-     var companyId: String
-     var workId: String?
-     var isSupplier: Bool
-     
-     var body: some View {
-         VStack(alignment: .center, spacing: 5) {
-             Button {
-                 withAnimation(.spring) {
-                     viewModel.updateProductDetails(with: product)
-                     formTitle = .none
-                     openMenu = false
-                     isEdit.toggle()
-                 }
-             } label: {
-                 if isEdit {
-                     Label("İptal", systemImage: "pencil.slash")
-                 } else {
-                     Label("Düzenle", systemImage: "square.and.pencil")
-                 }
-             }
-             .frame(maxWidth: .infinity)
-             .padding(.vertical, 15)
-             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-             .padding(.horizontal, 20)
-             
-             if isEdit {
-                 Button {
-                     withAnimation(.spring) {
-                         let updateArea = [
-                             "name": viewModel.productDetails.name.trim(),
-                             "quantity": viewModel.productDetails.quantity.toDouble(),
-                             "price": viewModel.productDetails.price.toDouble(),
-                             "date": configToDate(dateConfig)
-                         ]
-                         viewModel.updateCompanyProduct(productId: product.id, updateArea: updateArea)
-                         
-                         formTitle = .none
-                         openMenu = false
-                         isEdit.toggle()
-                         
-                         dismiss()
-                     }
-                     
-                 } label: {
-                     Label("Kaydet", systemImage: "pencil.line")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-             }
-             
-         }
-     }
- }
- */

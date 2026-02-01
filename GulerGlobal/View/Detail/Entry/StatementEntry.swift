@@ -61,22 +61,14 @@ struct StatementEntry: View {
         .background(colorScheme == .light ? Color.gray.opacity(0.2) : Color.white.opacity(0.2))
         .animation(.snappy, value: formTitle)
         .onAppear {
-            config = dateToConfig(viewModel.statementDetails.date)
+            config = viewModel.statementDetails.date.dateToConfig()
         }
         .onDisappear {
             formTitle = .none
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Onayla") {
-                    withAnimation(.snappy) {
-                        submission()
-                    }
-                }
-                .foregroundColor(.isGreen)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .disabled(isClicked)
+            CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
+                submission()
             }
         }
     }
@@ -93,7 +85,7 @@ struct StatementEntry: View {
         let statement = Statement(
             companyId: company.id,
             amount: viewModel.statementDetails.amount.toDouble(),
-            date: configToDate(config),
+            date: config.configToDate(),
             status: status
         )
         

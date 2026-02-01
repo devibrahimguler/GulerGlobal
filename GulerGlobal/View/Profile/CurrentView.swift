@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct CurrentView: View {
-    @EnvironmentObject var viewModel: MainViewModel
+    @ObservedObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
     
+    private var list: [Company] {
+        viewModel.companies.filter { $0.status == .current || $0.status == .both }
+    }
+
     var body: some View {
-        let list = viewModel.companies.filter { $0.status == .current || $0.status == .both }
         BaseList(isEmpty: list.isEmpty) {
-            ForEach(list, id: \.self) { company in
+            ForEach(list) { company in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        CompanyDetail(company: company, companyStatus: .current)
-                            .environmentObject(viewModel)
+                        CompanyDetail(viewModel: viewModel, company: company, companyStatus: .current)
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: $isReset) {
                             CompanyCard(company: company)

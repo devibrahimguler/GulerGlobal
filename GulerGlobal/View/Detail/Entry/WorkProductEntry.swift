@@ -70,7 +70,7 @@ struct WorkProductEntry: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.snappy, value: activeField)
         .onAppear {
-            config = dateToConfig(viewModel.workProductDetails.date)
+            config = viewModel.workProductDetails.date.dateToConfig()
         }
         .onDisappear {
             viewModel.updateWorkProductDetails(with: nil)
@@ -96,16 +96,16 @@ struct WorkProductEntry: View {
             workId: workId,
             productId: product.id,
             quantity: viewModel.workProductDetails.quantity.toDouble(),
-            date: configToDate(config)
+            date: config.configToDate()
         )
         
         let quantity = product.quantity - viewModel.workProductDetails.quantity.toDouble()
+
+        viewModel.companyProductDetails.name = product.name
+        viewModel.companyProductDetails.quantity = "\(quantity)"
+        viewModel.companyProductDetails.price = "\(product.price)"
         
-        let updateArea: [String: Any] = [
-            "quantity": quantity
-        ]
-        
-        viewModel.companyProductUpdate(productId: product.id, updateArea: updateArea)
+        viewModel.companyProductUpdate(productId: product.id, companyProductDetails: viewModel.companyProductDetails)
         viewModel.workProductCreate(product: workProduct)
         
         isClicked = false

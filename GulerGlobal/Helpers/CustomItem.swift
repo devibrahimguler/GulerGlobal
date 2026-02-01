@@ -27,7 +27,6 @@ struct CustomItem: ToolbarContent {
             } label: {
                 Label(title, systemImage: icon)
             }
-            .foregroundStyle(.green)
             .font(.headline)
             .fontWeight(.semibold)
             .disabled(isClicked)

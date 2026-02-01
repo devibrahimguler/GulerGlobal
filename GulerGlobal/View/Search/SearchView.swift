@@ -17,7 +17,7 @@ struct SearchView: View {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        CompanyDetail(company: company, companyStatus: .supplier)
+                        CompanyDetail(viewModel: viewModel, company: company, companyStatus: .supplier)
                             .toolbar(.hidden, for: .tabBar)
                     } label: {
                         SwipeAction(cornerRadius: 30, direction: .trailing, isReset: Binding.constant(false)) {

@@ -38,4 +38,8 @@ extension String {
         let int = (self as NSString).integerValue
         return int
     }
+    
+    func trim() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }

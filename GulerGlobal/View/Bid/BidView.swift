@@ -11,10 +11,13 @@ struct BidView: View {
     @EnvironmentObject var viewModel: MainViewModel
     @State private var isReset: Bool = false
     
+    private var list: [Work] {
+        viewModel.works.filter { $0.status == .pending }
+    }
+    
     var body: some View {
-        let pendinges = viewModel.works.filter({ $0.status == .pending })
-        BaseList(isEmpty: pendinges.isEmpty) {
-            ForEach(pendinges, id: \.self) { work in
+        BaseList(isEmpty: list.isEmpty) {
+            ForEach(list) { work in
                 let company = viewModel.getCompanyById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
@@ -33,17 +36,36 @@ struct BidView: View {
                         }
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
-                                viewModel.workUpdate(
-                                    workId: work.id,
-                                    updateArea: ["status": ApprovalStatus.rejected.rawValue]
-                                )
+                                withAnimation(.snappy) {
+                                    viewModel.workDetails.name = work.name
+                                    viewModel.workDetails.description = work.description
+                                    viewModel.workDetails.cost = "\(work.cost)"
+                                    viewModel.workDetails.left = "\(work.left)"
+                                    viewModel.workDetails.status = .rejected
+                                    viewModel.workDetails.startDate = work.startDate
+                                    viewModel.workDetails.endDate = work.endDate
+                                    
+                                    
+                                    viewModel.workUpdate(
+                                        workId: work.id,
+                                        workDetails: viewModel.workDetails
+                                    )
+                                }
                             }
                             
                             Action(tint: .green, icon: "checkmark.square") {
                                 withAnimation(.snappy) {
+                                    viewModel.workDetails.name = work.name
+                                    viewModel.workDetails.description = work.description
+                                    viewModel.workDetails.cost = "\(work.cost)"
+                                    viewModel.workDetails.left = "\(work.left)"
+                                    viewModel.workDetails.status = .approved
+                                    viewModel.workDetails.startDate = work.startDate
+                                    viewModel.workDetails.endDate = work.endDate
+                                    
                                     viewModel.workUpdate(
                                         workId: work.id,
-                                        updateArea: ["status": ApprovalStatus.approved.rawValue]
+                                        workDetails: viewModel.workDetails
                                     )
                                 }
                             }

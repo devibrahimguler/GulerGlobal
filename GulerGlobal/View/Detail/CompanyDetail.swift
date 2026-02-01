@@ -10,7 +10,6 @@ import SwiftUI
 struct CompanyDetail: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = MainViewModel()
     
     @State private var isEditCompany: Bool = false
     @State private var formTitle: FormTitle = .none
@@ -20,6 +19,7 @@ struct CompanyDetail: View {
     @State private var openMenu: Bool = false
     @State private var hiddingAnimation: Bool = false
     
+    @ObservedObject var viewModel: MainViewModel
     var company: Company
     var companyStatus: CompanyStatus
     
@@ -102,7 +102,7 @@ struct CompanyDetail: View {
                  company: company
              )
              .environmentObject(viewModel)
-             .offset(y: openMenu ? 0 : 500)
+             .offset(y: openMenu ? 0 : 1000)
         }
         .navigationBarBackButtonHidden(openMenu || isEditCompany)
         .animation(.linear, value: openMenu)
@@ -176,118 +176,10 @@ struct TestDetailView: View {
     @StateObject private var viewModel: MainViewModel = .init()
     
     var body: some View {
-        CompanyDetail(company: example_TupleModel.company, companyStatus: .supplier)
-            .environmentObject(viewModel)
+        CompanyDetail(viewModel: viewModel, company: example_TupleModel.company, companyStatus: .supplier)
     }
 }
 
 #Preview {
     TestDetailView()
 }
-
-/*
- struct CompanyMenu: View {
-     @EnvironmentObject var viewModel: MainViewModel
-     @Binding var isEdit: Bool
-     @Binding var formTitle: FormTitle
-     @Binding var openMenu: Bool
-     
-     var company: Company
-     
-     var body: some View {
-         VStack(alignment: .leading, spacing: 5) {
-             Button {
-                 withAnimation(.spring) {
-                     formTitle = .none
-                     openMenu = false
-                     isEdit.toggle()
-                 }
-             } label: {
-                 if isEdit {
-                     Label("İptal", systemImage: "pencil.slash")
-                 } else {
-                     Label("Düzenle", systemImage: "square.and.pencil")
-                 }
-             }
-             .frame(maxWidth: .infinity)
-             .padding(.vertical, 15)
-             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-             .padding(.horizontal, 20)
-             
-             if isEdit {
-                 Button {
-                     withAnimation(.spring) {
-                         viewModel.saveUpdates(company: company)
-                         
-                         formTitle = .none
-                         openMenu = false
-                         isEdit.toggle()
-                     }
-                 } label: {
-                     Label("Kaydet", systemImage: "pencil.line")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-             } else {
-                 if company.status == .supplier || company.status == .both {
-                     NavigationLink {
-                         ProductEntryView(company: company, workId: nil, isSupplier: true)
-                             .environmentObject(viewModel)
-                     } label: {
-                         Label("Malzeme Ekle", systemImage: "plus.viewfinder")
-                     }
-                     .frame(maxWidth: .infinity)
-                     .padding(.vertical, 15)
-                     .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                     .padding(.horizontal, 20)
-                 }
-                 NavigationLink {
-                     StatementEntryView(status: .input, company: company)
-                         .environmentObject(viewModel)
-                 } label: {
-                     Label("Alınan Para", systemImage: "square.badge.plus")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-                 
-                 NavigationLink {
-                     StatementEntryView(status: .output, company: company)
-                         .environmentObject(viewModel)
-                 } label: {
-                     Label("Ödenen Para", systemImage: "bag.badge.plus")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-                 
-                 NavigationLink {
-                     StatementEntryView(status: .debt, company: company)
-                         .environmentObject(viewModel)
-                 } label: {
-                     Label("Alınan Borç", systemImage: "bag.badge.plus")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-                 
-                 NavigationLink {
-                     StatementEntryView(status: .lend, company: company)
-                         .environmentObject(viewModel)
-                 } label: {
-                     Label("Verilen Borç", systemImage: "bag.badge.plus")
-                 }
-                 .frame(maxWidth: .infinity)
-                 .padding(.vertical, 15)
-                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                 .padding(.horizontal, 20)
-             }
-         }
-     }
- }
- */

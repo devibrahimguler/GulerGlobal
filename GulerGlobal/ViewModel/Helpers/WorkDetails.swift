@@ -9,6 +9,7 @@ import Foundation
 
 struct WorkDetails {
     var id: String = ""
+    var companyId: String = ""
     var name: String = ""
     var description: String = ""
     var cost: String = ""
@@ -23,6 +24,7 @@ struct WorkDetails {
     
     init(from work: Work?) {
         id = work?.id ?? ""
+        companyId = work?.companyId ?? ""
         name = work?.name ?? ""
         description = work?.description ?? ""
         cost = "\(work?.cost ?? 0)"
