@@ -40,7 +40,7 @@ struct CompanyDetail: View {
                 }
                 .scaleEffect(x: isEditCompany ? 0.97 : 1, y: isEditCompany ? 0.97 : 1)
                 .animation(isEditCompany ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditCompany)
-                .padding(10)
+                .padding(.top, 25)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 if isEditCompany {
@@ -86,7 +86,7 @@ struct CompanyDetail: View {
                  .opacity(isEditCompany ? 0 : 1)
                 
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 20)
             
         }
         .navigationTitle(company.name)

@@ -40,8 +40,7 @@ struct CustomDatePicker: View {
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
         }
         .frame(height: formTitle == title ? 150 : 100)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
+        .padding(10)
     }
     
     private func borderOverlay(for corners: UIRectCorner) -> some View {
@@ -55,17 +54,17 @@ struct CustomDatePicker: View {
     func DatePickerHeader() -> some View {
         HStack {
             Text(title.rawValue)
-                .font(.caption2)
+                .font(.subheadline)
                 .fontWeight(.semibold)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                .background(formTitle == title ? .blue.opacity(0.5) : .red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+                .padding(10)
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 15, style: .continuous))
+                .background(formTitle == title ? Color.accent : .red, in: .rect(cornerRadius: 15, style: .continuous))
+            
             
             Spacer()
         }
-        .padding(.horizontal, 25)
-        .offset(y: 5)
+        .foregroundStyle(.white)
+        .padding(.horizontal, 30)
         .animation(.easeIn, value: formTitle == title)
     }
 }

@@ -29,7 +29,7 @@ struct ProductDetail: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 10) {
                 
-                VStack(spacing: 5) {
+                VStack(spacing: 0) {
                     CustomTextField(title: .productName, text: $viewModel.companyProductDetails.name, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                     
@@ -41,7 +41,7 @@ struct ProductDetail: View {
                 }
                 .scaleEffect(x: isEditProduct ? 0.97 : 1, y: isEditProduct ? 0.97 : 1)
                 .animation(isEditProduct ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditProduct)
-                .padding(10)
+                .padding(.top, 25)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 
@@ -52,7 +52,7 @@ struct ProductDetail: View {
                 .disabled(!isEditProduct)
                 .scaleEffect(x: isEditProduct ? 0.97 : 1, y: isEditProduct ? 0.97 : 1)
                 .animation(isEditProduct ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditProduct)
-                .padding(10)
+                .padding(.top, 15)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 VStack(spacing: 5) {
@@ -69,7 +69,7 @@ struct ProductDetail: View {
                 .opacity(product.oldPrices.isEmpty || isEditProduct ? 0 : 1)
                 .animation(.linear, value: hiddingAnimation)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 20)
         }
         .navigationBarTitleDisplayMode(.inline)
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))

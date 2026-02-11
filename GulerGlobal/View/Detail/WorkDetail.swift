@@ -53,7 +53,7 @@ struct WorkDetail: View {
                 }
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                 .animation(isEditWork ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditWork)
-                .padding(10)
+                .padding(.top, 25)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 
@@ -66,7 +66,7 @@ struct WorkDetail: View {
                 .disabled(!isEditWork)
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
                 .animation(isEditWork ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditWork)
-                .padding(10)
+                .padding(.top, 15)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
                 VStack(spacing: 5) {
@@ -87,7 +87,7 @@ struct WorkDetail: View {
                 .animation(.linear, value: hiddingAnimation)
                 
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 20)
         }
         .navigationTitle(company.name)
         .navigationBarTitleDisplayMode(.inline)

@@ -365,27 +365,35 @@ final class MainViewModel: ObservableObject {
         Task {
             do {
                 guard
-                    let index = self.workProducts.firstIndex(where: { $0.productId == productId }),
+                    let workIndex = self.workProducts.firstIndex(where: { $0.productId == productId }),
+                    let companyIndex = self.companyProducts.firstIndex(where: { $0.id == productId }),
                     workProductDetails.quantity != ""
                 else { return }
                 
                 let quantity = workProductDetails.quantity.toDouble()
-                
-                let updateArea = [
+                let companyQuantity = self.companyProducts[companyIndex].quantity - quantity
+                let workUpdateArea = [
                     "quantity": quantity
                 ]
                 
-                try await firebaseDataService.workProductDataModel.updateWorkProduct(productId, updateArea: updateArea)
+                let companyUpdateArea = [
+                    "quantity": companyQuantity
+                ]
+                
+                try await firebaseDataService.workProductDataModel.updateWorkProduct(productId, updateArea: workUpdateArea)
+                try await firebaseDataService.companyProductDataModel.updateCompanyProduct(productId, updateArea: companyUpdateArea)
                 
                 
                 await MainActor.run {
-                    self.workProducts[index] = WorkProduct(
-                        id: workProducts[index].id,
-                        workId: workProducts[index].workId,
-                        productId: workProducts[index].productId,
+                    self.workProducts[workIndex] = WorkProduct(
+                        id: workProducts[workIndex].id,
+                        workId: workProducts[workIndex].workId,
+                        productId: workProducts[workIndex].productId,
                         quantity: quantity,
-                        date: workProducts[index].date
+                        date: workProducts[workIndex].date
                     )
+                    
+                    self.companyProducts[companyIndex].quantity = companyQuantity
                     updateWorkProductDetails(with: nil)
                     self.isLoading = false
                 }
@@ -711,3 +719,4 @@ final class MainViewModel: ObservableObject {
     }
     
 }
+
