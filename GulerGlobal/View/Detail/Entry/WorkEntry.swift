@@ -35,23 +35,23 @@ struct WorkEntry: View {
                 
                 CustomTextField(
                     title: .projeNumber,
-                    text: $viewModel.workDetails.id,
+                    text: $viewModel.workVM.workDetails.id,
                     formTitle: $activeField,
                     keyboardType: .numberPad,
-                    color: viewModel.workDetails.isChangeProjeNumber ? .black : .gray
+                    color: viewModel.workVM.workDetails.isChangeProjeNumber ? .black : .gray
                 )
-                .disabled(!viewModel.workDetails.isChangeProjeNumber)
+                .disabled(!viewModel.workVM.workDetails.isChangeProjeNumber)
                 .onTapGesture {
                     withAnimation(.snappy) {
-                        viewModel.workDetails.isChangeProjeNumber.toggle()
+                        viewModel.workVM.workDetails.isChangeProjeNumber.toggle()
                     }
                 }
                 
-                CustomTextField(title: .workName, text: $viewModel.workDetails.name, formTitle: $activeField)
+                CustomTextField(title: .workName, text: $viewModel.workVM.workDetails.name, formTitle: $activeField)
                 
-                CustomTextField(title: .workDescription, text: $viewModel.workDetails.description, formTitle: $activeField)
+                CustomTextField(title: .workDescription, text: $viewModel.workVM.workDetails.description, formTitle: $activeField)
                 
-                CustomTextField(title: .workPrice, text: $viewModel.workDetails.cost, formTitle: $activeField, keyboardType: .numberPad)
+                CustomTextField(title: .workPrice, text: $viewModel.workVM.workDetails.cost, formTitle: $activeField, keyboardType: .numberPad)
                 
                 CustomDatePicker(dateConfig: $startConfig, title: .startDate, formTitle: $activeField)
                     .foregroundStyle(.isText)
@@ -59,22 +59,21 @@ struct WorkEntry: View {
                 CustomDatePicker(dateConfig: $endConfig, title: .finishDate, formTitle: $activeField)
                     .foregroundStyle(.isText)
             }
-            .padding(10)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20, style: .continuous))
-            .padding(10)
+            .padding(.vertical)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .padding(20)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .animation(.linear, value: hiddingAnimation)
-        .background(colorScheme == .light ? Color.gray.opacity(0.2) : Color.white.opacity(0.2))
         .onAppear {
-            viewModel.workDetails.id = viewModel.generateUniqueIDforWork()
-            startConfig = viewModel.workDetails.startDate.dateToConfig()
-            endConfig = viewModel.workDetails.endDate.dateToConfig()
+            viewModel.workVM.workDetails.id = viewModel.workVM.generateUniqueID()
+            startConfig = viewModel.workVM.workDetails.startDate.dateToConfig()
+            endConfig = viewModel.workVM.workDetails.endDate.dateToConfig()
         }
         .animation(.snappy, value: activeField)
         .onDisappear {
             activeField = .none
-            viewModel.updateWorkDetails(with: nil)
+            viewModel.workVM.updateDetails(with: nil)
         }
         .toolbar {
             CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
@@ -87,30 +86,30 @@ struct WorkEntry: View {
     private func submission() {
         isClicked = true
         
-        guard !viewModel.workDetails.id.isEmpty,
-              !viewModel.workDetails.name.isEmpty,
-              !viewModel.workDetails.description.isEmpty,
-              !viewModel.workDetails.cost.isEmpty
+        guard !viewModel.workVM.workDetails.id.isEmpty,
+              !viewModel.workVM.workDetails.name.isEmpty,
+              !viewModel.workVM.workDetails.description.isEmpty,
+              !viewModel.workVM.workDetails.cost.isEmpty
         else {
             isClicked = false
             return
         }
         
-        viewModel.workDetails.status = .pending
+        viewModel.workVM.workDetails.status = .pending
         
         let newWork = Work(
-            id: viewModel.workDetails.id,
+            id: viewModel.workVM.workDetails.id,
             companyId: company.id,
-            name: viewModel.workDetails.name,
-            description: viewModel.workDetails.description,
-            cost: viewModel.workDetails.cost.toDouble(),
-            left: viewModel.workDetails.cost.toDouble(),
-            status: viewModel.workDetails.status,
+            name: viewModel.workVM.workDetails.name,
+            description: viewModel.workVM.workDetails.description,
+            cost: viewModel.workVM.workDetails.cost.toDouble(),
+            left: viewModel.workVM.workDetails.cost.toDouble(),
+            status: viewModel.workVM.workDetails.status,
             startDate: startConfig.configToDate(),
             endDate: endConfig.configToDate()
         )
         
-        viewModel.workCreate(work: newWork)
+        viewModel.workVM.create(work: newWork, setLoading: viewModel.setLoading)
         
         isClicked = false
         dismiss()
@@ -170,7 +169,7 @@ struct CompanyPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(companies == [] ? viewModel.companies.filter { $0.status == .both || $0.status == filter} : companies, id: \.self) { c in
+                    ForEach(companies == [] ? viewModel.companyVM.companies.filter { $0.status == .both || $0.status == filter} : companies, id: \.self) { c in
                         Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {
@@ -211,7 +210,7 @@ struct CompanyPickerView: View {
         if value == "" {
             self.companies = []
         } else {
-            if let searchCompany = viewModel.searchCompanies(by: text) {
+            if let searchCompany = viewModel.companyVM.search(by: text) {
                 self.companies = searchCompany.filter { $0.status == .both || $0.status == .current}
             }
         }
@@ -266,7 +265,7 @@ struct SupplierPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(companies == [] ? viewModel.companies.filter { $0.status == .both || $0.status == .supplier} : companies, id: \.self) { c in
+                    ForEach(companies == [] ? viewModel.companyVM.companies.filter { $0.status == .both || $0.status == .supplier} : companies, id: \.self) { c in
                         Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {
@@ -307,7 +306,7 @@ struct SupplierPickerView: View {
         if value == "" {
             self.companies = []
         } else {
-            if let searchCompany = viewModel.searchCompanies(by: text) {
+            if let searchCompany = viewModel.companyVM.search(by: text) {
                 self.companies = searchCompany.filter { $0.status == .both || $0.status == .supplier}
             }
         }

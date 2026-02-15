@@ -29,7 +29,7 @@ struct CompanyMenu: View {
             if isEdit {
                 SettingButton(settingType: .save) {
                     withAnimation(.spring) {
-                        viewModel.companyUpdate(companyId: company.id, companyDetails: viewModel.companyDetails)
+                        viewModel.companyVM.update(companyId: company.id, companyDetails: viewModel.companyVM.companyDetails, setLoading: viewModel.setLoading)
                         
                         formTitle = .none
                         openMenu = false

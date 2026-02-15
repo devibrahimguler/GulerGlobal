@@ -28,29 +28,29 @@ struct CompanyProductEntry: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 0) {
                 
-                CustomTextField(title: .productName, text: $viewModel.companyProductDetails.name, formTitle: $activeField)
+                CustomTextField(title: .productName, text: $viewModel.companyProductVM.companyProductDetails.name, formTitle: $activeField)
                 
-                CustomTextField(title: .productQuantity, text: $viewModel.companyProductDetails.quantity, formTitle: $activeField, keyboardType: .numberPad)
+                CustomTextField(title: .productQuantity, text: $viewModel.companyProductVM.companyProductDetails.quantity, formTitle: $activeField, keyboardType: .numberPad)
                 
-                CustomTextField(title: .productPrice, text: $viewModel.companyProductDetails.price, formTitle: $activeField, keyboardType: .numberPad)
+                CustomTextField(title: .productPrice, text: $viewModel.companyProductVM.companyProductDetails.price, formTitle: $activeField, keyboardType: .numberPad)
                 
                 CustomDatePicker(dateConfig: $config, title: .productPurchased, formTitle: $activeField)
                     .foregroundStyle(.isText)
                 
             }
-            .padding(10)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20, style: .continuous))
-            .padding(10)
+            .padding(.vertical)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .padding(20)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .navigationTitle(company.name)
         .navigationBarTitleDisplayMode(.inline)
         .animation(.snappy, value: activeField)
         .onAppear {
-            config = viewModel.companyProductDetails.date.dateToConfig()
+            config = viewModel.companyProductVM.companyProductDetails.date.dateToConfig()
         }
         .onDisappear {
-            viewModel.updateCompanyProductDetails(with: nil)
+            viewModel.companyProductVM.updateDetails(with: nil)
             activeField = .none
         }
         .toolbar {
@@ -62,26 +62,35 @@ struct CompanyProductEntry: View {
     
     private func submission() {
         isClicked = true
-        guard !viewModel.companyProductDetails.name.isEmpty,
-              !viewModel.companyProductDetails.quantity.isEmpty,
-              !viewModel.companyProductDetails.price.isEmpty
+        guard !viewModel.companyProductVM.companyProductDetails.name.isEmpty,
+              !viewModel.companyProductVM.companyProductDetails.quantity.isEmpty,
+              !viewModel.companyProductVM.companyProductDetails.price.isEmpty
         else {
             isClicked = false
             return
         }
         
-        let oldPrices: [OldPrice] = [OldPrice(price: viewModel.companyProductDetails.price.toDouble(), date: .now)]
+        let oldPrices: [OldPrice] = [OldPrice(price: viewModel.companyProductVM.companyProductDetails.price.toDouble(), date: .now)]
         
         let newProduct = CompanyProduct(
             companyId: company.id,
-            name: viewModel.companyProductDetails.name,
-            quantity: viewModel.companyProductDetails.quantity.toDouble(),
-            price: viewModel.companyProductDetails.price.toDouble(),
+            name: viewModel.companyProductVM.companyProductDetails.name,
+            quantity: viewModel.companyProductVM.companyProductDetails.quantity.toDouble(),
+            price: viewModel.companyProductVM.companyProductDetails.price.toDouble(),
             date: config.configToDate(),
             oldPrices: oldPrices,
         )
         
-        viewModel.companyProductCreate(product: newProduct)
+        let newStatement = Statement(
+            companyId: company.id,
+            amount: viewModel.companyProductVM.companyProductDetails.price.toDouble(),
+            date: .now,
+            status: .debt
+        )
+        
+        viewModel.statementVM.create(statement: newStatement, setLoading: viewModel.setLoading)
+        
+        viewModel.companyProductVM.create(product: newProduct, setLoading: viewModel.setLoading)
         
         isClicked = false
         dismiss()
@@ -139,7 +148,7 @@ struct ProductPickerView: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.companyProducts.filter { $0.companyId == companyId }, id: \.self) { c in
+                    ForEach(viewModel.companyProductVM.companyProducts.filter { $0.companyId == companyId }, id: \.self) { c in
                         Text("-> \(c.name)")
                             .padding(10)
                             .onTapGesture {
@@ -180,7 +189,7 @@ struct ProductPickerView: View {
         if value == "" {
             self.products = []
         } else {
-            if let searchProduct = viewModel.searchProducts(by: text) {
+            if let searchProduct = viewModel.companyProductVM.search(by: text) {
                 self.products = searchProduct.filter { $0.companyId == companyId }
             }
         }

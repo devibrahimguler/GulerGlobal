@@ -13,13 +13,13 @@ struct ApprovedView: View {
     @State private var isReset: Bool = false
     
     private var list: [Work] {
-        viewModel.works.filter { $0.status == .approved }
+        viewModel.workVM.works.filter { $0.status == .approved }
     }
     
     var body: some View {
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list) { work in
-                let company = viewModel.getCompanyById(work.companyId)
+                let company = viewModel.companyVM.getById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
                         WorkDetail(
@@ -37,10 +37,11 @@ struct ApprovedView: View {
                         }
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
-                                viewModel.workDetails.status = .rejected
-                                viewModel.workUpdate(
+                                viewModel.workVM.workDetails.status = .rejected
+                                viewModel.workVM.update(
                                     workId: work.id,
-                                    workDetails: viewModel.workDetails
+                                    workDetails: viewModel.workVM.workDetails,
+                                    setLoading: viewModel.setLoading
                                 )
                             }
                         }

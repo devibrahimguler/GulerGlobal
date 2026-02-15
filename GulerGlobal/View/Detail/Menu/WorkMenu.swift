@@ -32,15 +32,16 @@ struct WorkMenu: View {
             if isEdit {
                 SettingButton(settingType: .save) {
                     withAnimation(.spring) {
-                        viewModel.workDetails.companyId = tuple.work.companyId
-                        viewModel.workDetails.left = "\(tuple.work.left)"
-                        viewModel.workDetails.status = tuple.work.status
-                        viewModel.workDetails.startDate = startConfig.configToDate()
-                        viewModel.workDetails.endDate = endConfig.configToDate()
+                        viewModel.workVM.workDetails.companyId = tuple.work.companyId
+                        viewModel.workVM.workDetails.left = "\(tuple.work.left)"
+                        viewModel.workVM.workDetails.status = tuple.work.status
+                        viewModel.workVM.workDetails.startDate = startConfig.configToDate()
+                        viewModel.workVM.workDetails.endDate = endConfig.configToDate()
                         
-                        viewModel.workUpdate(
+                        viewModel.workVM.update(
                             workId: tuple.work.id,
-                            workDetails: viewModel.workDetails
+                            workDetails: viewModel.workVM.workDetails,
+                            setLoading: viewModel.setLoading
                         )
                         
                         formTitle = .none
@@ -54,15 +55,16 @@ struct WorkMenu: View {
                 if tuple.work.status == .approved {
                     SettingButton(settingType: .finishedWork) {
                         withAnimation(.snappy) {
-                            viewModel.workDetails.companyId = tuple.work.companyId
-                            viewModel.workDetails.left = "\(tuple.work.left)"
-                            viewModel.workDetails.status = .finished
-                            viewModel.workDetails.startDate = startConfig.configToDate()
-                            viewModel.workDetails.endDate = endConfig.configToDate()
+                            viewModel.workVM.workDetails.companyId = tuple.work.companyId
+                            viewModel.workVM.workDetails.left = "\(tuple.work.left)"
+                            viewModel.workVM.workDetails.status = .finished
+                            viewModel.workVM.workDetails.startDate = startConfig.configToDate()
+                            viewModel.workVM.workDetails.endDate = endConfig.configToDate()
                             
-                            viewModel.workUpdate(
+                            viewModel.workVM.update(
                                 workId: tuple.work.id,
-                                workDetails: viewModel.workDetails
+                                workDetails: viewModel.workVM.workDetails,
+                                setLoading: viewModel.setLoading
                             )
                             
                             dismiss()

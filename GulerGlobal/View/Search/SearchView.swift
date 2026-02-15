@@ -12,7 +12,7 @@ struct SearchView: View {
     @State var searchText = ""
     
     var body: some View {
-        let list = viewModel.companies.filter { $0.name.hasPrefix(searchText)}
+        let list = viewModel.companyVM.companies.filter { $0.name.hasPrefix(searchText)}
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {

@@ -12,7 +12,7 @@ struct CurrentView: View {
     @State private var isReset: Bool = false
     
     private var list: [Company] {
-        viewModel.companies.filter { $0.status == .current || $0.status == .both }
+        viewModel.companyVM.companies.filter { $0.status == .current || $0.status == .both }
     }
 
     var body: some View {
@@ -26,17 +26,17 @@ struct CurrentView: View {
                             CompanyCard(company: company)
                         } actions: {
                             Action(tint: .red, icon: "trash.fill") {
-                                let statementIds = viewModel.statements.filter { $0.companyId == company.id }.map { $0.id }
+                                let statementIds = viewModel.statementVM.statements.filter { $0.companyId == company.id }.map { $0.id }
                                 if statementIds.count > 0 {
-                                    viewModel.multipleStatementDelete(statementIds: statementIds)
+                                    viewModel.statementVM.multipleDelete(statementIds: statementIds, setLoading: viewModel.setLoading)
                                 }
                                 
-                                let workIds = viewModel.works.filter { $0.companyId == company.id }.map { $0.id }
+                                let workIds = viewModel.workVM.works.filter { $0.companyId == company.id }.map { $0.id }
                                 if workIds.count > 0 {
-                                    viewModel.multipleWorkDelete(workIds: workIds)
+                                    viewModel.workVM.multipleDelete(workIds: workIds, setLoading: viewModel.setLoading)
                                 }
                                 
-                                viewModel.companyDelete(companyId: company.id)
+                                viewModel.companyVM.delete(companyId: company.id, setLoading: viewModel.setLoading)
                             }
                         }
                     }
@@ -50,10 +50,10 @@ struct CurrentView: View {
                     .navigationTitle("Cari Ekle")
                     .navigationBarTitleDisplayMode(.inline)
             } label: {
-                Text("Ekle")
-                    .font(.system(size: 14, weight: .black, design: .monospaced))
-                    .foregroundStyle(.green)
+                Label("Ekle", systemImage: "plus")
             }
+            .font(.headline)
+            .fontWeight(.semibold)
         }
         .navigationTitle("Cariler")
         .navigationBarTitleDisplayMode(.inline)

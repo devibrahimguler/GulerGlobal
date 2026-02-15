@@ -20,11 +20,11 @@ struct CompanyEntry: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            CustomTextField(title: .companyName, text: $viewModel.companyDetails.name, formTitle: $formTitle)
+            CustomTextField(title: .companyName, text: $viewModel.companyVM.companyDetails.name, formTitle: $formTitle)
             
-            CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
+            CustomTextField(title: .companyAddress, text: $viewModel.companyVM.companyDetails.address, formTitle: $formTitle)
             
-            CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.phone, formTitle: $formTitle, keyboardType: .phonePad) {
+            CustomTextField(title: .companyPhone, text: $viewModel.companyVM.companyDetails.phone, formTitle: $formTitle, keyboardType: .phonePad) {
                 
                 hideKeyboard()
                 
@@ -35,20 +35,19 @@ struct CompanyEntry: View {
                 }
             }
         }
-        .padding(10)
+        .padding(.vertical)
         .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-        .padding(10)
+        .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .fullScreenCover(isPresented: $viewModel.isPhonePicker, content: {
-            PhonePickerView(pickerNumber: $viewModel.companyDetails.phone)
+            PhonePickerView(pickerNumber: $viewModel.companyVM.companyDetails.phone)
                 .onDisappear {
                     formTitle = .none
                 }
         })
         .onDisappear {
             formTitle = .none
-            viewModel.updateCompanyDetails(with: nil)
+            viewModel.companyVM.updateDetails(with: nil)
         }
         .alert(isPresented: $viewModel.hasAlert) {
             Alert(
@@ -57,16 +56,8 @@ struct CompanyEntry: View {
             )
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Onayla") {
-                    withAnimation(.snappy) {
-                        submission()
-                    }
-                }
-                .foregroundStyle(.isGreen)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .disabled(isClicked)
+            CustomItem(title: "Onayla", icon: "checkmark", isClicked: isClicked) {
+                submission()
             }
         }
     }
@@ -74,28 +65,28 @@ struct CompanyEntry: View {
     private func submission() {
         isClicked = true
         guard
-            viewModel.companyDetails.name != "",
-            viewModel.companyDetails.address != ""
+            viewModel.companyVM.companyDetails.name != "",
+            viewModel.companyVM.companyDetails.address != ""
         else { return }
         
-        if viewModel.companies.first(where: { $0.name == viewModel.companyDetails.name }) != nil {
+        if viewModel.companyVM.companies.first(where: { $0.name == viewModel.companyVM.companyDetails.name }) != nil {
             viewModel.hasAlert = true
             isClicked = false
         } else {
             
-            let name = viewModel.companyDetails.name.trim()
-            let address = viewModel.companyDetails.address.trim()
-            let phone = viewModel.companyDetails.phone
+            let name = viewModel.companyVM.companyDetails.name.trim()
+            let address = viewModel.companyVM.companyDetails.address.trim()
+            let phone = viewModel.companyVM.companyDetails.phone
             
             let newCompany = Company(
-                id: viewModel.generateUniqueIDforCompany(),
+                id: viewModel.companyVM.generateUniqueID(),
                 name: name,
                 address: address,
                 phone: phone,
                 status: companyStatus,
             )
             
-            viewModel.companyCreate(company: newCompany)
+            viewModel.companyVM.create(company: newCompany, setLoading: viewModel.setLoading)
             isClicked = false
             dismiss()
             

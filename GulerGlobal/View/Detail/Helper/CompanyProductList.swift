@@ -57,14 +57,12 @@ struct CompanyProductList: View {
                             actions: {
                                 Action(tint: .red, icon: "trash.fill") {
                                     withAnimation(.snappy) {
-                                        let productIds = viewModel.workProducts.filter { $0.productId == product.id }.map { $0.id }
+                                        let productIds = viewModel.workProductVM.workProducts.filter { $0.productId == product.id }.map { $0.id }
                                         if productIds.count > 0 {
-                                            viewModel.multipleWorkProductDelete(productIds: productIds)
+                                            viewModel.workProductVM.multipleDelete(productIds: productIds, setLoading: viewModel.setLoading)
                                         }
                                         
-                                        viewModel.companyProductDelete(
-                                            productId: product.id
-                                        )
+                                        viewModel.companyProductVM.delete(productId: product.id, setLoading: viewModel.setLoading)
                                     }
                                 }
                             }

@@ -50,7 +50,7 @@ struct WorkListView: View {
                         actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 withAnimation(.snappy) {
-                                    viewModel.workDelete(workId: work.id)
+                                    viewModel.workVM.delete(workId: work.id, setLoading: viewModel.setLoading)
                                 }
                             }
                         }

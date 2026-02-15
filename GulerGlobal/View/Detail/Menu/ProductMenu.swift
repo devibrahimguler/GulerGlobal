@@ -33,9 +33,9 @@ struct ProductMenu: View {
                 SettingButton(settingType: .save) {
                     withAnimation(.spring) {
                         
-                        viewModel.companyProductDetails.date = dateConfig.configToDate()
+                        viewModel.companyProductVM.companyProductDetails.date = dateConfig.configToDate()
                         
-                        viewModel.companyProductUpdate(productId: product.id, companyProductDetails: viewModel.companyProductDetails)
+                        viewModel.companyProductVM.update(productId: product.id, companyProductDetails: viewModel.companyProductVM.companyProductDetails, setLoading: viewModel.setLoading)
                         
                         formTitle = .none
                         openMenu = false

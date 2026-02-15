@@ -28,13 +28,13 @@ struct CompanyDetail: View {
             VStack(spacing: 20) {
                 
                 VStack(spacing: 0) {
-                    CustomTextField(title: .companyName, text: $viewModel.companyDetails.name, formTitle: $formTitle)
+                    CustomTextField(title: .companyName, text: $viewModel.companyVM.companyDetails.name, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    CustomTextField(title: .companyAddress, text: $viewModel.companyDetails.address, formTitle: $formTitle)
+                    CustomTextField(title: .companyAddress, text: $viewModel.companyVM.companyDetails.address, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
-                    CustomTextField(title: .companyPhone, text: $viewModel.companyDetails.phone, formTitle: $formTitle)
+                    CustomTextField(title: .companyPhone, text: $viewModel.companyVM.companyDetails.phone, formTitle: $formTitle)
                         .disabled(!isEditCompany)
                     
                 }
@@ -43,16 +43,16 @@ struct CompanyDetail: View {
                 .padding(.top, 25)
                 .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
                 
-                if isEditCompany {
+                if !isEditCompany && companyStatus != .debt {
                     editCompanyView()
                 }
                 
                  VStack(spacing: 10) {
-                     let works = viewModel.works.filter { $0.companyId == company.id }.sorted { $0.id > $1.id }
-                     let products = viewModel.companyProducts.filter { $0.companyId == company.id }.sorted { $0.date > $1.date }
-                     let statements = viewModel.statements.filter { $0.companyId == company.id }.sorted { $0.date > $1.date }
+                     let works = viewModel.workVM.works.filter { $0.companyId == company.id }.sorted { $0.id > $1.id }
+                     let products = viewModel.companyProductVM.companyProducts.filter { $0.companyId == company.id }.sorted { $0.date > $1.date }
+                     let statements = viewModel.statementVM.statements.filter { $0.companyId == company.id }.sorted { $0.date > $1.date }
                      
-                     if !works.isEmpty {
+                     if !works.isEmpty && companyStatus != .debt {
                          WorkListView(
                              title: "İş Listesi",
                              list: works,
@@ -72,7 +72,7 @@ struct CompanyDetail: View {
                          .environmentObject(viewModel)
                      }
                      
-                     if !products.isEmpty {
+                     if !products.isEmpty && companyStatus != .debt {
                          CompanyProductList(
                              title: "Malzeme Listesi",
                              list: products,
@@ -91,7 +91,6 @@ struct CompanyDetail: View {
         }
         .navigationTitle(company.name)
         .navigationBarTitleDisplayMode(.inline)
-        .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .blur(radius: openMenu ? 5 : 0)
         .disabled(openMenu)
         .overlay(alignment: .bottom) {
@@ -107,21 +106,23 @@ struct CompanyDetail: View {
         .navigationBarBackButtonHidden(openMenu || isEditCompany)
         .animation(.linear, value: openMenu)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    hideKeyboard()
-                    openMenu.toggle()
-                } label: {
-                    Image(systemName: openMenu ? "xmark" : "filemenu.and.selection")
-                        .contentTransition(.symbolEffect(.replace.magic(fallback: .offUp.wholeSymbol), options: .nonRepeating))
+            if companyStatus != .debt {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        hideKeyboard()
+                        openMenu.toggle()
+                    } label: {
+                        Image(systemName: openMenu ? "xmark" : "filemenu.and.selection")
+                            .contentTransition(.symbolEffect(.replace.magic(fallback: .offUp.wholeSymbol), options: .nonRepeating))
+                    }
                 }
             }
         }
         .onAppear {
-            viewModel.updateCompanyDetails(with: company)
+            viewModel.companyVM.updateDetails(with: company)
         }
         .onDisappear {
-            viewModel.updateCompanyDetails(with: nil)
+            viewModel.companyVM.updateDetails(with: nil)
         }
         
     }
@@ -142,11 +143,16 @@ struct CompanyDetail: View {
     @ViewBuilder
     func editCompanyView() -> some View {
         VStack {
-            Text("Ticari Kategoriler")
+            Text("Ticari Kategori")
                 .font(.title3)
                 .fontWeight(.semibold)
             
-            HStack {
+            LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(minimum: 50, maximum: .infinity)),
+                        GridItem(.flexible(minimum: 50, maximum: .infinity))
+                    ]
+                ) {
                 ForEach(CompanyStatus.allCases, id: \.self) { i in
                     let value = cashRoleValue(i)
                     if value != "" {
@@ -155,13 +161,11 @@ struct CompanyDetail: View {
                             .padding(5)
                             .frame(maxWidth: .infinity)
                             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-                            .background(viewModel.companyDetails.status == i ? Color.blue.opacity(0.5) : Color.red.opacity(0.5), in: .rect(cornerRadius: 30, style: .continuous))
+                            .background(viewModel.companyVM.companyDetails.status == i ? Color.accentColor : Color.red, in: .rect(cornerRadius: 30, style: .continuous))
                             .onTapGesture {
-                                viewModel.companyDetails.status = i
+                                viewModel.companyVM.companyDetails.status = i
                             }
-                            .animation(.bouncy, value: viewModel.companyDetails.status)
-                        
-                        
+                            .animation(.bouncy, value: viewModel.companyVM.companyDetails.status)
                     }
                     
                 }

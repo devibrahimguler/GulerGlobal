@@ -30,13 +30,13 @@ struct ProductDetail: View {
             VStack(spacing: 10) {
                 
                 VStack(spacing: 0) {
-                    CustomTextField(title: .productName, text: $viewModel.companyProductDetails.name, formTitle: $formTitle)
+                    CustomTextField(title: .productName, text: $viewModel.companyProductVM.companyProductDetails.name, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                     
-                    CustomTextField(title: .productQuantity, text: $viewModel.companyProductDetails.quantity, formTitle: $formTitle)
+                    CustomTextField(title: .productQuantity, text: $viewModel.companyProductVM.companyProductDetails.quantity, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                     
-                    CustomTextField(title: .productPrice, text: $viewModel.companyProductDetails.price, formTitle: $formTitle)
+                    CustomTextField(title: .productPrice, text: $viewModel.companyProductVM.companyProductDetails.price, formTitle: $formTitle)
                         .disabled(!isEditProduct)
                 }
                 .scaleEffect(x: isEditProduct ? 0.97 : 1, y: isEditProduct ? 0.97 : 1)
@@ -103,11 +103,11 @@ struct ProductDetail: View {
             }
         }
         .onAppear {
-            viewModel.updateCompanyProductDetails(with: product)
-            dateConfig = viewModel.companyProductDetails.date.dateToConfig()
+            viewModel.companyProductVM.updateDetails(with: product)
+            dateConfig = viewModel.companyProductVM.companyProductDetails.date.dateToConfig()
         }
         .onDisappear {
-            viewModel.updateCompanyProductDetails(with: nil)
+            viewModel.companyProductVM.updateDetails(with: nil)
         }
     }
 }

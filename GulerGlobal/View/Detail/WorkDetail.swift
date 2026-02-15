@@ -29,7 +29,7 @@ struct WorkDetail: View {
     let work: Work
     let company: Company
     var products: [WorkProduct] {
-        viewModel.getWorkProductsById(work.id)
+        viewModel.workProductVM.getById(work.id)
     }
     
     init(work: Work, company: Company) {
@@ -42,13 +42,13 @@ struct WorkDetail: View {
             VStack(spacing: 10) {
                 
                 VStack(spacing: 0) {
-                    CustomTextField(title: .workName, text: $viewModel.workDetails.name, formTitle: $formTitle)
+                    CustomTextField(title: .workName, text: $viewModel.workVM.workDetails.name, formTitle: $formTitle)
                         .disabled(!isEditWork)
                     
-                    CustomTextField(title: .workDescription, text: $viewModel.workDetails.description, formTitle: $formTitle)
+                    CustomTextField(title: .workDescription, text: $viewModel.workVM.workDetails.description, formTitle: $formTitle)
                         .disabled(!isEditWork)
                     
-                    CustomTextField(title: .workPrice, text: $viewModel.workDetails.cost, formTitle: $formTitle)
+                    CustomTextField(title: .workPrice, text: $viewModel.workVM.workDetails.cost, formTitle: $formTitle)
                         .disabled(!isEditWork)
                 }
                 .scaleEffect(x: isEditWork ? 0.97 : 1, y: isEditWork ? 0.97 : 1)
@@ -121,12 +121,12 @@ struct WorkDetail: View {
             }
         }
         .onAppear {
-            viewModel.updateWorkDetails(with: work)
-            startConfig = viewModel.workDetails.startDate.dateToConfig()
-            endConfig = viewModel.workDetails.endDate.dateToConfig()
+            viewModel.workVM.updateDetails(with: work)
+            startConfig = viewModel.workVM.workDetails.startDate.dateToConfig()
+            endConfig = viewModel.workVM.workDetails.endDate.dateToConfig()
         }
         .onDisappear {
-            viewModel.updateWorkDetails(with: nil)
+            viewModel.workVM.updateDetails(with: nil)
         }
     }
 }

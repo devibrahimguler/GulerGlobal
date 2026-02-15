@@ -12,13 +12,13 @@ struct BidView: View {
     @State private var isReset: Bool = false
     
     private var list: [Work] {
-        viewModel.works.filter { $0.status == .pending }
+        viewModel.workVM.works.filter { $0.status == .pending }
     }
     
     var body: some View {
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list) { work in
-                let company = viewModel.getCompanyById(work.companyId)
+                let company = viewModel.companyVM.getById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
                         WorkDetail(
@@ -37,35 +37,37 @@ struct BidView: View {
                         actions: {
                             Action(tint: .red, icon: "xmark.bin") {
                                 withAnimation(.snappy) {
-                                    viewModel.workDetails.name = work.name
-                                    viewModel.workDetails.description = work.description
-                                    viewModel.workDetails.cost = "\(work.cost)"
-                                    viewModel.workDetails.left = "\(work.left)"
-                                    viewModel.workDetails.status = .rejected
-                                    viewModel.workDetails.startDate = work.startDate
-                                    viewModel.workDetails.endDate = work.endDate
+                                    viewModel.workVM.workDetails.name = work.name
+                                    viewModel.workVM.workDetails.description = work.description
+                                    viewModel.workVM.workDetails.cost = "\(work.cost)"
+                                    viewModel.workVM.workDetails.left = "\(work.left)"
+                                    viewModel.workVM.workDetails.status = .rejected
+                                    viewModel.workVM.workDetails.startDate = work.startDate
+                                    viewModel.workVM.workDetails.endDate = work.endDate
                                     
                                     
-                                    viewModel.workUpdate(
+                                    viewModel.workVM.update(
                                         workId: work.id,
-                                        workDetails: viewModel.workDetails
+                                        workDetails: viewModel.workVM.workDetails,
+                                        setLoading: viewModel.setLoading
                                     )
                                 }
                             }
                             
                             Action(tint: .green, icon: "checkmark.square") {
                                 withAnimation(.snappy) {
-                                    viewModel.workDetails.name = work.name
-                                    viewModel.workDetails.description = work.description
-                                    viewModel.workDetails.cost = "\(work.cost)"
-                                    viewModel.workDetails.left = "\(work.left)"
-                                    viewModel.workDetails.status = .approved
-                                    viewModel.workDetails.startDate = work.startDate
-                                    viewModel.workDetails.endDate = work.endDate
+                                    viewModel.workVM.workDetails.name = work.name
+                                    viewModel.workVM.workDetails.description = work.description
+                                    viewModel.workVM.workDetails.cost = "\(work.cost)"
+                                    viewModel.workVM.workDetails.left = "\(work.left)"
+                                    viewModel.workVM.workDetails.status = .approved
+                                    viewModel.workVM.workDetails.startDate = work.startDate
+                                    viewModel.workVM.workDetails.endDate = work.endDate
                                     
-                                    viewModel.workUpdate(
+                                    viewModel.workVM.update(
                                         workId: work.id,
-                                        workDetails: viewModel.workDetails
+                                        workDetails: viewModel.workVM.workDetails,
+                                        setLoading: viewModel.setLoading
                                     )
                                 }
                             }

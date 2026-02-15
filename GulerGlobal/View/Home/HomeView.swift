@@ -19,29 +19,29 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         InfoBadge(
                             title: "Toplam",
-                            description: viewModel.totalRevenue.customDouble(),
+                            description: viewModel.revenueVM.totalRevenue.customDouble(),
                             color: .blue
                         )
                         
                         InfoBadge(
                             title: "Alınan",
-                            description: viewModel.amountRevenue.customDouble(),
+                            description: viewModel.revenueVM.amountRevenue.customDouble(),
                             color: .green
                         )
                         
                         InfoBadge(
                             title: "Kalan",
-                            description: viewModel.leftRevenue.customDouble(),
+                            description: viewModel.revenueVM.leftRevenue.customDouble(),
                             color: .red
                         )
                         
                     }
-                    .animation(.smooth, value: viewModel.leftRevenue)
+                    .animation(.smooth, value: viewModel.revenueVM.leftRevenue)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 5)
                     
                     Chart {
-                        ForEach(viewModel.chartData, id: \.self) { data in
+                        ForEach(viewModel.revenueVM.chartData, id: \.self) { data in
                             SectorMark(
                                 angle: .value("Price", data.isAnimated ? data.value : 0.0),
                                 innerRadius: .fixed(15),
@@ -71,17 +71,17 @@ struct HomeView: View {
         }
         .background(colorScheme == .light ? .gray.opacity(0.2) : .white.opacity(0.2))
         .onAppear(perform: animateChart)
-        .onReceive(viewModel.$leftRevenue) { _ in
+        .onReceive(viewModel.revenueVM.$leftRevenue) { _ in
             resetChartAnimation()
             animateChart()
         }
     }
     
     private func animateChart() {
-        guard !viewModel.isAnimated else { return }
-        viewModel.isAnimated = true
+        guard !viewModel.revenueVM.isAnimated else { return }
+        viewModel.revenueVM.isAnimated = true
         
-        $viewModel.chartData.enumerated().forEach { index, element in
+        $viewModel.revenueVM.chartData.enumerated().forEach { index, element in
             if index > 5 {
                 element.wrappedValue.isAnimated = true
             } else {
@@ -96,11 +96,11 @@ struct HomeView: View {
     }
     
     private func resetChartAnimation() {
-        $viewModel.chartData.forEach { traking in
+        $viewModel.revenueVM.chartData.forEach { traking in
             traking.wrappedValue.isAnimated = false
         }
         
-        viewModel.isAnimated = false
+        viewModel.revenueVM.isAnimated = false
     }
 }
 

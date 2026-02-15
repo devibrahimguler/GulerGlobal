@@ -49,16 +49,16 @@ struct WorkProductList: View {
                         actions: {
                             Action(tint: .red, icon: "trash.fill") {
                                 withAnimation(.snappy) {
-                                    if let companyProduct = viewModel.companyProducts.first(where: { $0.id == product.productId }) {
+                                    if let companyProduct = viewModel.companyProductVM.companyProducts.first(where: { $0.id == product.productId }) {
                                         
                                         let quantity = companyProduct.quantity + product.quantity
                                         
-                                        viewModel.companyProductDetails.name = companyProduct.name
-                                        viewModel.companyProductDetails.quantity = "\(quantity)"
-                                        viewModel.companyProductDetails.price = "\(companyProduct.price)"
+                                        viewModel.companyProductVM.companyProductDetails.name = companyProduct.name
+                                        viewModel.companyProductVM.companyProductDetails.quantity = "\(quantity)"
+                                        viewModel.companyProductVM.companyProductDetails.price = "\(companyProduct.price)"
                                         
-                                        viewModel.companyProductUpdate(productId: product.productId, companyProductDetails: viewModel.companyProductDetails)
-                                        viewModel.workProductDelete(productId: product.id)
+                                        viewModel.companyProductVM.update(productId: product.productId, companyProductDetails: viewModel.companyProductVM.companyProductDetails, setLoading: viewModel.setLoading)
+                                        viewModel.workProductVM.delete(productId: product.id, setLoading: viewModel.setLoading)
                                         
                                         dismiss()
                                     }

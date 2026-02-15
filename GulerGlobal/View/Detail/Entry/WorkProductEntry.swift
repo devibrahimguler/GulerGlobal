@@ -27,7 +27,7 @@ struct WorkProductEntry: View {
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 0) {
+            VStack(spacing: 10) {
                 SupplierPickerView(
                     title: .supplier,
                     formTitle: $activeField,
@@ -48,7 +48,7 @@ struct WorkProductEntry: View {
                 
                 CustomTextField(
                     title: .productQuantity,
-                    text: $viewModel.workProductDetails.quantity,
+                    text: $viewModel.workProductVM.workProductDetails.quantity,
                     formTitle: $activeField,
                     keyboardType: .numberPad
                 )
@@ -61,19 +61,19 @@ struct WorkProductEntry: View {
                 .foregroundStyle(.isText)
                 
             }
-            .padding(10)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20, style: .continuous))
-            .padding(10)
+            .padding(.vertical)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+            .padding(20)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .navigationTitle("Malzeme Ekle")
         .navigationBarTitleDisplayMode(.inline)
         .animation(.snappy, value: activeField)
         .onAppear {
-            config = viewModel.workProductDetails.date.dateToConfig()
+            config = viewModel.workProductVM.workProductDetails.date.dateToConfig()
         }
         .onDisappear {
-            viewModel.updateWorkProductDetails(with: nil)
+            viewModel.workProductVM.updateDetails(with: nil)
             activeField = .none
         }
         .toolbar {
@@ -85,7 +85,7 @@ struct WorkProductEntry: View {
     
     private func submission() {
         guard
-            !viewModel.workProductDetails.quantity.isEmpty,
+            !viewModel.workProductVM.workProductDetails.quantity.isEmpty,
             let product = product
         else {
             isClicked = false
@@ -95,18 +95,18 @@ struct WorkProductEntry: View {
         let workProduct = WorkProduct(
             workId: workId,
             productId: product.id,
-            quantity: viewModel.workProductDetails.quantity.toDouble(),
+            quantity: viewModel.workProductVM.workProductDetails.quantity.toDouble(),
             date: config.configToDate()
         )
         
-        let quantity = product.quantity - viewModel.workProductDetails.quantity.toDouble()
+        let quantity = product.quantity - viewModel.workProductVM.workProductDetails.quantity.toDouble()
 
-        viewModel.companyProductDetails.name = product.name
-        viewModel.companyProductDetails.quantity = "\(quantity)"
-        viewModel.companyProductDetails.price = "\(product.price)"
+        viewModel.companyProductVM.companyProductDetails.name = product.name
+        viewModel.companyProductVM.companyProductDetails.quantity = "\(quantity)"
+        viewModel.companyProductVM.companyProductDetails.price = "\(product.price)"
         
-        viewModel.companyProductUpdate(productId: product.id, companyProductDetails: viewModel.companyProductDetails)
-        viewModel.workProductCreate(product: workProduct)
+        viewModel.companyProductVM.update(productId: product.id, companyProductDetails: viewModel.companyProductVM.companyProductDetails, setLoading: viewModel.setLoading)
+        viewModel.workProductVM.create(product: workProduct, setLoading: viewModel.setLoading)
         
         isClicked = false
         dismiss()

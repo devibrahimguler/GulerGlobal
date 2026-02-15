@@ -48,7 +48,7 @@ struct StatementListView: View {
                          actions: {
                              Action(tint: .red, icon: "trash.fill", iconFont: .title3) {
                                  withAnimation(.snappy) {
-                                      viewModel.statementDelete(statementId: statement.id)
+                                      viewModel.statementVM.delete(statementId: statement.id, setLoading: viewModel.setLoading)
                                  }
                              }
                          }

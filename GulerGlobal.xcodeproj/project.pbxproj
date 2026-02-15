@@ -97,6 +97,12 @@
 		88FD26132B68C5F400EA5E71 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26122B68C5F400EA5E71 /* HomeView.swift */; };
 		88FD26152B68C60200EA5E71 /* ApprovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26142B68C60200EA5E71 /* ApprovedView.swift */; };
 		88FD26172B68C60C00EA5E71 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FD26162B68C60C00EA5E71 /* ProfileView.swift */; };
+		AA000001AAAA000100000001 /* CompanyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001AAAA000100000002 /* CompanyViewModel.swift */; };
+		AA000002AAAA000200000001 /* WorkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002AAAA000200000002 /* WorkViewModel.swift */; };
+		AA000003AAAA000300000001 /* CompanyProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000003AAAA000300000002 /* CompanyProductViewModel.swift */; };
+		AA000004AAAA000400000001 /* WorkProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000004AAAA000400000002 /* WorkProductViewModel.swift */; };
+		AA000005AAAA000500000001 /* StatementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000005AAAA000500000002 /* StatementViewModel.swift */; };
+		AA000006AAAA000600000001 /* RevenueViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000006AAAA000600000002 /* RevenueViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -203,6 +209,12 @@
 		88FD26122B68C5F400EA5E71 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		88FD26142B68C60200EA5E71 /* ApprovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApprovedView.swift; sourceTree = "<group>"; };
 		88FD26162B68C60C00EA5E71 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		AA000001AAAA000100000002 /* CompanyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModel.swift; sourceTree = "<group>"; };
+		AA000002AAAA000200000002 /* WorkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkViewModel.swift; sourceTree = "<group>"; };
+		AA000003AAAA000300000002 /* CompanyProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyProductViewModel.swift; sourceTree = "<group>"; };
+		AA000004AAAA000400000002 /* WorkProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkProductViewModel.swift; sourceTree = "<group>"; };
+		AA000005AAAA000500000002 /* StatementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementViewModel.swift; sourceTree = "<group>"; };
+		AA000006AAAA000600000002 /* RevenueViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -467,6 +479,12 @@
 				0F498C7E2EEEB4CE00BAA13B /* Helpers */,
 				0FE51EEB2C4AED6A00239081 /* EntryViewModel.swift */,
 				0F3CB78F2C8DE65000CC8717 /* MainViewModel.swift */,
+				AA000001AAAA000100000002 /* CompanyViewModel.swift */,
+				AA000002AAAA000200000002 /* WorkViewModel.swift */,
+				AA000003AAAA000300000002 /* CompanyProductViewModel.swift */,
+				AA000004AAAA000400000002 /* WorkProductViewModel.swift */,
+				AA000005AAAA000500000002 /* StatementViewModel.swift */,
+				AA000006AAAA000600000002 /* RevenueViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -650,6 +668,12 @@
 				0F9075262D4E408200D5C2EA /* CompanyProductList.swift in Sources */,
 				0F3F9A462EF0A94800375DB7 /* CustomItem.swift in Sources */,
 				0F3360DE2C67E91900D53A7D /* CompanyProductCard.swift in Sources */,
+				AA000001AAAA000100000001 /* CompanyViewModel.swift in Sources */,
+				AA000002AAAA000200000001 /* WorkViewModel.swift in Sources */,
+				AA000003AAAA000300000001 /* CompanyProductViewModel.swift in Sources */,
+				AA000004AAAA000400000001 /* WorkProductViewModel.swift in Sources */,
+				AA000005AAAA000500000001 /* StatementViewModel.swift in Sources */,
+				AA000006AAAA000600000001 /* RevenueViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

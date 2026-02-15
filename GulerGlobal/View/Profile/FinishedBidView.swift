@@ -12,13 +12,13 @@ struct FinishedBidView: View {
     @State private var isReset: Bool = false
     
     private var list: [Work] {
-        viewModel.works.filter { $0.status == .finished }
+        viewModel.workVM.works.filter { $0.status == .finished }
     }
     
     var body: some View {
         BaseList(isEmpty: list.isEmpty) {
             ForEach(list) { work in
-                let company = viewModel.getCompanyById(work.companyId)
+                let company = viewModel.companyVM.getById(work.companyId)
                 LazyVStack(spacing: 0) {
                     NavigationLink {
                         WorkDetail(

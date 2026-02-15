@@ -12,7 +12,14 @@ struct DebtView: View {
     @State private var isReset: Bool = false
     
     private var list: [Company] {
-        viewModel.companies.filter { $0.status == .debt}
+        let companyIds = viewModel.statementVM.statements
+            .filter {
+                $0.status == .debt
+            }.map { $0.companyId }
+        
+        return viewModel.companyVM.companies.filter { company in
+            companyIds.contains(company.id)
+        }
     }
     
     var body: some View {
@@ -20,7 +27,7 @@ struct DebtView: View {
             ForEach(list, id: \.self) { company in
                 LazyVStack(spacing: 0) {
                     NavigationLink {
-                        CompanyDetail(viewModel: viewModel, company: company, companyStatus: .supplier)
+                        CompanyDetail(viewModel: viewModel, company: company, companyStatus: .debt)
                     } label: {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
                             CompanyCard(company: company)
@@ -32,17 +39,6 @@ struct DebtView: View {
                     }
                     .padding(.horizontal, 10)
                 }
-            }
-        }
-        .toolbar {
-            NavigationLink {
-                CompanyEntry(companyStatus: .debt)
-                    .navigationTitle("Borç Ekle")
-                    .navigationBarTitleDisplayMode(.inline)
-            } label: {
-                Text("Ekle")
-                    .font(.system(size: 14, weight: .black, design: .monospaced))
-                    .foregroundStyle(.green)
             }
         }
         .navigationTitle("Borçlar")

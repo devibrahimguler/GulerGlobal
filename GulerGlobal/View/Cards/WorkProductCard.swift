@@ -14,10 +14,10 @@ struct WorkProductCard: View {
     var workProduct: WorkProduct
     
     var companyProduct: CompanyProduct {
-        viewModel.getCompanyProductById(self.workProduct.productId)
+        viewModel.companyProductVM.getById(self.workProduct.productId)
     }
     var companyName: String {
-        viewModel.getCompanyById(companyProduct.companyId).name
+        viewModel.companyVM.getById(companyProduct.companyId).name
     }
     var totalPrice: Double {
         Double(workProduct.quantity) * Double(companyProduct.price)

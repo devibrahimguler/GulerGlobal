@@ -40,7 +40,7 @@ struct StatementEntry: View {
             
             CustomTextField(
                 title: textFieldTitle,
-                text: $viewModel.statementDetails.amount,
+                text: $viewModel.statementVM.statementDetails.amount,
                 formTitle: $formTitle, keyboardType: .numberPad
             )
             
@@ -54,14 +54,13 @@ struct StatementEntry: View {
         }
         .navigationTitle(textFieldTitle.rawValue + " Ekle")
         .navigationBarTitleDisplayMode(.inline)
-        .padding(10)
+        .padding(.vertical)
         .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-        .padding(10)
+        .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(colorScheme == .light ? Color.gray.opacity(0.2) : Color.white.opacity(0.2))
         .animation(.snappy, value: formTitle)
         .onAppear {
-            config = viewModel.statementDetails.date.dateToConfig()
+            config = viewModel.statementVM.statementDetails.date.dateToConfig()
         }
         .onDisappear {
             formTitle = .none
@@ -77,19 +76,19 @@ struct StatementEntry: View {
         isClicked = true
         
         guard
-            !viewModel.statementDetails.amount.isEmpty
+            !viewModel.statementVM.statementDetails.amount.isEmpty
         else {
             isClicked = false
             return
         }
         let statement = Statement(
             companyId: company.id,
-            amount: viewModel.statementDetails.amount.toDouble(),
+            amount: viewModel.statementVM.statementDetails.amount.toDouble(),
             date: config.configToDate(),
             status: status
         )
         
-        viewModel.statementCreate(statement: statement)
+        viewModel.statementVM.create(statement: statement, setLoading: viewModel.setLoading)
         
         isClicked = false
         dismiss()

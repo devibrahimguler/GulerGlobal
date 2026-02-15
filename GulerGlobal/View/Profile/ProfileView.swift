@@ -45,7 +45,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .finished,
-                description: "\(viewModel.works.filter({ $0.status == .finished }).count ) adet Proje var")
+                description: "\(viewModel.workVM.works.filter({ $0.status == .finished }).count ) adet Proje var")
             
             NavigationButton(
                 content:
@@ -53,7 +53,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .cancel,
-                description: "\(viewModel.works.filter({ $0.status == .rejected }).count ) adet Proje var")
+                description: "\(viewModel.workVM.works.filter({ $0.status == .rejected }).count ) adet Proje var")
             
             NavigationButton(
                 content:
@@ -61,7 +61,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .currents,
-                description: "\(viewModel.companies.filter({ $0.status == .current }).count ) adet Şirket var")
+                description: "\(viewModel.companyVM.companies.filter({ $0.status == .current }).count ) adet Şirket var")
             
             NavigationButton(
                 content:
@@ -69,7 +69,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .supplier,
-                description: "\(viewModel.companies.filter({ $0.status == .supplier }).count ) adet Şirket var")
+                description: "\(viewModel.companyVM.companies.filter({ $0.status == .supplier }).count ) adet Şirket var")
             
             NavigationButton(
                 content:
