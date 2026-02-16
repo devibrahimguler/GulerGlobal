@@ -25,7 +25,7 @@ struct WorkListView: View {
                     .font(.headline)
                     .fontWeight(.bold)
                     .padding()
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
                 
                 Spacer()
                 
@@ -45,7 +45,6 @@ struct WorkListView: View {
                         if work.id != "0000" {
                         SwipeAction(cornerRadius: 20, direction: .trailing, isReset: $isReset) {
                             WorkCard(company: company , work: work)
-                                .background(work.status == .finished ? .green : work.status == .pending ? .yellow : work.status == .rejected ? .red : .clear)
                         }
                         actions: {
                             Action(tint: .red, icon: "trash.fill") {
@@ -61,8 +60,7 @@ struct WorkListView: View {
                 .padding(10)
               
             }
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .clipShape(.rect(cornerRadius: 30, style: .continuous))
+            .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
             .frame(height: isHidden ? 0 : 400)
            
         }

@@ -27,7 +27,7 @@ struct CustomTabBar: View {
             Tab(TabValue.Approved.rawValue, systemImage: TabValue.Approved.symbolImage, value: TabValue.Approved) {
                 NavigationStack {
                     ApprovedView()
-                        .navigationTitle(TabValue.Bid.rawValue)
+                        .navigationTitle(TabValue.Approved.rawValue)
                 }
             }
             

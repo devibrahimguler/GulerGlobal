@@ -40,55 +40,31 @@ final class RevenueViewModel: ObservableObject {
         setLoading(true)
         
         for company in companies {
+            let companyStatements = statements.filter { $0.companyId == company.id }
+            let companyWorks = works.filter { $0.companyId == company.id }.sorted { $0.id < $1.id }
             
-            var companyTotalMoney = 0.0
-            var haveMoney = true
-            
-            for statement in statements.filter({ $0.companyId == company.id }) {
-                if statement.status == .input || statement.status == .lend {
-                    companyTotalMoney = companyTotalMoney + statement.amount
-                } else if statement.status == .output || statement.status == .debt {
-                    companyTotalMoney = companyTotalMoney - statement.amount
+            // Net balance from statements (input/lend add, output/debt subtract)
+            var balance = companyStatements.reduce(0.0) { result, s in
+                switch s.status {
+                case .input, .lend:  return result + s.amount
+                case .output, .debt: return result - s.amount
                 }
             }
             
-            let workList = works.filter { $0.companyId == company.id }.sorted(by: { $0.id < $1.id })
-            let finishedWorkList = workList.filter { $0.status == .finished }
+            // Subtract finished work costs
+            balance -= companyWorks.filter { $0.status == .finished }.reduce(0.0) { $0 + $1.cost }
             
-            for work in finishedWorkList {
-                companyTotalMoney = companyTotalMoney - work.cost
-            }
-            
-            for work in workList {
+            // Process approved works
+            for work in companyWorks where work.status == .approved {
+                balance -= work.cost
+                let left = -(balance)
                 
-                if work.status == .approved {
-                    if companyTotalMoney > 0 && haveMoney {
-                        companyTotalMoney = companyTotalMoney - work.cost
-                        
-                    } else {
-                        companyTotalMoney = work.cost
-                        haveMoney = false
-                    }
-                    
-                    var left = 0.0
-                    if companyTotalMoney < 0 {
-                        left = -companyTotalMoney
-                    } else {
-                        left = companyTotalMoney
-                    }
-                    
-                    workVM.workDetails.name = work.name
-                    workVM.workDetails.description = work.description
-                    workVM.workDetails.cost = "\(work.cost)"
-                    workVM.workDetails.left = "\(left)"
-                    workVM.workDetails.status = work.status
-                    workVM.workDetails.startDate = work.startDate
-                    workVM.workDetails.endDate = work.endDate
-                    
-                    workVM.update(workId: work.id, workDetails: workVM.workDetails, setLoading: { _ in })
-                    self.totalRevenue += work.cost
-                    self.leftRevenue += left
-                }
+                var details = WorkDetails(from: work)
+                details.left = "\(left)"
+                workVM.update(workId: work.id, workDetails: details, setLoading: { _ in })
+                
+                self.totalRevenue += work.cost
+                self.leftRevenue += left
             }
         }
         

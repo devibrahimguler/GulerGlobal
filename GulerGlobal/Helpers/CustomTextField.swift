@@ -39,7 +39,7 @@ struct CustomTextField: View {
                     if isFocused { formTitle = title }
                 }
                 .multilineTextAlignment(.leading)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 20, style: .continuous))
+                .glassEffect(.regular, in: .rect(cornerRadius: 20, style: .continuous))
         }
         .padding(15)
     }
@@ -51,7 +51,7 @@ struct CustomTextField: View {
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .padding(10)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 15, style: .continuous))
+                .glassEffect(.regular, in: .rect(cornerRadius: 15, style: .continuous))
                 .background(formTitle == title ? Color.accent : .red, in: .rect(cornerRadius: 15, style: .continuous))
             
             Spacer()

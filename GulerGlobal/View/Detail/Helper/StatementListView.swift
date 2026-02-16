@@ -25,7 +25,7 @@ struct StatementListView: View {
                     .font(.headline)
                     .fontWeight(.bold)
                     .padding()
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                    .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
                 
                 Spacer()
                 
@@ -58,8 +58,7 @@ struct StatementListView: View {
                 .padding(10)
               
             }
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
-            .clipShape(.rect(cornerRadius: 30, style: .continuous))
+            .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
             .frame(height: isHidden ? 0 : 400)
            
         }

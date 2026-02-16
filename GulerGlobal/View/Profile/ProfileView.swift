@@ -61,7 +61,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .currents,
-                description: "\(viewModel.companyVM.companies.filter({ $0.status == .current }).count ) adet Şirket var")
+                description: "\(viewModel.companyVM.companies.filter({ $0.status == .current || $0.status == .both }).count ) adet Şirket var")
             
             NavigationButton(
                 content:
@@ -69,7 +69,7 @@ struct ProfileView: View {
                     .environmentObject(viewModel)
                     .toolbar(.hidden, for: .tabBar),
                 buttonType: .supplier,
-                description: "\(viewModel.companyVM.companies.filter({ $0.status == .supplier }).count ) adet Şirket var")
+                description: "\(viewModel.companyVM.companies.filter({ $0.status == .supplier || $0.status == .both }).count ) adet Şirket var")
             
             NavigationButton(
                 content:

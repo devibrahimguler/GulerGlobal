@@ -21,14 +21,19 @@ struct WorkCard: View {
         .lineLimit(1)
         .fontWeight(.semibold)
         .padding(10)
+        .background(
+            work.status == .finished ? .green.opacity(0.5) :
+                work.status == .pending ? .yellow.opacity(0.5) :
+                work.status == .rejected ? Color.isRed.opacity(0.5) : .clear
+        )
     }
     
     private var companyInitials: some View {
         Text(String(company.name.prefix(1)))
             .font(.system(size: 40))
-            .foregroundStyle(.accent.gradient)
+            .foregroundStyle(work.status == .rejected ? Color.white.gradient : Color.accent.gradient)
             .frame(width: 70, height: 70)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 25))
+            .glassEffect(.regular, in: .rect(cornerRadius: 25))
     }
     
     private var companyDetails: some View {
@@ -57,7 +62,7 @@ struct WorkCard: View {
             }
             .font(.headline)
             .fontWeight(.black)
-            .foregroundStyle(work.status == .approved ? .red.opacity(0.7) : .blue.opacity(0.7))
+            .foregroundStyle(work.status == .approved ? .red : work.status == .rejected ? .white : .accent)
         }
     }
 }

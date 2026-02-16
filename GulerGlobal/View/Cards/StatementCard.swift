@@ -20,6 +20,7 @@ struct StatementCard: View {
                 Image(systemName: "turkishlirasign")
             }
             .font(.title3)
+            .foregroundStyle(.white)
             .fontWeight(.bold)
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -34,7 +35,7 @@ struct StatementCard: View {
             
         }
         .padding()
-        .background(statement.status == .input || statement.status == .lend ? .green.opacity(0.5) : .red.opacity(0.5))
+        .background(statement.status == .input || statement.status == .lend ? .accent : .red)
         .frame(maxWidth: .infinity)
     }
 }

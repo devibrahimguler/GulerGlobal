@@ -41,9 +41,9 @@ struct CompanyDetail: View {
                 .scaleEffect(x: isEditCompany ? 0.97 : 1, y: isEditCompany ? 0.97 : 1)
                 .animation(isEditCompany ? .easeInOut(duration: 0.5).repeatForever() : .easeInOut(duration: 0.5), value: isEditCompany)
                 .padding(.top, 25)
-                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+                .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
                 
-                if !isEditCompany && companyStatus != .debt {
+                if isEditCompany && companyStatus != .debt {
                     editCompanyView()
                 }
                 
@@ -60,6 +60,7 @@ struct CompanyDetail: View {
                              hiddingAnimation: $hiddingAnimation
                          )
                          .environmentObject(viewModel)
+                         .animation(.linear, value: hiddingAnimation)
                      }
                      
                      if !statements.isEmpty {
@@ -70,6 +71,7 @@ struct CompanyDetail: View {
                              hiddingAnimation: $hiddingAnimation
                          )
                          .environmentObject(viewModel)
+                         .animation(.linear, value: hiddingAnimation)
                      }
                      
                      if !products.isEmpty && companyStatus != .debt {
@@ -80,6 +82,7 @@ struct CompanyDetail: View {
                              hiddingAnimation: $hiddingAnimation
                          )
                          .environmentObject(viewModel)
+                         .animation(.linear, value: hiddingAnimation)
                      }
                      
                  }
@@ -172,7 +175,7 @@ struct CompanyDetail: View {
             }
         }
         .padding(10)
-        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 30, style: .continuous))
+        .glassEffect(.regular, in: .rect(cornerRadius: 30, style: .continuous))
     }
 }
 

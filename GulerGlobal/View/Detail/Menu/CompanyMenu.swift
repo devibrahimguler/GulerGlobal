@@ -45,42 +45,46 @@ struct CompanyMenu: View {
                         settingType: .addProduct
                     )
                     
-                } else if company.status == .current || company.status == .both {
+                    SettingNavigation(
+                        content:
+                            StatementEntry(status: .output, company: company)
+                                .environmentObject(viewModel),
+                        settingType: .output
+                    )
+                    
+                    SettingNavigation(
+                        content:
+                            StatementEntry(status: .debt, company: company)
+                                .environmentObject(viewModel),
+                        settingType: .debt
+                    )
+                    
+                }
+                
+                if company.status == .current || company.status == .both {
                     SettingNavigation(
                         content:
                             WorkEntry(company: company)
                                 .environmentObject(viewModel),
                         settingType: .addWork
                     )
+                    
+                    SettingNavigation(
+                        content:
+                            StatementEntry(status: .input, company: company)
+                                .environmentObject(viewModel),
+                        settingType: .input
+                    )
+
+                    SettingNavigation(
+                        content:
+                            StatementEntry(status: .lend, company: company)
+                                .environmentObject(viewModel),
+                        settingType: .lend
+                    )
                 }
                 
-                SettingNavigation(
-                    content:
-                        StatementEntry(status: .input, company: company)
-                            .environmentObject(viewModel),
-                    settingType: .input
-                )
                 
-                SettingNavigation(
-                    content:
-                        StatementEntry(status: .output, company: company)
-                            .environmentObject(viewModel),
-                    settingType: .output
-                )
-                
-                SettingNavigation(
-                    content:
-                        StatementEntry(status: .debt, company: company)
-                            .environmentObject(viewModel),
-                    settingType: .debt
-                )
-
-                SettingNavigation(
-                    content:
-                        StatementEntry(status: .lend, company: company)
-                            .environmentObject(viewModel),
-                    settingType: .lend
-                )
             }
         }
         .padding(20)
